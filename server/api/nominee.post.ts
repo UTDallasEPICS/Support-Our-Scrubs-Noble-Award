@@ -17,8 +17,6 @@ export default defineEventHandler(async (event) => {
     const nominatorId = body.nominatorId;
     const adminId = body.adminId;
 
-
-
     let newNominee = null;
 
     try {
