@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Nominator {
+  id       String    @id @default(uuid())
+  username String
+  password String
+  Nominee  Nominee[]
+}
+
+model Nominee {
+  id          String    @id @default(uuid())
+  firstName   String
+  lastName    String
+  phoneNumber String
+  address     String
+  placeOfWork String
+  occupation  String
+  email       String
+  description String
+  photoURL    String
+  nominator   Nominator @relation(fields: [nominatorId], references: [id])
+  nominatorId String
+  admin       Admin     @relation(fields: [adminId], references: [id])
+  adminId     String
+  status      Status    @default(DENIED)
+}
+
+model Admin {
+  id       String    @id @default(uuid())
+  username String
+  password String
+  Position String
+  Nominee  Nominee[]
+}
+
+enum Status {
+  CREATED
+  CONFIRMED
+  VERIFIED
+  APPROVED
+  DENIED
+  SENT
+}
