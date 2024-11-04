@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const findId = typeof query.findId === 'string' ? query.findId : undefined;
     const stat = typeof query.stat === 'string' ? query.stat : undefined;
+    const nomId = typeof query.nomId === 'string' ? query.nomId : undefined;
 
     try {
         let nominees;
@@ -16,13 +17,25 @@ export default defineEventHandler(async (event) => {
                 where: { id: findId },
             });
         } 
-        else if(stat)
-        {
-            if (Object.values(Status).includes(stat as Status)) {
-                nominees = await prisma.nominee.findMany({
-                    where: { status: stat as Status }, // Cast to Status enum
-                });
+        else if(stat || nomId){
+            const filterConditions: {
+                status?: Status;
+                nominatorId?: string;
+            } = {};
+
+            if (stat && Object.values(Status).includes(stat as Status)) {
+                filterConditions.status = stat as Status;
             }
+    
+            if (nomId) {
+                filterConditions.nominatorId = nomId;
+            }
+    
+            // Fetch nominees based on constructed filter
+            nominees = await prisma.nominee.findMany({
+                where: filterConditions,
+            });
+    
         }
         else if (!stat && !findId) {
             nominees = await prisma.nominee.findMany();
