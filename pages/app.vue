@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>Hello</p>
-     <nuxt-link to="/nominee">
+     <nuxt-link to="/nominator">
       <button>Go to Nominee Page</button>
     </nuxt-link> 
   </div>
@@ -14,5 +14,5 @@ export default {
 </script>
 
 <style scoped>
-/* Add styles here if needed */
+
 </style>

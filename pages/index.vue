@@ -1,8 +1,8 @@
 <template>
     <div>
       <p>Hello</p>
-       <nuxt-link to="/nominee">
-        <button>Go to Nominee Page</button>
+       <nuxt-link to="/nominator">
+        <button>Go to Nominator Page</button>
       </nuxt-link> 
     </div>
   </template>
@@ -14,6 +14,6 @@
   </script>
   
   <style scoped>
-  /* Add styles here if needed */
+
   </style>
   

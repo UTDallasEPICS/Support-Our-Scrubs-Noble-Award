@@ -3,6 +3,23 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
 
+    // const nomSample = await prisma.nominator.create({
+    //     data: {
+    //         username: "username",
+    //         password: "pass",
+    //     }
+    // })
+
+    const adminSample = await prisma.admin.create({
+        data: {
+            username: "admin",
+            password: "adpass",
+            Position: "position",
+        }
+    })
+
+
+
     const body = await readBody(event);
 
     const firstName = body.firstName;
