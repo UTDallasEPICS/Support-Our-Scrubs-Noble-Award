@@ -43,12 +43,12 @@ export default defineEventHandler(async (event) => {
             data: {
                 nominator: {
                     connect: {
-                        id: nominatorId
+                        id: "71d6c0f7-a066-4578-ba79-674107ec6ca5"
                     }
                 },
                 admin: {
                     connect: {
-                        id: adminId
+                        id: "0ef46c5b-fa51-4a28-8e00-fd13774419cd"
                     }
                 },
                 firstName: firstName,

@@ -74,12 +74,9 @@ export default {
   },
   methods: {
     async submitForm() {
-      // Hardcoded nominatorId and adminId
-      const nominatorId = '71d6c0f7-a066-4578-ba79-674107ec6ca5'; // Replace with actual nominator ID
-      const adminId = 'your-hardcoded-admin-id'; // Replace with actual admin ID
-      
+      const nominatorId = '71d6c0f7-a066-4578-ba79-674107ec6ca5';
+      const adminId = 'your-hardcoded-admin-id';
 
-      // Form data including hardcoded IDs
       const formData = {
         firstName: this.firstName,
         lastName: this.lastName,
@@ -122,5 +119,86 @@ export default {
 </script>
 
 <style scoped>
-/* Add any scoped styling you want here */
+/* General Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #000; /* Full black background */
+    color: #d4af37; /* Gold text color */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    background-color: #1a1a1a; /* Slightly lighter black for form background */
+    padding: 20px;
+    border-radius: 8px;
+    color: #d4af37; /* Gold text color */
+    font-family: Arial, sans-serif;
+}
+
+/* Form and Text Styling */
+p {
+  font-size: 18px;
+  color: #d4af37;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #d4af37; /* Gold label color */
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="url"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #d4af37; /* Gold border */
+  border-radius: 8px;
+  background-color: #d4af37; /* Gold background for text boxes */
+  color: #000; /* Black text inside the text box */
+  font-size: 16px;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #d4af37; /* Gold background for button */
+  color: #1a1a1a; /* Dark text color */
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #b8860b; /* Darker gold on hover */
+}
+
+button:focus {
+  outline: none;
+}
+
 </style>
+
