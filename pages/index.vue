@@ -1,18 +1,18 @@
 <template>
-    <div>
-      <p>Hello</p>
-       <nuxt-link to="/viewnominees">
-        <button>Go to Table Page</button>
-      </nuxt-link> 
-    </div>
-  </template>
+  <div>
+    <p>Hello</p>
+     <nuxt-link to="/nominator">
+      <button>Go to Nominator Page</button>
+    </nuxt-link> 
+  </div>
+</template>
 
-  <script>
-  export default {
-    name: 'YourComponentName'
-  }
-  </script>
+<script>
+export default {
+  name: 'YourComponentName'
+}
+</script>
 
-  <style scoped>
-  /* Add styles here if needed */
-  </style>
+<style scoped>
+
+</style>
