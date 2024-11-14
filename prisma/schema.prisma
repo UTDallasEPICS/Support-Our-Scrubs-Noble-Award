@@ -14,10 +14,13 @@ datasource db {
 }
 
 model Nominator {
-  id       String    @id @default(uuid())
-  username String
-  password String
-  Nominee  Nominee[]
+  id        String    @id @default(uuid())
+  username  String
+  password  String
+  email     String    @unique
+  firstName String
+  lastName  String
+  Nominee   Nominee[]
 }
 
 model Nominee {
@@ -36,6 +39,7 @@ model Nominee {
   admin       Admin     @relation(fields: [adminId], references: [id])
   adminId     String
   status      Status    @default(DENIED)
+  deleted     Boolean   @default(false)
 }
 
 model Admin {
