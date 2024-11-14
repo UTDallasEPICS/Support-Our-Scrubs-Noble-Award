@@ -1,8 +1,8 @@
 <template>
-    <div class = "text-[#d4af37]">
+    <div class = "text-[#d4af37] h-screen bg-black" >
       <!-- Header -->
       <div>
-        <h2 class="text-center text-3xl font-bold mt-4" style="margin-top: 35px">View Database</h2>
+        <h2 class="text-center text-3xl font-bold" s>View Database</h2>
         <br>
       </div>
   
