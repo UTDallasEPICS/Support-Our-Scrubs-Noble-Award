@@ -45,7 +45,7 @@
       <div class="mt-4 mx-0">
         <div class="relative overflow-x-auto rounded-lg">
           <table class="w-full text-sm text-center">
-            <thead class="text-sm  uppercase bg-gray-50 dark:bg-gray-700">
+            <thead class="text-sm  uppercase bg-gray-700">
               <tr class="h-9">
                 <th scope="col" class="px-12 py-3">First Name</th>
                 <th scope="col" class="px-12 py-3">Last Name</th>
