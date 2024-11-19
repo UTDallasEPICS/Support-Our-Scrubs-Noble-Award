@@ -49,7 +49,10 @@
   
         <button type="submit">Submit</button>
       </form>
-  
+      
+      <NuxtLink to="https://supportourscrubs.org/donate" target = "blank">
+        <button>Donate Here! </button>
+      </NuxtLink>
       <nuxt-link to="/nominator/viewnominees">
         <button>Go to Nominator Page</button>
       </nuxt-link>
