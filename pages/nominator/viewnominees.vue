@@ -5,6 +5,31 @@
         <h2 class="text-center text-3xl font-bold" s>View Database</h2>
         <br>
       </div>
+
+      <div>
+      <input 
+        v-model="searchQuery" 
+        @input="search" 
+        type="text" 
+        class="bg-gray-700 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        placeholder="Search entries..." 
+      />
+
+      <!-- Display results -->
+      <div v-if="results.length > 0" class="space-y-4">
+        <ul>
+          <li v-for="result in results" :key="result.id" class="bg-gray-700 p-4 border rounded-lg shadow-sm hover:bg-gray-50 transition-all">
+            <strong>{{ result.name }}</strong>
+            <p>{{ result.description }}</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- No results found -->
+      <div v-else class="text-center text-gray-500">
+        No results found
+      </div>
+    </div>
   
       <!-- Dropdown Button -->
       <div class="relative inline-block text-left w-1/4" >
@@ -79,12 +104,28 @@
   </template>
   
   <script setup>
-  import { ref } from "vue";
+  import { ref,watchEffect } from "vue";
   
   // The state for nominees data and dropdown visibility
   const nominees = ref([]);
   const dropdownOpen = ref(false);
+  const searchQuery = ref('');
+  const results = ref([]);
+
+  async function fetchResults() {
+    try {
+      const query = searchQuery.value.trim();
+      const data  = await $fetch(`/api/search?searchTerm=${query}`);
+      results.value = data;
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  }
   
+  watchEffect(() => {
+  fetchResults();
+  });
+
   // Toggle the visibility of the dropdown
   function toggleDropdown() {
     dropdownOpen.value = !dropdownOpen.value;
