@@ -1,202 +1,149 @@
 <template>
-  <div class="container">
-    <p>Hello, please fill out the form below:</p>
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="firstName">First Name:</label>
-        <input type="text" v-model="firstName" id="firstName" />
-      </div>
+  <div class="min-h-screen flex justify-center items-center bg-black">
+    <!-- Form Container -->
+    <div class="w-11/12 max-w-lg p-8 rounded-lg">
+      <h1 class="text-2xl font-bold text-white mb-6 text-left">
+        Hello, please fill out the form below:
+      </h1>
+      <form>
+        <!-- Nominator First Name -->
+        <div class="mb-4">
+          <label for="nominatorFirstName" class="block text-lg text-yellow-500 mb-2">Nominator First Name:</label>
+          <input
+            type="text"
+            id="nominatorFirstName"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="lastName">Last Name:</label>
-        <input type="text" v-model="lastName" id="lastName" />
-      </div>
+        <!-- Nominator Last Name -->
+        <div class="mb-4">
+          <label for="nominatorLastName" class="block text-lg text-yellow-500 mb-2">Nominator Last Name:</label>
+          <input
+            type="text"
+            id="nominatorLastName"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" v-model="phoneNumber" id="phoneNumber" />
-      </div>
+        <!-- Nominator Email -->
+        <div class="mb-4">
+          <label for="nominatorEmail" class="block text-lg text-yellow-500 mb-2">Nominator Email:</label>
+          <input
+            type="email"
+            id="nominatorEmail"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="address">Address:</label>
-        <input type="text" v-model="address" id="address" />
-      </div>
+        <!-- Nominee First Name -->
+        <div class="mb-4">
+          <label for="nomineeFirstName" class="block text-lg text-yellow-500 mb-2">Nominee First Name:</label>
+          <input
+            type="text"
+            id="nomineeFirstName"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="placeOfWork">Place of Work:</label>
-        <input type="text" v-model="placeOfWork" id="placeOfWork" />
-      </div>
+        <!-- Nominee Last Name -->
+        <div class="mb-4">
+          <label for="nomineeLastName" class="block text-lg text-yellow-500 mb-2">Nominee Last Name:</label>
+          <input
+            type="text"
+            id="nomineeLastName"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="occupation">Occupation:</label>
-        <input type="text" v-model="occupation" id="occupation" />
-      </div>
+        <!-- Nominee Phone Number -->
+        <div class="mb-4">
+          <label for="nomineePhone" class="block text-lg text-yellow-500 mb-2">Nominee Phone Number:</label>
+          <input
+            type="tel"
+            id="nomineePhone"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="email" id="email" />
-      </div>
+        <!-- Nominee Address -->
+        <div class="mb-4">
+          <label for="nomineeAddress" class="block text-lg text-yellow-500 mb-2">Nominee Address:</label>
+          <input
+            type="text"
+            id="nomineeAddress"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="description">Description:</label>
-        <textarea v-model="description" id="description"></textarea>
-      </div>
+        <!-- Nominee Place of Work -->
+        <div class="mb-4">
+          <label for="nomineeWork" class="block text-lg text-yellow-500 mb-2">Nominee Place of Work:</label>
+          <input
+            type="text"
+            id="nomineeWork"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <div>
-        <label for="photoURL">Photo URL:</label>
-        <input type="url" v-model="photoURL" id="photoURL" />
-      </div> 
+        <!-- Nominee Occupation -->
+        <div class="mb-4">
+          <label for="nomineeOccupation" class="block text-lg text-yellow-500 mb-2">Nominee Occupation:</label>
+          <input
+            type="text"
+            id="nomineeOccupation"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-      <button type="submit">Submit</button>
-    </form>
+        <!-- Nominee Email -->
+        <div class="mb-4">
+          <label for="nomineeEmail" class="block text-lg text-yellow-500 mb-2">Nominee Email:</label>
+          <input
+            type="email"
+            id="nomineeEmail"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
 
-    <nuxt-link to="/nominator/viewnominees">
-      <button>Go to Nominator Page</button>
-    </nuxt-link>
+        <!-- Photo URL -->
+        <div class="mb-6">
+          <label for="photo" class="block text-lg text-yellow-500 mb-2">Photo URL:</label>
+          <input
+            type="url"
+            id="photo"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          />
+        </div>
+
+        <!-- Reason for Nomination -->
+        <div class="mb-6">
+          <label for="reason" class="block text-lg text-yellow-500 mb-2">Reason for Nomination:</label>
+          <textarea
+            id="reason"
+            rows="4"
+            class="w-full p-3 border-2 border-yellow-500 rounded-md bg-black text-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            placeholder="Please describe why you are nominating this individual..."
+          ></textarea>
+        </div>
+
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="w-full py-3 bg-yellow-500 text-black font-bold rounded-md hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'YourComponentName',
-  data() {
-    return {
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      address: '',
-      placeOfWork: '',
-      occupation: '',
-      email: '',
-      description: '',
-      photoURL: '',
-    };
-  },
-  methods: {
-    async submitForm() {
-      const nominatorId = '289ff853-6419-4011-9bb2-bf4f8e3e1a41';
-      const adminId = '6bc03a01-ccbf-411c-950b-7645adeddebd';
-
-      const formData = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        phoneNumber: this.phoneNumber,
-        address: this.address,
-        placeOfWork: this.placeOfWork,
-        occupation: this.occupation,
-        email: this.email,
-        description: this.description,
-        photoURL: this.photoURL,
-        nominatorId: nominatorId,
-        adminId: adminId
-      };
-
-      try {
-        const response = await fetch('http://localhost:3000/api/nominee', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          console.log('Error details:', errorDetails);
-          throw new Error(`Error submitting form: ${errorDetails.message}`);
-        }
-
-        const result = await response.json();
-        console.log('Form submitted successfully:', result);
-        alert('Form submitted successfully!');
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('There was an error submitting the form. Please check the console for details.');
-      }
-    }
-  }
-};
+export default {};
 </script>
 
 <style scoped>
-/* General Styles */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    background-color: #000; /* Full black background */
-    color: #d4af37; /* Gold text color */
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.container {
-    width: 100%;
-    max-width: 500px;
-    background-color: #1a1a1a; /* Slightly lighter black for form background */
-    padding: 20px;
-    border-radius: 8px;
-    color: #d4af37; /* Gold text color */
-    font-family: Arial, sans-serif;
-}
-
-/* Form and Text Styling */
-p {
-  font-size: 18px;
-  color: #d4af37;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  color: #d4af37; /* Gold label color */
-}
-
-input[type="text"],
-input[type="tel"],
-input[type="email"],
-input[type="url"],
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 2px solid #d4af37; /* Gold border */
-  border-radius: 8px;
-  background-color: #d4af37; /* Gold background for text boxes */
-  color: #000; /* Black text inside the text box */
-  font-size: 16px;
-}
-
-/* Buttons */
-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #d4af37; /* Gold background for button */
-  color: #1a1a1a; /* Dark text color */
-  font-size: 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #b8860b; /* Darker gold on hover */
-}
-
-button:focus {
-  outline: none;
-}
+/* No additional styles needed; Tailwind handles it all! */
 </style>
