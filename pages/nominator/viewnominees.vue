@@ -9,27 +9,12 @@
       <div>
       <input 
         v-model="searchQuery" 
-        @input="search" 
+        @input="debouncedSearch" 
         type="text" 
         class="bg-gray-700 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
         placeholder="Search entries..." 
       />
-
-      <!-- Display results -->
-      <div v-if="results.length > 0" class="space-y-4">
-        <ul>
-          <li v-for="result in results" :key="result.id" class="bg-gray-700 p-4 border rounded-lg shadow-sm hover:bg-gray-50 transition-all">
-            <strong>{{ result.name }}</strong>
-            <p>{{ result.description }}</p>
-          </li>
-        </ul>
       </div>
-
-      <!-- No results found -->
-      <div v-else class="text-center text-gray-500">
-        No results found
-      </div>
-    </div>
   
       <!-- Dropdown Button -->
       <div class="relative inline-block text-left w-1/4" >
@@ -109,22 +94,41 @@
   // The state for nominees data and dropdown visibility
   const nominees = ref([]);
   const dropdownOpen = ref(false);
-  const searchQuery = ref('');
-  const results = ref([]);
+  const searchQuery = ref("");
+  let debounceTimeout = null;
 
-  async function fetchResults() {
-    try {
-      const query = searchQuery.value.trim();
-      const data  = await $fetch(`/api/search?searchTerm=${query}`);
-      results.value = data;
-    } catch (error) {
-      console.error('Error fetching posts:', error);
+  const debouncedSearch = () => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(fetchResults, 500); // Wait 500ms after the user stops typing
+};
+
+async function fetchResults() {
+  try {
+    const query = searchQuery.value.trim();
+    if(query === "") 
+    {
+      // If search query is empty, fetch all nominees
+      getNominees();
+    } 
+    else 
+    {
+      // Otherwise, fetch search results
+      console.log("/api/search?searchTerm=" + query);
+      const data = await $fetch(`/api/search?searchTerm=${encodeURIComponent(query)}`, { method: 'GET' });
+      console.log(data);  // Log the result for debugging
+      if (data.results.length === 0) 
+      {
+        getNominees();
+      } 
+      else 
+      {
+        nominees.value = data.results;
+      }
     }
+  } catch (error) {
+    console.error('Error fetching posts:', error);
   }
-  
-  watchEffect(() => {
-  fetchResults();
-  });
+}
 
   // Toggle the visibility of the dropdown
   function toggleDropdown() {

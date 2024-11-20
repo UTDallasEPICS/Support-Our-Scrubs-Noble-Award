@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const searchTerm = typeof query.searchTerm === 'string' ? query.searchTerm : undefined;
   if (!searchTerm) {
-    return { results: [] };  
+    return {results: []};  
   }
 
   try {
