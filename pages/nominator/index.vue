@@ -135,6 +135,17 @@
         >
           Submit
         </button>
+
+        <!-- View Table Button -->
+        <div class="mt-6 text-center">
+        <nuxt-link 
+        to="/nominator/viewnominees" 
+        class="inline-block px-6 py-3 bg-yellow-500 text-black font-bold rounded-md hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        >
+        View Nominees
+        </nuxt-link>
+        </div>
+
       </form>
     </div>
   </div>
