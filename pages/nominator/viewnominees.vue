@@ -15,9 +15,13 @@
         placeholder="Search entries..." 
       />
       </div>
+
+      <div v-if="nominees == null" class="text-center text-gray-500">
+       No results found
+     </div>
   
       <!-- Dropdown Button -->
-      <div class="relative inline-block text-left w-1/4" >
+      <div class="relative inline-block text-left w-1/4 py-5" >
         <div>
           <button
             type="button"
@@ -41,12 +45,12 @@
         >
         <div class="py-1 space-y-2" role="none"> <!-- Added space-y-2 to create vertical space -->
           <!-- Menu Items (now as buttons for button-like appearance) -->
-          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-100" role="menuitem" @click="nomineesCreated">CREATED</button>
-          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-100" role="menuitem" @click="nomineesConfirmed">CONFIRMED</button>
-          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-100" role="menuitem" @click="nomineesVerified">VERIFIED</button>
-          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-100" role="menuitem" @click="nomineesApproved">APPROVED</button>
-          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-100" role="menuitem" @click="nomineesDenied">DENIED</button>
-          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-100" role="menuitem" @click="nomineesSent">SENT</button>
+          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-700" role="menuitem" @click="nomineesCreated">CREATED</button>
+          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-700" role="menuitem" @click="nomineesConfirmed">CONFIRMED</button>
+          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-700" role="menuitem" @click="nomineesVerified">VERIFIED</button>
+          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-700" role="menuitem" @click="nomineesApproved">APPROVED</button>
+          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-700" role="menuitem" @click="nomineesDenied">DENIED</button>
+          <button class="block w-full text-left px-4 py-2 text-sm  hover:bg-gray-700" role="menuitem" @click="nomineesSent">SENT</button>
         </div>
         </div>
       </div>
@@ -57,6 +61,7 @@
           <table class="w-full text-sm text-center">
             <thead class="text-sm  uppercase bg-gray-700">
               <tr class="h-9">
+                <th scope="col" class="px-12 py-3">Expanded View</th>
                 <th scope="col" class="px-12 py-3">First Name</th>
                 <th scope="col" class="px-12 py-3">Last Name</th>
                 <th scope="col" class="px-12 py-3">Phone Number</th>
@@ -71,6 +76,12 @@
             <tbody>
               <!-- Render each nominee -->
               <tr class="h-9" v-for="(u, index) in nominees" :key="index">
+                <td>
+                <!-- Button to open the modal -->
+                <button @click="openModal(u)" class="hover:text-gray-700">
+                  View Nominee
+                </button>
+                </td>
                 <td>{{ u.firstName }}</td>
                 <td>{{ u.lastName }}</td>
                 <td>{{ u.phoneNumber }}</td>
@@ -85,6 +96,21 @@
           </table>
         </div>
       </div>
+      <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-gray-700 rounded-lg w-96 rounded-lg px-4">
+        <h3 class="text-2xl font-bold mb-4">Nominee Details</h3>
+        <p><strong>First Name:</strong> {{ selectedNominee.firstName }}</p>
+        <p><strong>Last Name:</strong> {{ selectedNominee.lastName }}</p>
+        <p><strong>Email:</strong> {{ selectedNominee.email }}</p>
+        <p><strong>Phone Number:</strong> {{ selectedNominee.phoneNumber }}</p>
+        <p><strong>Address:</strong> {{ selectedNominee.address }}</p>
+        <p><strong>Place of Work:</strong> {{ selectedNominee.placeOfWork }}</p>
+        <p><strong>Occupation:</strong> {{ selectedNominee.occupation }}</p>
+        <p><strong>Description:</strong> {{ selectedNominee.description }}</p>
+        <p><strong>Status:</strong> {{ selectedNominee.status }}</p>
+        <button @click="closeModal" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-md">Close</button>
+      </div>
+    </div>
     </div>
   </template>
   
@@ -95,7 +121,9 @@
   const nominees = ref([]);
   const dropdownOpen = ref(false);
   const searchQuery = ref("");
+  const isModalOpen = ref(false);
   let debounceTimeout = null;
+  const selectedNominee = ref(null);
 
   const debouncedSearch = () => {
   clearTimeout(debounceTimeout);
@@ -113,12 +141,10 @@ async function fetchResults() {
     else 
     {
       // Otherwise, fetch search results
-      console.log("/api/search?searchTerm=" + query);
       const data = await $fetch(`/api/search?searchTerm=${encodeURIComponent(query)}`, { method: 'GET' });
-      console.log(data);  // Log the result for debugging
       if (data.results.length === 0) 
       {
-        getNominees();
+        nominees.value = null;
       } 
       else 
       {
@@ -129,7 +155,16 @@ async function fetchResults() {
     console.error('Error fetching posts:', error);
   }
 }
+  function openModal(nominee) {
+    selectedNominee.value = nominee;
+    isModalOpen.value = true;
+  }
 
+  // Close the modal
+  function closeModal() {
+    isModalOpen.value = false;
+    selectedNominee.value = null; // Clear selected nominee
+  }
   // Toggle the visibility of the dropdown
   function toggleDropdown() {
     dropdownOpen.value = !dropdownOpen.value;
