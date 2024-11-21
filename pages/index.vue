@@ -1,10 +1,3 @@
-<template>
-    <div class="min-h-screen flex justify-center items-center bg-black">
-      <FormComponent @onSubmit="handleFormSubmit" />
-    </div>
-</template>
-
-
 <script>
  import FormComponent from "@/components/FormComponent.vue";
  
@@ -24,4 +17,3 @@
   <style scoped>
   /* Add additional styles if necessary */
   </style>
- 
