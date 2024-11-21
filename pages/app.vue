@@ -1,27 +1,30 @@
 <template>
-    <div class="min-h-screen flex justify-center items-center bg-black">
-      <FormComponent @onSubmit="handleFormSubmit" />
-    </div>
+  <div class="min-h-screen flex justify-center items-center bg-black">
+    <FormComponent @onSubmit="handleFormSubmit" />
+  </div>
 </template>
 
 
 <script>
- import FormComponent from "@/components/FormComponent.vue";
- 
-  export default {
-    components: {
-      FormComponent,
+import FormComponent from "@/components/FormComponent.vue";
+
+export default {
+  components: {
+    FormComponent,
+  },
+  methods: {
+    handleFormSubmit(formData) {
+      console.log("Form data received from component:", formData);
+      // Handle form data (e.g., save to database, call API)
     },
-    methods: {
-      handleFormSubmit(formData) {
-        console.log("Form data received from component:", formData);
-        // Handle form data (e.g., save to database, call API)
-      },
-    },
-  };
-  </script>
- 
-  <style scoped>
-  /* Add additional styles if necessary */
-  </style>
- 
+  },
+};
+</script>
+
+<style scoped>
+/* Add additional styles if necessary */
+</style>
+
+
+
+
