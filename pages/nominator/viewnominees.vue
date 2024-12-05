@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isAuthenticated">
+    <div v-if="isAuth">
       <!-- Database Table -->
       <div class="text-[#d4af37] h-screen bg-black">
         <div>
@@ -65,14 +65,18 @@
             </table>
           </div>
         </div>
+
+        <div v-if="errorMessage" class="text-red-500 text-center mt-4">
+          {{ errorMessage }}
+        </div>
       </div>
     </div>
     <div v-else>
       <!-- Error Handling for Not Logged In -->
-      <div class="flex items-center justify-center min-h-screen bg-black text-gold">
-        <div class="bg-gray-900 p-8 rounded-lg shadow-lg text-center max-w-md w-full">
+      <div class="flex items-center justify-center min-h-screen bg-black text-[#d4af37]">
+        <div class="bg-black border-4 border-[#d4af37] p-8 rounded-lg shadow-lg text-center max-w-md w-full">
           <h1 class="text-2xl font-bold mb-4">Login Required</h1>
-          <p class="text-lg mb-6">Please login to continue.</p>
+          <p class="text-lg mb-6">Please login to view the nominator database.</p>
           <button 
             @click="login" 
             class="bg-gold text-black font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105 hover:bg-gold-dark focus:outline-none"
@@ -87,70 +91,57 @@
 
 <script>
 import { useAuth0 } from "@auth0/auth0-vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 
 export default {
   setup() {
-    let isAuthenticated = ref(false);
-    let user = ref(null);
+    const { isAuthenticated, user, getAccessTokenSilently, loginWithRedirect } = useAuth0();
     const nominees = ref([]);
+    const errorMessage = ref("");
     const dropdownOpen = ref(false);
 
-    if (process.client) {
-      const { isAuthenticated: authState, user: authUser, getAccessTokenSilently, loginWithRedirect } = useAuth0();
+    const isAuth = computed(() => isAuthenticated.value);
 
-      isAuthenticated = authState;
-      user = authUser;
+    const fetchNominees = async () => {
+      if (!user.value) return;
 
-      const fetchNominees = async () => {
-        try {
-          const token = await getAccessTokenSilently();
-          const response = await fetch(`/api/nominees?email=${user.value.email}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          nominees.value = await response.json();
-        } catch (error) {
-          console.error("Error fetching nominees:", error);
+      try {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(`/api/nominees?email=${user.value.email}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch nominees: ${response.statusText}`);
         }
-      };
 
-      const login = async () => {
-        await loginWithRedirect();
-      };
+        nominees.value = await response.json();
+      } catch (error) {
+        console.error("Error fetching nominees:", error);
+        errorMessage.value = "Unable to fetch nominees. Please try again later.";
+      }
+    };
 
-      const filterNominees = async (status) => {
-        try {
-          const token = await getAccessTokenSilently();
-          const response = await fetch(`/api/nominees?email=${user.value.email}&status=${status}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          nominees.value = await response.json();
-        } catch (error) {
-          console.error("Error filtering nominees:", error);
-        }
-      };
+    const login = async () => {
+      await loginWithRedirect();
+    };
 
-      onMounted(() => {
-        if (isAuthenticated.value) fetchNominees();
-      });
-
-      return {
-        isAuthenticated,
-        user,
-        login,
-        nominees,
-        dropdownOpen,
-        toggleDropdown: () => {
-          dropdownOpen.value = !dropdownOpen.value;
-        },
-        filterNominees,
-      };
-    }
+    onMounted(() => {
+      if (isAuthenticated.value) {
+        fetchNominees();
+      }
+    });
 
     return {
-      isAuthenticated,
+      isAuth,
       user,
+      login,
       nominees,
+      dropdownOpen,
+      toggleDropdown: () => {
+        dropdownOpen.value = !dropdownOpen.value;
+      },
+      errorMessage,
     };
   },
 };

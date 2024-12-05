@@ -11,8 +11,11 @@ export default defineNuxtPlugin((nuxtApp) => {
       domain: config.public.auth0Domain as string,
       clientId: config.public.auth0ClientId as string,
       authorizationParams: {
-        redirect_uri: `http://localhost:3000/nominator/viewnominees`,
+        redirect_uri: `${window.location.origin}`,
       },
     })
   );
 });
+
+
+

@@ -20,4 +20,11 @@ export default defineNuxtConfig({
 
   // Register the Auth0 plugin
   plugins: ['~/plugins/auth0.ts'],
-})
+
+  // Ensure server-side API routes bypass Vue Router
+  nitro: {
+    routeRules: {
+      '/api/**': { ssr: true }, // Handles API routes like /api/callback server-side
+    },
+  },
+});
