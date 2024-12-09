@@ -7,7 +7,6 @@ export default defineEventHandler(async (event) => {
     const adminId = body.adminId;   
     const nomineeId = body.nomineeId; 
 
-
     const firstName = body.firstName;
     const lastName = body.lastName;
     const phoneNumber = body.phoneNumber;
