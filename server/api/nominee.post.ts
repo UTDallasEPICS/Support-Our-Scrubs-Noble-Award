@@ -3,7 +3,6 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
 
-
     const body = await readBody(event);
 
     const firstName = body.firstName;
@@ -17,8 +16,6 @@ export default defineEventHandler(async (event) => {
     const photoURL = "";
     const nominatorId = body.nominatorId;
     const adminId = body.adminId;
-
-
 
     let newNominee = null;
 
