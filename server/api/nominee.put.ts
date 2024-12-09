@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
     const photoURL = "";
     const nominatorId = body.nominatorId;
     const adminId = body.adminId;
+    const status = body.status;
 
     let updatedNominee = null;
 
@@ -46,6 +47,7 @@ export default defineEventHandler(async (event) => {
                 email: email,
                 description: description,
                 photoURL: photoURL,
+                status: status,
             }
         })
     }

@@ -90,7 +90,33 @@
                 <td>{{ u.occupation }}</td>
                 <td>{{ u.email }}</td>
                 <td>{{ u.description }}</td>
-                <td>{{ u.status }}</td>
+                <td>
+                  <!-- Dropdown for status -->
+                <div class="relative inline-block">
+                  <button
+                    type="button"
+                    class="inline-flex justify-center w-32 bg-gray-700 px-3 py-2 text-sm font-semibold text-[#d4af37] shadow-sm ring-1 ring-inset ring-gray-300"
+                    @click="toggleStatusDropdown(u)"
+                  >
+                    {{ u.status }}
+                  </button>
+
+                  <!-- Dropdown Menu for Status -->
+                  <div
+                    class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    v-show="u.isDropdownOpen"
+                  >
+                    <div class="py-1 space-y-2">
+                      <button class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700" @click="updateStatus(u, 'CREATED')">CREATED</button>
+                      <button class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700" @click="updateStatus(u, 'CONFIRMED')">CONFIRMED</button>
+                      <button class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700" @click="updateStatus(u, 'VERIFIED')">VERIFIED</button>
+                      <button class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700" @click="updateStatus(u, 'APPROVED')">APPROVED</button>
+                      <button class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700" @click="updateStatus(u, 'DENIED')">DENIED</button>
+                      <button class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700" @click="updateStatus(u, 'SENT')">SENT</button>
+                    </div>
+                  </div>
+                </div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -130,6 +156,28 @@
   debounceTimeout = setTimeout(fetchResults, 500); // Wait 500ms after the user stops typing
 };
 
+// Update the nominee's status
+async function updateStatus(nominee, status) {
+  try {
+    // Create an object with the updated status
+    const updatedNominee = { ...nominee, status };
+    nominee.status = status;
+
+    // Send a PUT request to update the nominee's status
+    const response = await $fetch('/api/nominee', {
+      method: 'PUT',
+      body: updatedNominee,
+    });
+    
+    // Optionally, close the dropdown after updating the status
+    nominee.isDropdownOpen = false;
+
+  } catch (error) {
+    console.error('Error updating status:', error);
+  }
+}
+
+
 async function fetchResults() {
   try {
     const query = searchQuery.value.trim();
@@ -165,6 +213,11 @@ async function fetchResults() {
     isModalOpen.value = false;
     selectedNominee.value = null; // Clear selected nominee
   }
+
+  function toggleStatusDropdown(nominee) {
+  nominee.isDropdownOpen = !nominee.isDropdownOpen;
+}
+
   // Toggle the visibility of the dropdown
   function toggleDropdown() {
     dropdownOpen.value = !dropdownOpen.value;
