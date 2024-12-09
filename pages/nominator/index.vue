@@ -77,8 +77,8 @@
     },
     methods: {
       async submitForm() {
-        const nominatorId = '289ff853-6419-4011-9bb2-bf4f8e3e1a41';
-        const adminId = '6bc03a01-ccbf-411c-950b-7645adeddebd';
+        const nominatorId = '9f2a7a02-5849-4c4a-841a-bbd9d28ddf08';
+        const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8';
   
         const formData = {
           firstName: this.firstName,
