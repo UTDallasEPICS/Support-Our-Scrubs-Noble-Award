@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     let newNominator = null;
 
     try {
-        const existingNominator = await prisma.nominator.findFirst({
+        const existingNominator = await prisma.nominator.findUnique({
             where: { email: email }
         });
 

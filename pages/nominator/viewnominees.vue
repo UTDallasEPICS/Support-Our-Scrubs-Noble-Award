@@ -1,10 +1,18 @@
 <template>
-    <div class = "text-[#d4af37] h-screen bg-black" >
-      <!-- Header -->
-      <div>
-        <h2 class="text-center text-3xl font-bold" s>View Nominees</h2>
-        <br>
-      </div>
+  
+  <div v-if="isAuthenticated" class="text-[#d4af37] h-screen bg-black">
+    <!-- Header -->
+    <div>
+      <h2 class="text-center text-3xl font-bold">View Nominees</h2>
+      <br />
+    </div>
+
+    <!-- Logout Button -->
+    <div class="text-right px-4">
+      <button @click="logoutUser" class="bg-red-500 px-4 py-2 rounded text-white">
+        Logout
+      </button>
+    </div>
 
       <div>
       <input 
@@ -141,7 +149,45 @@
   </template>
   
   <script setup>
-  import { ref,watchEffect } from "vue";
+import { onMounted } from "vue";
+import { useAuth0 } from "@auth0/auth0-vue";
+
+// Declare variables for Auth0 methods
+let isAuthenticated, loginWithRedirect, logout;
+
+// Use import.meta.client to ensure client-side execution
+if (import.meta.client) {
+  const auth0 = useAuth0();
+  isAuthenticated = auth0.isAuthenticated;
+  loginWithRedirect = auth0.loginWithRedirect;
+  logout = auth0.logout;
+}
+
+// Run logic on component mount
+onMounted(async () => {
+  if (import.meta.client && !isAuthenticated?.value) {
+    try {
+      await loginWithRedirect({
+        appState: { target: "/nominator/viewnominees" }, // Redirect after login
+      });
+    } catch (error) {
+      console.error("Error during login redirect:", error);
+    }
+  }
+});
+
+// Logout function
+const logoutUser = async () => {
+  if (import.meta.client) {
+    try {
+      await logout({
+        returnTo: window.location.origin, // Redirect to home page after logout
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  }
+};
   
   // The state for nominees data and dropdown visibility
   const nominees = ref([]);
