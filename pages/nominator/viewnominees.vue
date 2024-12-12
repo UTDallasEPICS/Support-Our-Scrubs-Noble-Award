@@ -22,15 +22,15 @@
       </button>
     </div>
 
+
     <nuxt-link to="/nominator">
-      <button>Go To Nomination Page</button>
-    </nuxt-link>
- 
+  <button class="bg-yellow-500 text-black px-4 py-2 rounded-full font-bold">Go To Nomination Page</button>
+</nuxt-link>
 
 
-    <nuxt-link to="/nominator/edit">
-       <button>Edit Previous Submission</button>
-     </nuxt-link>
+  <nuxt-link to="/nominator/edit">
+    <button class="bg-yellow-500 text-black px-4 py-2 rounded-full font-bold">Edit Previous Submission</button>
+  </nuxt-link>
    
       <div>
       <input 
@@ -165,6 +165,8 @@
     </div>
     </div>
   </template>
+
+
   
   <script setup>
   import { ref,watchEffect } from "vue";
@@ -306,5 +308,4 @@ async function fetchResults() {
   // Fetch the nominees when the page loads
   getNominees();
   </script>
-  
   
