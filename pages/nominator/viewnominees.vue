@@ -157,6 +157,8 @@
   </template>
   
   <script setup>
+  import { ref,watchEffect } from "vue";
+  
   const token = useCookie("token") || ""
 
   //Login function
