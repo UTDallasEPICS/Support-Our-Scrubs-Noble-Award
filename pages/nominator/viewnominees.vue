@@ -1,10 +1,26 @@
 <template>
-    <div class = "text-[#d4af37] h-screen bg-black" >
-      <!-- Header -->
-      <div>
-        <h2 class="text-center text-3xl font-bold" s>View Nominees</h2>
-        <br>
-      </div>
+  
+  <!-- If the user is not authenticated -->
+  <div v-if="!token" class="text-center h-screen bg-black text-white flex flex-col items-center justify-center">
+    <h2 class="text-3xl mb-4">You must log in to view this page</h2>
+    <button @click="login" class="bg-blue-500 px-4 py-2 rounded text-white">
+      Login
+    </button>
+  </div>
+
+  <div v-if="token" class="text-[#d4af37] h-screen bg-black">
+    <!-- Header -->
+    <div>
+      <h2 class="text-center text-3xl font-bold">View Nominees</h2>
+      <br />
+    </div>
+
+    <!-- Logout Button -->
+    <div class="text-right px-4">
+      <button @click="logout" class="bg-red-500 px-4 py-2 rounded text-white">
+        Logout
+      </button>
+    </div>
 
       <div>
       <input 
@@ -142,6 +158,17 @@
   
   <script setup>
   import { ref,watchEffect } from "vue";
+  
+  const token = useCookie("token") || ""
+
+  //Login function
+  async function login() {
+    window.location.href = "/api/auth0/login"
+  }
+  // Logout function
+  async function logout() {
+  window.location.href = "/api/auth0/logout";
+}
   
   // The state for nominees data and dropdown visibility
   const nominees = ref([]);
