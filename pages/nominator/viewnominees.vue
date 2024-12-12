@@ -1,5 +1,13 @@
 <template>
   
+  <!-- If the user is not authenticated -->
+  <div v-if="!isAuthenticated" class="text-center h-screen bg-black text-white flex flex-col items-center justify-center">
+    <h2 class="text-3xl mb-4">You must log in to view this page</h2>
+    <button @click="login" class="bg-blue-500 px-4 py-2 rounded text-white">
+      Login
+    </button>
+  </div>
+
   <div v-if="isAuthenticated" class="text-[#d4af37] h-screen bg-black">
     <!-- Header -->
     <div>
@@ -149,45 +157,22 @@
   </template>
   
   <script setup>
-import { onMounted } from "vue";
-import { useAuth0 } from "@auth0/auth0-vue";
 
 // Declare variables for Auth0 methods
-let isAuthenticated, loginWithRedirect, logout;
 
 // Use import.meta.client to ensure client-side execution
-if (import.meta.client) {
-  const auth0 = useAuth0();
-  isAuthenticated = auth0.isAuthenticated;
-  loginWithRedirect = auth0.loginWithRedirect;
-  logout = auth0.logout;
-}
 
 // Run logic on component mount
-onMounted(async () => {
-  if (import.meta.client && !isAuthenticated?.value) {
-    try {
-      await loginWithRedirect({
-        appState: { target: "/nominator/viewnominees" }, // Redirect after login
-      });
-    } catch (error) {
-      console.error("Error during login redirect:", error);
-    }
-  }
-});
 
-// Logout function
-const logoutUser = async () => {
-  if (import.meta.client) {
-    try {
-      await logout({
-        returnTo: window.location.origin, // Redirect to home page after logout
-      });
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
+  //Login function
+  async function login() {
+    window.location.href = "/api/auth0/login"
   }
-};
+
+  // Logout function
+  async function logout() {
+  window.location.href = "/api/auth0/logout";
+}
   
   // The state for nominees data and dropdown visibility
   const nominees = ref([]);
