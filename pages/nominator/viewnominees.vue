@@ -25,7 +25,13 @@
     <nuxt-link to="/nominator">
       <button>Go To Nomination Page</button>
     </nuxt-link>
+ 
 
+
+    <nuxt-link to="/nominator/edit">
+       <button>Edit Previous Submission</button>
+     </nuxt-link>
+   
       <div>
       <input 
         v-model="searchQuery" 
