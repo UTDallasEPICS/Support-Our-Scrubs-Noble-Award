@@ -53,6 +53,10 @@
       <nuxt-link to="/nominator/viewnominees">
         <button>Go to Nominator Page</button>
       </nuxt-link>
+
+      <nuxt-link to="/nominator/edit">
+        <button>Edit Previous Submission</button>
+      </nuxt-link>
     </div>
   </template>
   

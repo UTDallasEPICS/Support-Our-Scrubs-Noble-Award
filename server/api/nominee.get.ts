@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
     const findId = typeof query.findId === 'string' ? query.findId : undefined;
     const stat = typeof query.stat === 'string' ? query.stat : undefined;
     const nomId = typeof query.nomId === 'string' ? query.nomId : undefined;
+    const email = typeof query.email === 'string' ? query.email : undefined;
 
     try {
         let nominees;
@@ -17,6 +18,11 @@ export default defineEventHandler(async (event) => {
                 where: { id: findId },
             });
         } 
+        else if (email) {
+            nominees = await prisma.nominee.findMany({
+                where: { email },
+            });
+        }
         else if(stat || nomId){
             const filterConditions: {
                 status?: Status;
@@ -31,7 +37,6 @@ export default defineEventHandler(async (event) => {
                 filterConditions.nominatorId = nomId;
             }
     
-            // Fetch nominees based on constructed filter
             nominees = await prisma.nominee.findMany({
                 where: filterConditions,
             });
