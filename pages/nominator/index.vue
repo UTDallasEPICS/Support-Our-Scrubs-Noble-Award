@@ -55,7 +55,7 @@
         <button>Donate Here! </button>
       </NuxtLink>
       <nuxt-link to="/nominator/viewnominees">
-        <button>Go to Nominator Page</button>
+        <button>Go to Nominee Database</button>
       </nuxt-link>
 
       <nuxt-link to="/nominator/edit">
