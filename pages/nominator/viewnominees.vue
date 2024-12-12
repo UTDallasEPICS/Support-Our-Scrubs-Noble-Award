@@ -22,6 +22,10 @@
       </button>
     </div>
 
+    <nuxt-link to="/nominator">
+      <button>Go To Nomination Page</button>
+    </nuxt-link>
+
       <div>
       <input 
         v-model="searchQuery" 

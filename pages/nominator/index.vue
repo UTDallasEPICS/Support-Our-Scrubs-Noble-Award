@@ -1,4 +1,5 @@
 <template>
+    <body>
     <div>
       <p>Hello, please fill out the form below:</p>
       <form @submit.prevent="submitForm">
@@ -58,9 +59,10 @@
       </nuxt-link>
 
       <nuxt-link to="/nominator/edit">
-        <button>Edit Previous Submission</button>
-      </nuxt-link>
+       <button>Edit Previous Submission</button>
+     </nuxt-link>
     </div>
+    </body>
   </template>
   
   <script>
