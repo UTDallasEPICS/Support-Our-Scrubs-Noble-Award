@@ -17,7 +17,6 @@ export const verifyNonce = (nonce: string) => {
 };
 
 const runtime = useRuntimeConfig();
-console.log(runtime)
 export const loginRedirectUrl = () =>
   `${
     runtime.AUTH0_DOMAIN

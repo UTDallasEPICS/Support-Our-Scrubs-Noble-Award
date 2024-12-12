@@ -7,10 +7,10 @@ import {
 
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, "token") || "";
-  console.log("event.node.req.url", event.node.req.url)
-  if (!token && (!event.node.req.url?.includes("/api/login-callback") || !event.node.req.url?.includes("/") || !event.node.req.url?.includes("/nominator"))) {
+   if(!token && !(event.node.req.url?.includes("/api/login-callback") || event.node.req.url===("/") || event.node.req.url===("/nominator"))) {
     sendRedirect(event, loginRedirectUrl());
-  } else {
+  } else { 
+    if (token) {
     try {
       try {
         const claims = jwt.verify(
@@ -25,5 +25,6 @@ export default defineEventHandler(async (event) => {
     } catch (e) {
       console.error(e);
     }
+  }
   }
 });
