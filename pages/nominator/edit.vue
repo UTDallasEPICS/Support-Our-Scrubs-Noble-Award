@@ -1,6 +1,7 @@
 <template>
+    <body>
     <div>
-      <p>Hello, please fill out the form below:</p>
+      <p>Edit the Form Below:</p>
       <form @submit.prevent="submitForm">
         <div>
           <label for="emailSearch">Enter Nominee Email:</label>
@@ -64,6 +65,7 @@
         <button>Go To Nomination Page</button>
       </nuxt-link>
     </div>
+</body>
 </template>
 
 <script>
@@ -147,8 +149,8 @@ export default {
 html, body {
     width: 100%;
     height: 100%;
-    background-color: #000; /* Full black background */
-    color: #d4af37; /* Gold text color */
+    background-color: #000; 
+    color: #d4af37; 
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
