@@ -13,5 +13,6 @@ export default defineNuxtConfig({
       AUTH0_CLIENT_ID: "",
       AUTH0_SECRET: "",
       SERVER_BASE_URL: "",
+      AWS_SES_ADDRESS: "",
   },
 });
