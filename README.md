@@ -49,7 +49,7 @@ Auth0
 - Account creation is only for Nominators
 
 ## Tech Stack
-- Frontend & Backend: Nuxt.js, Vue, Tailwind, Typescript
+- Frontend & Backend: Nuxt.js, Vue, Tailwind, Typescript, ThreeJS
 - Database: MySQL, Prisma ORM
 - Other Tools: Postman for API testing
 
