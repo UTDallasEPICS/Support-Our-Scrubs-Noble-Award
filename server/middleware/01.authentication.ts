@@ -7,9 +7,15 @@ import {
 
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, "token") || "";
-   if(!token && !(event.node.req.url?.includes("/api/login-callback") || event.node.req.url===("/") || event.node.req.url===("/nominator"))) {
-    sendRedirect(event, loginRedirectUrl());
-  } else { 
+   if (!token && !(
+    event.node.req.url?.includes("/api/login-callback") ||
+    event.node.req.url === "/" ||
+    event.node.req.url === "/nominator" ||
+    event.node.req.url?.startsWith("/api/nominee")
+  )
+) {
+  sendRedirect(event, loginRedirectUrl());
+} else { 
     if (token) {
     try {
       try {
