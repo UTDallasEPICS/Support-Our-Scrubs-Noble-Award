@@ -15,12 +15,13 @@ export default defineEventHandler(async (event) => {
     const occupation = body.occupation;
     const email = body.email;
     const description = body.description;
-    const photoURL = "";
+    const photoURL = body.photoURL;
     const nominatorId = body.nominatorId;
     const adminId = body.adminId;
     const status = body.status;
 
     let updatedNominee = null;
+    console.log("looka here"+nominatorId);
 
     try {
         updatedNominee = await prisma.nominee.update({
