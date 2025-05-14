@@ -27,7 +27,6 @@ export default defineEventHandler(async (event) => {
     const nominatorEmail = body.nominatorEmail;
 
     let newNominee = null;
-    console.log("look here"+nominatorId);
     const nomineeId = uuidv4();
     try {
 
