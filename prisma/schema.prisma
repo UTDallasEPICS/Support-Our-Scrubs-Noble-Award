@@ -30,7 +30,7 @@ model Nominee {
   placeOfWork String
   occupation  String
   email       String
-  description String
+  description String    @db.Text
   photoURL    String
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String
