@@ -367,12 +367,9 @@ export default {
       }
       // Load multiple models
 
-        var end = 6;
 
-        if (end > this.image.length){
-
-          end = this.image.length;
-        }
+        var end = this.image.length;
+        
 
         var increment = 0;
         var yinc = 0;
