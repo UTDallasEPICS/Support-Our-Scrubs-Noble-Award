@@ -94,10 +94,16 @@ export default {
 }
 
 .three-js-container {
-  width: 100%;     /* 50% of parent width */
-  height: 90vh;   /* 60% of viewport height */
-  max-width: 10000px; /* Optional: maximum size */
+  width: 100%;
+  max-width: 12000px;    
+  height: calc(100vh - 150px);
+  margin: 0 auto;         
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 
 .metallic-title {
