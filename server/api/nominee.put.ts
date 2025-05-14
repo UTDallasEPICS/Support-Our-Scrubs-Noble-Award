@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
     const status = body.status;
 
     let updatedNominee = null;
-    console.log("looka here"+nominatorId);
 
     try {
         updatedNominee = await prisma.nominee.update({
