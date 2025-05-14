@@ -346,20 +346,10 @@ export default {
        this.mouse = new THREE.Vector2()
        this.hoveredMesh = null
 
-      this.wheelHandler = (event) => {
-          if (this.scrollEnabled) {
-            event.preventDefault();
-            const scrollSpeed = 0.01; // adjust this as needed
-            this.camera.position.y += event.deltaY * scrollSpeed;
-            if (this.camera.position.y < 0 || this.camera.position.y > 10) {
-              this.camera.position.y -= event.deltaY * scrollSpeed;
-            }
-          }
-        };
 
-        // Add the event listener when your page/component loads
-        window.addEventListener('wheel', this.wheelHandler, { passive: false });
-  // Mousemove
+
+   
+
       window.addEventListener('mousemove', (event) => {
           this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1
           this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
@@ -367,12 +357,13 @@ export default {
       }
       // Load multiple models
 
-
+      
         var end = this.image.length;
         
 
         var increment = 0;
         var yinc = 0;
+        var ylimit = 0;
         for (var i = 0; i < end; i++){
           const cardscale = 1.1;
           const fscale = cardscale * 9/10;
@@ -395,7 +386,22 @@ export default {
           this.loadModel('/models/card.glb', { x: cardposx, y: cardposy, z: cardposz }, { x: cardscale, y: cardscale, z: cardscale }, "glass", i);
           this.loadModel('/models/frame.glb', { x: cardposx-0.4, y: cardposy, z: cardposz}, { x: cardscale*fscale, y: cardscale*fscale, z: cardscale*fscale}, "frame", i);
           this.modellimit += 2;
+          ylimit = cardposy
         }
+
+          this.wheelHandler = (event) => {
+          if (this.scrollEnabled) {
+            event.preventDefault();
+            const scrollSpeed = 0.01; // adjust this as needed
+            this.camera.position.y -= event.deltaY * scrollSpeed;
+            if (this.camera.position.y < ylimit || this.camera.position.y > 0) {
+              this.camera.position.y += event.deltaY * scrollSpeed;
+            }
+          }
+        };
+
+      window.addEventListener('wheel', this.wheelHandler, { passive: false });
+
 
     },
     createText(text, size, x, y, z){
