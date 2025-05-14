@@ -11,6 +11,10 @@ export default defineEventHandler(async (event) => {
     event.node.req.url?.includes("/api/login-callback") ||
     event.node.req.url === "/" ||
     event.node.req.url === "/nominator" ||
+    event.node.req.url === "/roster" ||
+    event.node.req.url.includes("/profile") ||
+    event.node.req.url === "/donate" ||
+    event.node.req.url === "/contact" ||
     event.node.req.url?.startsWith("/api/nominee")
   )
 ) {
