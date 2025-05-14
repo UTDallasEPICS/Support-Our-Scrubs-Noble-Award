@@ -110,7 +110,7 @@ export default {
       }
 
       if (this.scene_type == "roster"){
-        this.left = -5 * this.aspectRatio
+        this.left = -6 * this.aspectRatio
         this.right = 4 * this.aspectRatio
         this.top = 4
         this.bottom = -8
@@ -351,7 +351,7 @@ export default {
             event.preventDefault();
             const scrollSpeed = 0.01; // adjust this as needed
             this.camera.position.y += event.deltaY * scrollSpeed;
-            if (this.camera.position.x < -11 || this.camera.position.x > 8) {
+            if (this.camera.position.y < 0 || this.camera.position.y > 10) {
               this.camera.position.y -= event.deltaY * scrollSpeed;
             }
           }
