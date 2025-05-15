@@ -5,8 +5,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
 
-    const username = body.username;
-    const password = body.password;
+    const userEmail = body.email;
     const position = body.position;
 
     let newAdmin = null;
@@ -15,8 +14,7 @@ export default defineEventHandler(async (event) => {
 
         newAdmin = await prisma.admin.create({
             data: {
-                username: username,
-                password: password,
+                email: userEmail,
                 Position: position
             }
         });
@@ -30,4 +28,3 @@ export default defineEventHandler(async (event) => {
 
     return newAdmin;
 });
-

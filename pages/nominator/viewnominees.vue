@@ -1,14 +1,5 @@
 <template>
-  
-  <!-- If the user is not authenticated -->
-  <div v-if="!token" class="text-center min-h-screen bg-black text-white flex flex-col items-center justify-center">
-    <h2 class="text-3xl mb-4">You must log in to view this page</h2>
-    <button @click="login" class="bg-blue-500 px-4 py-2 rounded text-white">
-      Login
-    </button>
-  </div>
-
-  <div v-if="token" class="text-[#d4af37] min-h-screen bg-black">
+  <div class="text-[#d4af37] min-h-screen bg-black">
     <!-- Header -->
     <div>
       <h2 class="text-center text-3xl font-bold">View Nominees</h2>
@@ -201,6 +192,20 @@ async function updateStatus(nominee, status) {
     // Create an object with the updated status
     const updatedNominee = { ...nominee, status };
     nominee.status = status;
+
+    if (nominee.status === "APPROVED" || nominee.status === "DENIED") {
+      const confirmed = confirm(`Confirm status change to ${nominee.status}? This will notify the nominee via email.`);
+      if (confirmed) {
+        await $fetch("/api/admin/email", {
+          method: "POST",
+          body: {
+            name: nominee.name
+          }
+        })
+      } else {
+        return;
+      }
+    }
 
     // Send a PUT request to update the nominee's status
     const response = await $fetch('/api/nominee', {
