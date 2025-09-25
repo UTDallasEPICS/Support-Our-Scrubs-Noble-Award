@@ -19,6 +19,8 @@
           <label for="firstName">First Name:</label>
           <input type="text" v-model="firstName" id="firstName" />
         </div>
+
+        <p class="metallic-text">NOMINATOR</p> <!---->
   
         <div>
           <label for="lastName">Last Name:</label>
@@ -61,16 +63,22 @@
         <button type="submit">Submit</button>
       </form>
       
+      <!--
       <NuxtLink to="https://supportourscrubs.org/donate" target = "blank">
         <button>Donate Here! </button>
       </NuxtLink>
+      -->
+
       <nuxt-link to="/nominator/viewnominees">
         <button>Go to Nominee Database</button>
-      </nuxt-link>
+      </nuxt-link> 
+      
 
       <nuxt-link to="/nominator/edit">
        <button>Edit Previous Submission</button>
      </nuxt-link>
+    
+
     </div>
     </body>
   </template>

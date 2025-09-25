@@ -1,6 +1,16 @@
+
 <template>
+  <!-- Previous bacground color 
   <div class="flex flex-nowrap justify-start items-center text-white text-lg font-bold py-3 px-6" style="background: linear-gradient(45deg, #1C1C1C, #292929, #0F0F0F)">
-  <div style="margin-right: 30px;"></div>
+  -->
+  <div class="flex flex-nowrap justify-start items-center text-white text-lg font-bold py-3 px-6" style="background-color: #000000">
+
+  <!-- Title / Logo -->
+    <div class="mr-10 text-xl font-extrabold tracking-wide">
+      SUPPORT OUR SCRUBS
+    </div>
+  
+    <div style="margin-right: 30px;"></div>
   <div>
   <nuxt-link to="/">
       <p class="cursor-pointer hover:text-gray-300 transition font-semibold duration-300 text-gray">Home</p>
@@ -42,4 +52,7 @@
   background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
 }
 
+
 </style>
+
+-->
