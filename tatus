@@ -1,0 +1,20 @@
+* [33m84cbb5e[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m first commit
+* [33mbc351e6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mregalSocial-navbar[m[33m, [m[1;31mupstream/regalSocial[m[33m)[m Changed the social icons to regal theme. Changed the background color of the donate page .
+* [33m45271e3[m[33m ([m[1;31mupstream/feature/magic_links[m[33m, [m[1;31mupstream/HEAD[m[33m)[m Delete server/api/auth0 directory
+* [33m02629a6[m Delete server/middleware/01.authentication.ts
+* [33m2f98175[m Add files via upload
+[31m|[m * [33mb228870[m[33m ([m[1;31mupstream/final-dev[m[33m)[m Update ThreeJsScene.vue
+[31m|[m * [33m4427b55[m Update ThreeJsScene.vue
+[31m|[m * [33me2d66d0[m Update nominee.put.ts
+[31m|[m * [33m21bcc19[m Update nominee.post.ts
+[31m|[m * [33m33928c3[m Update schema.prisma
+[31m|[m * [33me80e4d6[m Update index.vue
+[31m|[m * [33mb5208ae[m Update ThreeJsScene.vue
+[31m|[m * [33m3612386[m Update 01.authentication.ts
+[31m|[m * [33m75bc9d7[m Add files via upload
+[31m|[m * [33m96df33b[m Create README
+[31m|[m * [33meaaefbd[m Add files via upload
+[31m|[m * [33m0fabbcb[m Add files via upload
+[31m|[m * [33m3286d82[m Create README
+[31m|[m * [33m1475ce8[m Rename public/README to public/hdr/README
+[31m|[m * [33mf471ebd[m Create README
