@@ -70,7 +70,8 @@ export default {
         console.log("datos "+decodedData.occupation);
         this.photoURL = decodedData.image
         this.name = decodedData.recepient
-        this.occupation = decodedData.occupation
+        this.occupation = decodedData.occupation\
+        console.log("change now")
         this.description = decodedData.description
       }
 
