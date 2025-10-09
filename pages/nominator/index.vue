@@ -2,9 +2,11 @@
       <Navbar />
     <body>
     <div>
-      <p class="metallic-title">NOBLE AWARD</p>
+      <!-- GSAP animated title -->
+      <p ref="nobleTitle" class="metallic-title">NOBLE AWARD</p>
 
-       <p class="metallic-text">NOMINATION FORM</p>
+
+      <p ref="nominationFormTitle" class="metallic-text">NOMINATION FORM</p>
        
       <form @submit.prevent="submitForm">
       <div>
@@ -20,98 +22,185 @@
           <input type="text" v-model="firstName" id="firstName" />
         </div>
 
-        <p class="metallic-text">NOMINATOR</p> <!---->
-  
+
+        <p ref="nominatorTitle" class="metallic-text">NOMINATOR</p>
+ 
         <div>
           <label for="lastName">Last Name:</label>
           <input type="text" v-model="lastName" id="lastName" />
         </div>
-  
+ 
         <div>
           <label for="phoneNumber">Phone Number:</label>
           <input type="tel" v-model="phoneNumber" id="phoneNumber" />
         </div>
-  
+ 
         <div>
           <label for="address">Address:</label>
           <input type="text" v-model="address" id="address" />
         </div>
-  
+ 
         <div>
           <label for="placeOfWork">Place of Work:</label>
           <input type="text" v-model="placeOfWork" id="placeOfWork" />
         </div>
-  
+ 
         <div>
           <label for="occupation">Occupation:</label>
           <input type="text" v-model="occupation" id="occupation" />
         </div>
-  
+ 
         <div>
           <label for="email">Email:</label>
           <input type="email" v-model="email" id="email" />
         </div>
-  
+ 
         <div>
           <label for="description">Description:</label>
           <textarea v-model="description" id="description"></textarea>
         </div>
+
+        <!-- File Upload with Hover Glow -->
         <div class="upload-section">
-        <label for="photo">Upload Photo:</label>
-        <input type="file" @change="handlePhotoUpload" />
+          <label for="photo">Upload Photo:</label>
+          <div class="custom-upload">
+            <input
+              type="file"
+              id="photo"
+              ref="fileInput"
+              class="hidden-file"
+              @change="handlePhotoUpload"
+            />
+            <button
+              type="button"
+              class="upload-btn"
+              @click="$refs.fileInput.click()"
+              ref="uploadButton"
+            >
+              Choose File
+            </button>
+            <span class="file-name">{{ selectedFileName || "No file chosen" }}</span>
+          </div>
         </div>
+
+
         <button type="submit">Submit</button>
       </form>
-      
-      <!--
+     
+      <!-- Removed buttons:
       <NuxtLink to="https://supportourscrubs.org/donate" target = "blank">
         <button>Donate Here! </button>
       </NuxtLink>
       -->
 
+
+      <!--
       <nuxt-link to="/nominator/viewnominees">
         <button>Go to Nominee Database</button>
-      </nuxt-link> 
-      
+      </nuxt-link>
+     
+
 
       <nuxt-link to="/nominator/edit">
        <button>Edit Previous Submission</button>
      </nuxt-link>
-    
+    -->
+   
 
     </div>
     </body>
   </template>
-  
+ 
   <script>
+
+
+  //gsap
+  import { ref, onMounted } from 'vue'
+  import gsap from 'gsap'
+
 
   import { v4 as uuidv4 } from 'uuid';
   import Navbar from '@/components/Navbar.vue';
 
+
   //import prisma from './prisma';
   const nominatorId = uuidv4();
 
-  export default {
-    name: 'Nominator',
-    data() {
-      return {
-        nominatorName: '',
-        nominatorEmail: '',
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        address: '',
-        placeOfWork: '',
-        occupation: '',
-        email: '',
-        description: '',
-        photoURL: '',
-      };
-    },
+
+export default {
+  name: 'Nominator',
+  components: { Navbar },
+  setup() {
+  const nobleTitle = ref(null);
+  const nominationFormTitle = ref(null);
+  const nominatorTitle = ref(null);
+  const uploadButton = ref(null);
+
+
+  const addHoverShine = (element) => {
+    element.addEventListener("mouseenter", () => {
+      gsap.to(element, {
+        textShadow: "0px 0px 35px rgba(255, 215, 0, 1)",
+        duration: 0.5,
+        ease: "power1.out"
+      })
+    })
+
+
+    element.addEventListener("mouseleave", () => {
+      gsap.to(element, {
+        textShadow: "0px 0px 5px rgba(255, 215, 0, 0.4)",
+        duration: 0.5,
+        ease: "power1.out"
+      });
+    });
+  };
+
+
+  onMounted(() => {
+      [nobleTitle.value, nominationFormTitle.value, nominatorTitle.value].forEach(
+        (el) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, scale: 0.7, y: -50 },
+            { opacity: 1, scale: 1, y: 0, duration: 1.5, ease: "power3.out" }
+          );
+          addHoverShine(el);
+        }
+      );
+
+
+      // Add glow to upload button
+      if (uploadButton.value) addHoverShine(uploadButton.value);
+    });
+
+
+    return { nobleTitle, nominationFormTitle, nominatorTitle, uploadButton };
+  },
+
+
+  data() {
+    return {
+      nominatorName: "",
+      nominatorEmail: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+      placeOfWork: "",
+      occupation: "",
+      email: "",
+      description: "",
+      photoURL: "",
+      selectedFileName: ""
+    };
+  },
+
+
     methods: {
       async submitForm() {
         const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8';
-  
+ 
         const formData = {
           nominatorName: this.nominatorName,
           nominatorEmail: this.nominatorEmail,
@@ -127,12 +216,14 @@
           nominatorId: nominatorId,
           adminId: adminId
         };
-  
+ 
         try {
+
 
         /**let nominator = await prisma.nominator.findUnique({
           where: { id: nominatorId }
         });
+
 
         if (!nominator) {
           nominator = await prisma.nominator.create({
@@ -147,52 +238,45 @@
             }
           });
         }**/
-          console.log("idk "+nominatorId);
-          const response = await fetch('/api/nominee', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-          console.log("failed");
-          if (!response.ok) {
-            const errorDetails = await response.json();
-            console.log('Error details:', errorDetails);
-            throw new Error(`Error submitting form: ${errorDetails.message}`);
-          }
-  
-          const result = await response.json();
-          console.log('Form submitted successfully:', result);
-          alert('Form submitted successfully!');
-        } catch (error) {
-          console.error('Error submitting form:', error);
-          alert('There was an error submitting the form. Please check the console for details.');
+          const response = await fetch("/api/nominee", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+          const errorDetails = await response.json();
+          throw new Error(`Error submitting form: ${errorDetails.message}`);
         }
-      },
+
+        const result = await response.json();
+        console.log("Form submitted successfully:", result);
+        alert("Form submitted successfully!");
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("There was an error submitting the form.");
+      }
+    },
       async handlePhotoUpload(event) {
-      console.log("failed2")
       try {
         const file = event.target.files[0];
+        this.selectedFileName = file ? file.name : "No file chosen";
 
-        // === Simulated Cloudinary Upload ===
         const subjectImage = new FormData();
         subjectImage.append("file", file);
         subjectImage.append("upload_preset", "unsigned_uploads");
 
-        const service = import.meta.env.VITE_IMAGE_SERVICE;                 
-        console.log("watch")
-        const res = await fetch(service, {
-          method: "POST",
-          body: subjectImage,
-        });
-        console.log("this doesnt call")
+        const service = import.meta.env.VITE_IMAGE_SERVICE;
+        console.log("watch");
 
+        const res = await fetch(service, { method: "POST", body: subjectImage });
+        console.log("fetch completed");
         const data = await res.json();
         this.photoURL = data.secure_url;
         console.log("RIIIIIGHT HEERE "+this.photoURL)
         } catch (err){
           console.error("Upload error:", err);
+
 
         }
         // Now this.photoURL will go into your database as part of the nominee object
@@ -202,25 +286,37 @@
       window.addEventListener('popstate', () => {
       window.location.reload(); // Fallback for broken history
       });
-    
+   
       if (this.$route.query.form) {
         const decodedData = JSON.parse(decodeURIComponent(this.$route.query.form));
         console.log("datos "+decodedData.occupation);
       }
 
+
     }
   };
   </script>
-  
+ 
   <style scoped>
   /* General Styles */
-  
+ 
   * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
   }
-  
+ 
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #222121;
+  color: #d4af37;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
   .metallic-title {
   font-family: 'Libre Caslon Display', serif;
   font-size: 70px;
@@ -244,37 +340,8 @@
     0 0 10px rgba(212, 175, 55, 0.2),
     0 0 15px rgba(255, 215, 0, 0.1);
 
+
   overflow: hidden;
-}
-
-/* Glint Swipe Animation */
-.metallic-title::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  animation: glintSwipe 3s ease-in-out infinite;
-}
-
-@keyframes glintSwipe {
-  0% {
-    left: -75%;
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: 100%;
-  }
 }
 
 /* Reflection Glow */
@@ -296,8 +363,12 @@
 }
 
 
+
+
 /* <!-- <p style= "font-family: 'Libre Caslon Display', serif; font-size: 30px;
   margin-top:0px; margin-bottom: 50px;"> NOMINATION FORM</p> --> */
+
+
 
 
 .metallic-text {
@@ -325,7 +396,7 @@
     0 0 20px rgba(255, 215, 0, 0.3);
   animation: metallicShine 3s infinite linear;
 }
-  
+ 
   html, body {
       width: 100%;
       height: 100%;
@@ -336,81 +407,76 @@
       justify-content: center;
       align-items: center;
   }
-  
-  .container {
-      width: 100%;
-      max-width: 500px;
-      background-color: #1a1a1a; /* Slightly lighter black for form background */
-      padding: 20px;
-      border-radius: 8px;
-      color: #d4af37; /* Gold text color */
-      font-family: Arial, sans-serif;
-  }
-  
-  /* Form and Text Styling */
-  p {
-    font-family: 'Libre Caslon Display', serif; /* font-family: 'Mrs Saint Delafield', cursive !important; This is supposed to be the font arrhhhh rarrrr*/
-    font-size: 70px;
-    color: #d4af37;
-    text-align: center;
-    margin-bottom:3px;  
-    margin-top: 70px;
-    
-  }
-  
-  label {
-    font-size: 18px;
-    margin-bottom: 5px;
-    font-family: 'Libre Caslon Display', serif;
-    color: #d4af37; /* Gold label color */
-  }
-  
-  input[type="text"],
-  input[type="tel"],
-  input[type="email"],
-  input[type="url"],
-  textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #5b5b5a; /* Gold border */
-    border-radius: 8px;
-    background-color: #434242; /* Gold background for text boxes */
-    color: #000; /* Black text inside the text box */
-    font-size: 16px;
-  }
-  
-  /* Buttons */
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #4e4e4d; /* Gold background for button */
-    color: #d4af37; /* Dark text color */
-    font-size: 18px;
-    font-weight: bold;
-    font-family: "Libre Caslon Display", serif;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-  }
-  
-  button:hover {
-    background-color: #898989; /* Darker gold on hover */
-  }
-  
-  button:focus {
-    outline: none;
-  }
-  
-.upload-section {
-  margin: 16px 0; /* space above and below the whole section */
+ 
+  input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #5b5b5a;
+  border-radius: 8px;
+  background-color: #434242;
+  color: #000;
+  font-size: 16px;
 }
 
-.upload-section label {
-  display: block;
-  margin-bottom: 8px; /* space between label and input */
+
+/* Submit button */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #4e4e4d;
+  color: #d4af37;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Libre Caslon Display', serif;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+button[type="submit"]:hover {
+  background-color: #898989;
+}
+
+
+/* === Custom File Upload === */
+.upload-section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.custom-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hidden-file { display: none; }
+.upload-btn {
+  background-color: #3a3a3a;
+  color: #d4af37;
+  font-family: "Libre Caslon Display", serif;
+  border: 2px solid #d4af37;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Inverse colors on hover */
+.upload-btn:hover {
+  background-color: #d4af37; /* gold background */
+  color: #3a3a3a; /* dark text */
+  border-color: #3a3a3a;
+}
+
+.file-name {
+  font-size: 16px;
+  color: #d4af37;
+  font-family: 'Libre Caslon Display', serif;
 }
 
 
