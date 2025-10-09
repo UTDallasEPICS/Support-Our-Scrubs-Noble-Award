@@ -1,7 +1,6 @@
 <template>
-  <div class="contact-wrapper">
-    <Navbar />
-
+  <div class="page-background { blurred: showLogin }">
+    <Navbar @open-login="showLogin = true"/>
     <section class="socials-section">
       <div class="socials">
         <a href="https://www.instagram.com/support_our_scrubs/?hl=en" target="_blank" rel="noopener">
@@ -71,17 +70,18 @@
 
 
   </div>
-
-
-  
+  <Teleport to="body">
+    <LoginModal v-if="showLogin" @close="showLogin = false" />
+  </Teleport>
 </template>
 
-<script setup lang="ts">
-import { reactive } from 'vue';
+<script setup>
 import Navbar from '@/components/Navbar.vue';
-import nobleImage from '@/assets/nobleaward.png';
+import LoginModal from "@/components/MyLogin.vue"
 
 definePageMeta({});
+
+const showLogin = ref(false);
 
 const form = reactive({
   name: '',
@@ -108,7 +108,7 @@ const handleSubmit = async () => {
     console.error('Submit error:', error);
     alert('Submission failed due to network/server issue.');
   }
-};
+}; 
 </script>
 
 <style scoped>
@@ -143,6 +143,12 @@ header img {
   margin: 2rem auto;
   padding: 1rem;
 }
+.blurred {
+  filter: blur(8px);
+  pointer-events: none; 
+  user-select: none;
+  transform: translateZ(0);
+  }
 h2 {
   font-family: 'Playfair Display', serif;
   border-bottom: 1px solid #d4af37;
@@ -334,6 +340,13 @@ button {
     box-shadow: 0 0 10px #fff176, 0 0 20px #fdd835;
   }
 }
+
+.page-background {
+    background:
+    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
+    font-family: 'Libre Caslon Display', serif;
+    min-height: 100vh; /* Makes background cover full viewport height */
+  }
 
 
 </style>

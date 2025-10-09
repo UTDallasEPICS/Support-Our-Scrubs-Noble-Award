@@ -14,4 +14,14 @@ export default defineNuxtConfig({
       AUTH0_SECRET: "",
       SERVER_BASE_URL: "",
   },
+   app: {
+    head: {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
+        }
+      ]
+    }
+  }
 });

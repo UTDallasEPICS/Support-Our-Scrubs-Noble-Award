@@ -1,7 +1,7 @@
 <template>
-      <Navbar />
-    <body>
-    <div>
+  <div >
+    <div class="page-background { blurred: showLogin }">
+       <Navbar @open-login="showLogin = true"/>
       <p class="metallic-title">NOBLE AWARD</p>
 
        <p class="metallic-text">NOMINATION FORM</p>
@@ -61,7 +61,7 @@
         <button type="submit">Submit</button>
       </form>
       
-      <NuxtLink to="https://supportourscrubs.org/donate" target = "blank">
+      <NuxtLink to="https://supportourscrubs.org/donate" target = "_blank">
         <button>Donate Here! </button>
       </NuxtLink>
       <nuxt-link to="/nominator/viewnominees">
@@ -72,21 +72,32 @@
        <button>Edit Previous Submission</button>
      </nuxt-link>
     </div>
-    </body>
+  </div>
+  <Teleport to="body">
+    <LoginModal v-if="showLogin" @close="showLogin = false" />
+  </Teleport>
   </template>
   
   <script>
 
   import { v4 as uuidv4 } from 'uuid';
   import Navbar from '@/components/Navbar.vue';
+  import LoginModal from "@/components/MyLogin.vue";
 
   //import prisma from './prisma';
   const nominatorId = uuidv4();
 
   export default {
     name: 'Nominator',
+
+    components: {
+      LoginModal,
+      Navbar,
+    },
+
     data() {
       return {
+        showLogin: false,
         nominatorName: '',
         nominatorEmail: '',
         firstName: '',
@@ -101,8 +112,17 @@
       };
     },
     methods: {
+      slugify(name) {
+        return name
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')  // non-alphanumerics → hyphens
+          .replace(/^-+|-+$/g, '');
+      },
       async submitForm() {
         const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8';
+        this.firstandLast = this.firstName + this.lastName;
+        this.slug = this.slugify(this.firstandLast)
   
         const formData = {
           nominatorName: this.nominatorName,
@@ -116,6 +136,7 @@
           email: this.email,
           description: this.description,
           photoURL: this.photoURL,
+          slug: this.slug,
           nominatorId: nominatorId,
           adminId: adminId
         };
@@ -139,6 +160,7 @@
             }
           });
         }**/
+       console.log("refresh");
           console.log("idk "+nominatorId);
           const response = await fetch('/api/nominee', {
             method: 'POST',
@@ -212,6 +234,13 @@
       padding: 0;
       box-sizing: border-box;
   }
+
+  .blurred {
+  filter: blur(8px);
+  pointer-events: none; 
+  user-select: none;
+  transform: translateZ(0); 
+  }
   
   .metallic-title {
   font-family: 'Libre Caslon Display', serif;
@@ -239,23 +268,6 @@
   overflow: hidden;
 }
 
-/* Glint Swipe Animation */
-.metallic-title::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  animation: glintSwipe 3s ease-in-out infinite;
-}
 
 @keyframes glintSwipe {
   0% {
@@ -294,8 +306,7 @@
 
 .metallic-text {
   font-family: 'Libre Caslon Display', serif;
-  font-size: 30px;
-  margin-top:0px;
+  font-size: 30px;  
   text-align: center;
   color: #d4af37;
   background: linear-gradient(
@@ -318,36 +329,20 @@
   animation: metallicShine 3s infinite linear;
 }
   
-  html, body {
-      width: 100%;
-      height: 100%;
-      background-color: #222121; /* Full black background */
-      color: #d4af37; /* Gold text color */
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  .page-background {
+    background:
+    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
+    font-family: 'Libre Caslon Display', serif;
+    min-height: 100vh; /* Makes background cover full viewport height */
   }
-  
-  .container {
-      width: 100%;
-      max-width: 500px;
-      background-color: #1a1a1a; /* Slightly lighter black for form background */
-      padding: 20px;
-      border-radius: 8px;
-      color: #d4af37; /* Gold text color */
-      font-family: Arial, sans-serif;
-  }
-  
+
   /* Form and Text Styling */
   p {
     font-family: 'Libre Caslon Display', serif; /* font-family: 'Mrs Saint Delafield', cursive !important; This is supposed to be the font arrhhhh rarrrr*/
     font-size: 70px;
     color: #d4af37;
     text-align: center;
-    margin-bottom:3px;  
-    margin-top: 70px;
-    
+    padding: 20px;    
   }
   
   label {

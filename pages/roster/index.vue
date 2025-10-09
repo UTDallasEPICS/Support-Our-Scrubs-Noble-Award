@@ -1,14 +1,11 @@
 <template>
-
-      <div class="page-background">
-        <div>
-            <h1 class="metallic-title">Noble Award Recipients</h1>
-        </div>
-              <Navbar />
-
-       <div class="three-js-container">
-
-         <ThreeJsScene 
+  <div class="page-background { blurred: showLogin }">
+    <Navbar @open-login="showLogin = true"/>
+    <div>
+      <h1 class="metallic-title">Noble Award Recipients</h1>
+    </div>
+        <div class="three-js-container">
+          <ThreeJsScene 
               v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
               scene_type="roster"
               :image="nomineeImage"
@@ -18,22 +15,28 @@
           />
         </div>
       </div>
+       <Teleport to="body">
+    <LoginModal v-if="showLogin" @close="showLogin = false" />
+  </Teleport>
 </template>
 
 
 <script>
 
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
+import LoginModal from "@/components/MyLogin.vue"
 import axios from 'axios'
 
 
 export default {
   name: 'Roster',
   components: {
-    ThreeJsScene
+    ThreeJsScene,
+    LoginModal
   },
   data() {
     return {
+      showLogin: false,
       currentModelPath: '/models/frame.glb',
       loadingProgress: 0,
       modelLoadError: null,
@@ -93,6 +96,13 @@ export default {
     box-sizing: border-box;
 }
 
+.blurred {
+  filter: blur(8px);
+  pointer-events: none; 
+  user-select: none;
+  transform: translateZ(0); 
+  }
+
 .three-js-container {
   width: 100%;
   max-width: 12000px;    
@@ -121,8 +131,6 @@ font-family: 'Libre Caslon Display', serif;
     #d4af37 80%,
     #fff4b0 100%
   );
-  margin-bottom: 0px;
-  margin-top: -10px;
 
   background-clip: text;
   -webkit-background-clip: text;
@@ -135,60 +143,10 @@ font-family: 'Libre Caslon Display', serif;
   overflow: hidden;
 }
 
-/* Glint Swipe Animation */
-.metallic-title::after {
-content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  animation: glintSwipe 3s ease-in-out infinite;
-}
-
-@keyframes glintSwipe {
-0% {
-  left: -75%;
-}
-50% {
-  left: 100%;
-}
-100% {
-  left: 100%;
-}
-}
-
-/* Reflection Glow */
-.metallic-title::before {
- content: 'Noble Award';
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 70px;
-  transform: scaleY(-1);
-  opacity: 0.1;
-  filter: blur(2px);
-  background: linear-gradient(to bottom, rgba(255, 215, 0, 0.3), transparent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-
 
 .metallic-message {
 font-family: Snell Roundhand, cursive;
 font-size: 30px;
-margin-top:0px;
 text-align: center;
 color: #a77c43;
 background: linear-gradient(
@@ -212,9 +170,8 @@ animation: metallicShine 3s infinite linear;
 }
 
 .metallic-text {
-font-family: 'Libre Caslon Display', serif;
+  font-family: 'Libre Caslon Display', serif;
   font-size: 30px;
-  margin-top:0px;
   text-align: center;
   color: #d4af37;
   background: linear-gradient(
@@ -235,17 +192,6 @@ font-family: 'Libre Caslon Display', serif;
     0 0 10px rgba(212, 175, 55, 0.4),
     0 0 20px rgba(255, 215, 0, 0.3);
   animation: metallicShine 3s infinite linear;
-}
-
-html, body {
-      width: 100%;
-      height: 100%;
-      background-color:rgb(0, 0, 0); /* Full black background */
-      color: #a77c43; /* Gold text color */
-      font-family: Times New Roman, serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
 }
 
 /* Form and Text Styling */
@@ -275,8 +221,8 @@ h2 {
 
  .page-background {
     background:
-    radial-gradient(circle at top, rgb(43, 41, 41), rgb(20, 20, 20) 100%);
-    
+    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);  
+    font-family: 'Libre Caslon Display', serif;
     min-height: 100vh; /* Makes background cover full viewport height */
   }
 

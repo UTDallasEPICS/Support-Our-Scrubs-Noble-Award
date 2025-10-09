@@ -1,6 +1,6 @@
 <template>
-  <div class="page-background">
-    <Navbar />
+  <div class="page-background { blurred: showLogin}">
+    <Navbar @open-login="showLogin = true"/>
 
     <div class="donate-container">
       <!-- Main donate header and description -->
@@ -48,12 +48,25 @@
       </div>
     </div>
   </div>
+   <Teleport to="body">
+    <LoginModal v-if="showLogin" @close="showLogin = false" />
+  </Teleport>
 </template>
 
 
 <script>
+import LoginModal from "@/components/MyLogin.vue"
+
 export default {
-  mounted() {;
+  components:{
+    LoginModal
+  },
+  data(){
+    return{
+      showLogin: false
+    }
+  },
+  mounted() {
     // Set up intersection observer for fade-in elements
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -75,7 +88,8 @@ export default {
       observer.observe(element);
     });
   }
-}</script>
+}
+</script>
 
 <style scoped>
   .metallic-title {

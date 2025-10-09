@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <div class="page-background">
-      <div>
-        <Navbar/>
-      </div>
+  <div class="page-background { blurred: showLogin }">
+   <Navbar @open-login="showLogin = true"/>
+    <div class="page-background { blurred: showLogin }">
       <div class="welcome">
         <h1 class="metallic-title fade-in">THE NOBLE AWARD</h1>
         
@@ -99,7 +97,7 @@
         </div>
       </div>
       
-       <!-- Three.js Scene Section -->
+      <!-- Three.js Scene Section -->
       <div class="three-js-section">
         <div class="three-js-container">
           <ThreeJsScene 
@@ -112,9 +110,11 @@
           />
         </div>
       </div>
-
     </div>
-  </div>
+    </div>
+  <Teleport to="body">
+    <LoginModal v-if="showLogin" @close="showLogin = false" />
+  </Teleport>
 </template>
 
 
@@ -125,18 +125,23 @@
 import CarouselMain from '../components/CarouselMain.vue';
 import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
-import caesarImage from '../assets/caeser_bust.png';
-import axios from 'axios'
+import LoginModal from "../components/MyLogin.vue";
+
+
+
 
 export default {
+  
   name: 'HomePage',
   components: {
     Navbar,
     CarouselMain,
-    ThreeJsScene
+    ThreeJsScene,
+    LoginModal
   },
   data() {
     return {
+      showLogin: false, 
       slides: [
         'https://images.pexels.com/photos/2324837/pexels-photo-2324837.jpeg?auto=compress&cs=tinysrgb&w=400',
         'https://images.pexels.com/photos/6590920/pexels-photo-6590920.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
@@ -155,6 +160,7 @@ export default {
       // Rest of your data properties...
     };
   },
+  
   methods: {
     async fetchNominees() {
       console.log("not calling ")
@@ -204,9 +210,8 @@ export default {
     });
 
   },
+  
 };
-
-
 
 </script>
 
@@ -215,6 +220,12 @@ export default {
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
 
   
+  .blurred {
+  filter: blur(8px);
+  pointer-events: none; 
+  user-select: none;
+  transform: translateZ(0); 
+  }
 
 .three-js-container {
   width: 100%;     /* 50% of parent width */
@@ -248,15 +259,6 @@ export default {
     padding: 1rem;
     white-space: normal; /* allow wrapping */
     max-width: 90vw;
-  }
-
-  @keyframes metallicShine {
-    0% {
-      background-position: 200% center;
-    }
-    100% {
-      background-position: -200% center;
-    }
   }
 
     .fade-in {
