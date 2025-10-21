@@ -15,14 +15,6 @@
 
       <!-- Main content area with image and text side by side -->
       <div class="main-content fade-in">
-        <!-- Left side - image -->
-        <div class="image-container">
-          <img
-            src="https://img1.wsimg.com/isteam/ip/49b121ac-2346-4ca2-93bb-7801e38f5369/0%20(3).jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:2046,h:1537"
-            class="profile-image"
-            alt="Noble Award Program"
-          />
-        </div>
 
         <!-- Right side - donation call to action -->
         <div class="donation-cta">
@@ -37,6 +29,13 @@
               <span>DONATE</span>
             </div>
           </a>
+
+          <img
+            src="https://img1.wsimg.com/isteam/ip/49b121ac-2346-4ca2-93bb-7801e38f5369/0%20(3).jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:2046,h:1537"
+            class="profile-image"
+            alt="Noble Award Program"
+            style="margin: 20px 0; border-radius: 8px;"
+          />
           
           <p>
             Your donation supports our mission to recognize and honor those who serve with excellence, dedication, and heart.
@@ -163,10 +162,18 @@ export default {
   }
 
   .page-background {
+    /* Removed this background color
     background:
     radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
     font-family: 'Libre Caslon Display', serif;
+    min-height: 100vh; 
+    */
+
     min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #d4af37;
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
   }
 
   .donate-container {

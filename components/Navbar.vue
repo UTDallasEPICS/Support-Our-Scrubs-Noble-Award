@@ -1,14 +1,15 @@
+
 <template>
   <nav class="navbar">
     <div class="navbar-left">
       <h1 class="navbar-buttons">Support Our Scrubs</h1>
-      <nuxt-link class="navbar-buttons" to="/" @click.native="scrollToTop">Home</nuxt-link>
+      <nuxt-link class="navbar-buttons" to="/" @click="scrollToTop">Home</nuxt-link>
       <nuxt-link class="navbar-buttons" to="/roster">View Nominees</nuxt-link>
       <nuxt-link class="navbar-buttons" to="/nominator">Submit Nomination</nuxt-link>
       <nuxt-link class="navbar-buttons" to="/contact">Contact Us</nuxt-link>
       <nuxt-link class="navbar-buttons" to="/donate">Donate</nuxt-link>
     </div>
-
+    
     <div class="menu-anchor">
       <button v-if="!showMenu" class="login-button" @click="toggleMenu">
         Log in
