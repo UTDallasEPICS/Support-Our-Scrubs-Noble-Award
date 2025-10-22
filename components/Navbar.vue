@@ -1,3 +1,4 @@
+
 <template>
   <nav class="navbar">
     <div class="navbar-left">

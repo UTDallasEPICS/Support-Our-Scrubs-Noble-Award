@@ -1,6 +1,9 @@
 <template>
   <div class="page-background { blurred: showLogin }">
     <Navbar @open-login="showLogin = true"/>
+  <div class="contact-wrapper">
+    <!-- Removed here <Navbar /> -->
+
     <section class="socials-section">
       <div class="socials">
         <a href="https://www.instagram.com/support_our_scrubs/?hl=en" target="_blank" rel="noopener">
@@ -17,11 +20,12 @@
         </a>
       </div>
     </section>
+  </div>
 
-
+    <!-- Added white-title -->
 
     <section>
-      <h1 class="metallic-title">FACTS AND QUESTIONS</h1>
+      <h1 class="metallic-title white-title">FACTS AND QUESTIONS</h1>
     </section>
 
     <div class="faq-item">
@@ -50,10 +54,10 @@
   </div>
 </div>
 
-  
+  <!-- Added white-title -->
 
     <section>
-      <h1 class="metallic-title">CONTACT US</h1>
+      <h1 class="metallic-title white-title">CONTACT US</h1>
     </section>
 
     <section style="margin-bottom: 150px;">
@@ -157,7 +161,7 @@ h2 {
 .contact-wrapper {
   min-height: 100vh;
   background-color: #1a1a1a;
-  color: #d4af37;
+  color: #ffffff; /* Changed #d4af37 to white */
   padding: 2rem;
   font-family: 'Roboto', sans-serif;
 }
@@ -214,6 +218,15 @@ button {
 .faq-item strong {
   display: block;
   margin-bottom: 0.25rem;
+}
+
+/* Added */
+.white-title {
+  background: none !important;
+  color: white !important;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  text-shadow: none; /* optional, removes gold shadow */
 }
 
 .metallic-title {
@@ -323,7 +336,7 @@ button {
 }
 
 .faq-question strong {
-  color: #ffd700;
+  color: #ffd700; 
   font-weight: lighter;
   text-shadow:
     0 0 2px #dcc168,
