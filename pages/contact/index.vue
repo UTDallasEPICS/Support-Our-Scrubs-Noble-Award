@@ -1,6 +1,12 @@
 <template>
   <div class="page-background { blurred: showLogin }">
     <Navbar @open-login="showLogin = true"/>
+<<<<<<< HEAD
+=======
+  <div class="contact-wrapper">
+    <!-- Removed here <Navbar /> -->
+
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
     <section class="socials-section">
       <div class="socials">
         <a href="https://www.instagram.com/support_our_scrubs/?hl=en" target="_blank" rel="noopener">
@@ -17,6 +23,7 @@
         </a>
       </div>
     </section>
+  </div>
 
     <!-- Added white-title -->
 

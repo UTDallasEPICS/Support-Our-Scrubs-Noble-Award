@@ -1,9 +1,14 @@
 <template>
   <div>
-    <div :class="['page-background', { blurred: showLogin }]">
-      <Navbar @open-login="showLogin = true"/>
-
+    <div class="page-background { blurred: showLogin }">
+       <Navbar @open-login="showLogin = true"/>
       <p class="metallic-title">NOBLE AWARD</p>
+    <body>
+    <div>
+      <!-- GSAP animated title -->
+      <p ref="nobleTitle" class="metallic-title">NOBLE AWARD</p>
+
+
       <p ref="nominationFormTitle" class="metallic-text">NOMINATION FORM</p>
 
       <form @submit.prevent="submitForm">
@@ -83,7 +88,9 @@
         <button type="submit">Submit</button>
       </form>
     </div>
+    </body>
   </div>
+</div>
 
   <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
@@ -98,13 +105,30 @@ import { v4 as uuidv4 } from 'uuid'
 import Navbar from '@/components/Navbar.vue'
 import LoginModal from '@/components/MyLogin.vue'
 
+<<<<<<< HEAD
 // Stable id for this session's nominator
 const nominatorId = uuidv4()
+=======
+  //gsap
+  import { ref, onMounted } from 'vue'
+  import gsap from 'gsap'
+  import { v4 as uuidv4 } from 'uuid';
+  import Navbar from '@/components/Navbar.vue';
+  import LoginModal from "@/components/MyLogin.vue";
+
+
+  //import prisma from './prisma';
+  const nominatorId = uuidv4();
+
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
 
 export default {
   name: 'Nominator',
   components: { Navbar, LoginModal },
+<<<<<<< HEAD
 
+=======
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
   setup() {
     const nobleTitle = ref(null)
     const nominationFormTitle = ref(null)
@@ -149,6 +173,7 @@ export default {
   data() {
     return {
       showLogin: false,
+<<<<<<< HEAD
       nominatorName: '',
       nominatorEmail: '',
       firstName: '',
@@ -162,6 +187,21 @@ export default {
       photoURL: '',
       selectedFileName: ''
     }
+=======
+      nominatorName: "",
+      nominatorEmail: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+      placeOfWork: "",
+      occupation: "",
+      email: "",
+      description: "",
+      photoURL: "",
+      selectedFileName: ""
+    };
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
   },
 
   methods: {
@@ -173,10 +213,44 @@ export default {
         .replace(/^-+|-+$/g, '')
     },
 
+<<<<<<< HEAD
     async submitForm() {
       const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8'
       const firstAndLast = `${this.firstName} ${this.lastName}`
       const slug = this.slugify(firstAndLast)
+=======
+    methods: {
+      slugify(name) {
+        return name
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')  // non-alphanumerics → hyphens
+          .replace(/^-+|-+$/g, '');
+      },
+      async submitForm() {
+        const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8';
+        this.firstandLast = this.firstName + this.lastName;
+        this.slug = this.slugify(this.firstandLast)
+  
+        const formData = {
+          nominatorName: this.nominatorName,
+          nominatorEmail: this.nominatorEmail,
+          firstName: this.firstName,
+          lastName: this.lastName,
+          phoneNumber: this.phoneNumber,
+          address: this.address,
+          placeOfWork: this.placeOfWork,
+          occupation: this.occupation,
+          email: this.email,
+          description: this.description,
+          photoURL: this.photoURL,
+          slug: this.slug,
+          nominatorId: nominatorId,
+          adminId: adminId
+        };
+ 
+        try {
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
 
       const formData = {
         nominatorName: this.nominatorName,
@@ -195,16 +269,45 @@ export default {
         adminId: adminId
       }
 
+<<<<<<< HEAD
       try {
         const response = await fetch('/api/nominee', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+=======
+        /**let nominator = await prisma.nominator.findUnique({
+          where: { id: nominatorId }
+        });
+
+
+        if (!nominator) {
+          nominator = await prisma.nominator.create({
+            data: {
+              id: nominatorId,
+              firstName: this.nominatorName,
+              lastName: this.nominatorName,
+              email: this.nominatorEmail
+           //   Nominee: {
+             // create: formData
+            //}
+            }
+          });
+        }**/
+          const response = await fetch("/api/nominee", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
           body: JSON.stringify(formData)
         })
 
         if (!response.ok) {
+<<<<<<< HEAD
           const errorDetails = await response.json().catch(() => ({}))
           throw new Error(`Error submitting form: ${errorDetails.message || response.statusText}`)
+=======
+          const errorDetails = await response.json();
+          throw new Error(`Error submitting form: ${errorDetails.message}`);
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
         }
 
         const result = await response.json()
@@ -234,6 +337,7 @@ export default {
         console.error('Upload error:', err)
       }
     }
+<<<<<<< HEAD
   },
 
   mounted() {
@@ -249,13 +353,91 @@ export default {
         console.warn('Invalid form query payload')
       }
     }
+=======
+  };
+  </script>
+ 
+  <style scoped>
+  /* General Styles */
+ 
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  .blurred {
+  filter: blur(8px);
+  pointer-events: none; 
+  user-select: none;
+  transform: translateZ(0); 
+  }
+  
+  .metallic-title {
+  font-family: 'Libre Caslon Display', serif;
+  font-size: 70px;
+  text-align: center;
+  position: relative;
+  color: #d4af37;
+  background: linear-gradient(
+    120deg,
+    #fff4b0 0%,
+    #f0c75e 20%,
+    #d4af37 40%,
+    #f8e27d 60%,
+    #d4af37 80%,
+    #fff4b0 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow:
+    0 0 5px rgba(212, 175, 55, 0.4),
+    0 0 10px rgba(212, 175, 55, 0.2),
+    0 0 15px rgba(255, 215, 0, 0.1);
+
+
+  overflow: hidden;
+}
+
+
+@keyframes glintSwipe {
+  0% {
+    left: -75%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
   }
 }
 </script>
 
+<<<<<<< HEAD
 <style scoped>
 /* General Styles */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+=======
+/* Reflection Glow */
+.metallic-title::before {
+  content: 'Noble Award';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 70px;
+  transform: scaleY(-1);
+  opacity: 0.1;
+  filter: blur(2px);
+  background: linear-gradient(to bottom, rgba(255, 215, 0, 0.3), transparent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
 
 .blurred { filter: blur(8px); pointer-events: none; user-select: none; transform: translateZ(0); }
 
@@ -268,14 +450,157 @@ html, body { width: 100%; height: 100%; background-color: #222121; color: #d4af3
 
 input, textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #5b5b5a; border-radius: 8px; background-color: #434242; color: #000; font-size: 16px; }
 
+<<<<<<< HEAD
 button[type="submit"] { width: 100%; padding: 12px; background-color: #4e4e4d; color: #d4af37; font-size: 18px; font-weight: bold; font-family: 'Libre Caslon Display', serif; border: none; border-radius: 20px; cursor: pointer; margin-top: 10px; transition: background-color 0.3s ease; }
 button[type="submit"]:hover { background-color: #898989; }
+=======
+
+
+.metallic-text {
+  font-family: 'Libre Caslon Display', serif;
+  font-size: 30px;  
+  text-align: center;
+  color: #d4af37;
+  background: linear-gradient(
+    120deg,
+    #fff4b0 0%,
+    #f0c75e 20%,
+    #d4af37 40%,
+    #f8e27d 60%,
+    #d4af37 80%,
+    #fff4b0 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  position: relative;
+  text-shadow:
+    0 0 5px rgba(212, 175, 55, 0.5),
+    0 0 10px rgba(212, 175, 55, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.3);
+  animation: metallicShine 3s infinite linear;
+}
+  
+  .page-background {
+    background:
+    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
+    font-family: 'Libre Caslon Display', serif;
+    min-height: 100vh; /* Makes background cover full viewport height */
+  }
+
+  /* Form and Text Styling */
+  p {
+    font-family: 'Libre Caslon Display', serif; /* font-family: 'Mrs Saint Delafield', cursive !important; This is supposed to be the font arrhhhh rarrrr*/
+    font-size: 70px;
+    color: #d4af37;
+    text-align: center;
+    padding: 20px;    
+  }
+  
+  label {
+    font-size: 18px;
+    margin-bottom: 5px;
+    font-family: 'Libre Caslon Display', serif;
+    color: #d4af37; /* Gold label color */
+  }
+  
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="url"],
+  input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #5b5b5a;
+  border-radius: 8px;
+  background-color: #434242;
+  color: #000;
+  font-size: 16px;
+}
+  
+  /* Buttons */
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4e4e4d; /* Gold background for button */
+    color: #d4af37; /* Dark text color */
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Libre Caslon Display", serif;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  button:hover {
+    background-color: #898989; /* Darker gold on hover */
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+.upload-section {
+  margin: 16px 0; /* space above and below the whole section */
+}
+
+
+/* Submit button */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #4e4e4d;
+  color: #d4af37;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Libre Caslon Display', serif;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+button[type="submit"]:hover {
+  background-color: #898989;
+}
+
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
 
 /* === Custom File Upload === */
 .upload-section { margin: 20px 0; text-align: center; }
 .custom-upload { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .hidden-file { display: none; }
+<<<<<<< HEAD
 .upload-btn { background-color: #3a3a3a; color: #d4af37; font-family: 'Libre Caslon Display', serif; border: 2px solid #d4af37; padding: 10px 20px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; }
 .upload-btn:hover { background-color: #d4af37; color: #3a3a3a; border-color: #3a3a3a; }
 .file-name { font-size: 16px; color: #d4af37; font-family: 'Libre Caslon Display', serif; }
+=======
+.upload-btn {
+  background-color: #3a3a3a;
+  color: #d4af37;
+  font-family: "Libre Caslon Display", serif;
+  border: 2px solid #d4af37;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Inverse colors on hover */
+.upload-btn:hover {
+  background-color: #d4af37; /* gold background */
+  color: #3a3a3a; /* dark text */
+  border-color: #3a3a3a;
+}
+
+.file-name {
+  font-size: 16px;
+  color: #d4af37;
+  font-family: 'Libre Caslon Display', serif;
+}
+
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
 </style>

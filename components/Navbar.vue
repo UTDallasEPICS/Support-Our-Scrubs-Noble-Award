@@ -9,7 +9,11 @@
       <nuxt-link class="navbar-buttons" to="/contact">Contact Us</nuxt-link>
       <nuxt-link class="navbar-buttons" to="/donate">Donate</nuxt-link>
     </div>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
     <div class="menu-anchor">
       <button v-if="!showMenu" class="login-button" @click="toggleMenu">
         Log in
