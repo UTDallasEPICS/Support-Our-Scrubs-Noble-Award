@@ -1,6 +1,6 @@
 <template>
+  <Navbar @open-login="showLogin = true"/>
   <div class="page-background { blurred: showLogin}">
-    <Navbar @open-login="showLogin = true"/>
 
     <div class="donate-container">
       <!-- Main donate header and description -->

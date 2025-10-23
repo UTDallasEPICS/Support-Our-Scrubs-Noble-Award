@@ -66,9 +66,6 @@
       </form>
     </section>
 
-
-
-
   </div>
   <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
@@ -115,7 +112,6 @@ const handleSubmit = async () => {
 body {
   background-color: #0d0d0d;
   color: #d4af37;
-  font-family: 'Roboto', sans-serif;
   margin: 0;
  ;
 }
@@ -127,7 +123,6 @@ header {
 header h1 {
   text-align: center;
   font-weight: bold;
-  font-family: "Cormorant Garamond", serif;
   font-size: 10rem;
 }
 header img {
@@ -150,7 +145,6 @@ header img {
   transform: translateZ(0);
   }
 h2 {
-  font-family: 'Playfair Display', serif;
   border-bottom: 1px solid #d4af37;
   padding-bottom: 0.5rem;
 }
@@ -159,7 +153,6 @@ h2 {
   background-color: #1a1a1a;
   color: #ffffff; /* Changed #d4af37 to white */
   padding: 2rem;
-  font-family: 'Roboto', sans-serif;
 }
 form {
   display: flex;
@@ -205,7 +198,6 @@ button {
   text-align: center;
   font-size: 2rem;
   margin: 2rem 0;
-  font-family: 'Playfair Display', serif;
   color: #d4af37;
 }
 .faq-item {
@@ -226,7 +218,6 @@ button {
 }
 
 .metallic-title {
-  font-family: 'Libre Caslon Display', serif;
   font-size: 70px;
   text-align: center;
   color: #d4af37;
@@ -260,7 +251,6 @@ button {
 }
 
 .metallic-heading {
-  font-family: 'Libre Caslon Display', serif;
   font-size: 50px;
   text-align: center;
   color: #d4af37;
@@ -290,7 +280,6 @@ button {
 
 .faq-pair {
   border-left: 4px solid #d4af37;
-  font-family: 'Libre Caslon Display', serif;
   font-size: 20px;;
   padding-left: 1rem;
   margin-bottom: 2rem;
@@ -353,7 +342,6 @@ button {
 .page-background {
     background:
     radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
-    font-family: 'Libre Caslon Display', serif;
     min-height: 100vh; /* Makes background cover full viewport height */
   }
 
