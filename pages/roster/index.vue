@@ -25,8 +25,11 @@
 
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "@/components/MyLogin.vue"
-import axios from 'axios'
 
+
+// definePageMeta({
+//   middleware: ['auth'] // this runs middleware/auth.ts
+// })
 
 export default {
   name: 'Roster',
@@ -52,7 +55,6 @@ export default {
   },
   methods: {
     async fetchNominees() {
-      console.log("not calling ")
       try {
         const response = await $fetch('/api/nominee?stat=APPROVED', { method: 'GET' });
         
@@ -117,7 +119,6 @@ export default {
 
 
 .metallic-title {
-font-family: 'Libre Caslon Display', serif;
   font-size: 70px;
   text-align: center;
   position: relative;
@@ -145,7 +146,6 @@ font-family: 'Libre Caslon Display', serif;
 
 
 .metallic-message {
-font-family: Snell Roundhand, cursive;
 font-size: 30px;
 text-align: center;
 color: #a77c43;
@@ -170,7 +170,6 @@ animation: metallicShine 3s infinite linear;
 }
 
 .metallic-text {
-  font-family: 'Libre Caslon Display', serif;
   font-size: 30px;
   text-align: center;
   color: #d4af37;
@@ -200,7 +199,6 @@ h1 {
     color: #a77c43;
     text-align: center;
     margin-bottom: 50px;
-    font-family: Snell Roundhand, cursive;
 }
 
 p {
@@ -208,7 +206,6 @@ p {
     color: #a77c43;
     text-align: center;
     margin-bottom: 50px;
-    font-family: Snell Roundhand, cursive;
 }
 
 h2 {
@@ -216,13 +213,11 @@ h2 {
     color: #a77c43;
     text-align: center;
     margin-bottom: 70px;
-    font-family: Snell Roundhand, cursive;
 }
 
  .page-background {
     background:
     radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);  
-    font-family: 'Libre Caslon Display', serif;
     min-height: 100vh; /* Makes background cover full viewport height */
   }
 

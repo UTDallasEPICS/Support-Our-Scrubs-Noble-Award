@@ -1,11 +1,6 @@
 <template>
-<<<<<<< HEAD
   <Navbar @open-login="showLogin = true"/>
   <div class="page-background { blurred: showLogin}">
-=======
-  <div class="page-background { blurred: showLogin}">
-    <Navbar @open-login="showLogin = true"/>
->>>>>>> a2f011bc5ab0e6dd9a579891cb9bcf4fe7e42945
 
     <div class="donate-container">
       <!-- Main donate header and description -->
@@ -97,7 +92,6 @@ export default {
 
 <style scoped>
   .metallic-title {
-  font-family: 'Libre Caslon Display', serif;
   font-size: 70px;
   text-align: center;
   color: #d4af37;
@@ -132,7 +126,6 @@ export default {
 
 
   .metallic-heading {
-  font-family: 'Libre Caslon Display', serif;
   font-size: 50px;
   text-align: center;
   color: #d4af37;
@@ -178,7 +171,6 @@ export default {
   background-color: #1a1a1a;
   color: #d4af37;
   padding: 2rem;
-  font-family: 'Roboto', sans-serif;
   }
 
   .donate-container {
@@ -197,7 +189,6 @@ export default {
     font-weight: 400;
     color: #d4af37;
     margin-bottom: 20px;
-    font-family: 'Libre Caslon Display', serif;
   }
 
   .donate-header p {

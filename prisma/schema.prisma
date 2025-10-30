@@ -26,7 +26,7 @@ model Nominee {
   address     String
   placeOfWork String
   occupation  String
-  email       String
+  email       String    @unique
   description String
   photoURL    String
   slug        String    @unique
@@ -41,7 +41,7 @@ model Nominee {
 model MagicToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
-  email     String
+  email     String    @unique
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())

@@ -1,4 +1,7 @@
-<template>
+<template>yo</template>
+
+
+<!-- <template>
     <div class="min-h-screen flex items-center justify-center bg-gray-50">
       <div class="bg-white p-8 rounded-lg shadow-md w-96">
         <h1 class="text-2xl font-bold mb-6 text-center">
@@ -106,4 +109,4 @@
       alert(`Error: ${error.data?.message || 'Something went wrong'}`);
     }
   };
-  </script>
+  </script> -->

@@ -80,7 +80,6 @@ export default {
 </script>
 <style>
   .metallic-title {
-  font-family: 'Libre Caslon Display', serif;
   font-size: clamp(2rem, 10vw, 7rem);
   text-align: center;
   color: #d4af37;
@@ -116,7 +115,6 @@ export default {
   
 
   .metallic-heading {
-  font-family: 'Libre Caslon Display', serif;
   font-size: 50px;
   text-align: center;
   color: #d4af37;
@@ -141,7 +139,6 @@ export default {
 }
 
   .page-background {
-    font-family: 'Cormorant Garamond', serif;
     background:
     radial-gradient(circle at top, rgb(61, 61, 61), rgb(34, 34, 34) 100%);
     min-height: 100vh; /* Makes background cover full viewport height */

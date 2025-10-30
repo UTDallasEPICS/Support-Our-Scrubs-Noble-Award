@@ -1,7 +1,6 @@
 <template>
-  <div class="page-background { blurred: showLogin }">
+  <div class="['page-background', { blurred: showLogin }]">
    <Navbar @open-login="showLogin = true"/>
-    <div class="page-background { blurred: showLogin }">
       <div class="welcome">
         <h1 class="metallic-title fade-in">THE NOBLE AWARD</h1>
         
@@ -99,18 +98,19 @@
       
       <!-- Three.js Scene Section -->
       <div class="three-js-section">
-        <div class="three-js-container">
-          <ThreeJsScene 
-              v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
-              scene_type="home"
-              :image="nomineeImage"
-              :recepient="nomineeNames"
-              :occupation="nomineeOccupations"
-              :description="nomineeInfo"
-          />
-        </div>
+        <ClientOnly>
+          <div class="three-js-container">
+            <ThreeJsScene 
+                v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
+                scene_type="home"
+                :image="nomineeImage"
+                :recepient="nomineeNames"
+                :occupation="nomineeOccupations"
+                :description="nomineeInfo"
+            />
+          </div>
+        </ClientOnly>
       </div>
-    </div>
     </div>
   <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
@@ -127,7 +127,7 @@ import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "../components/MyLogin.vue";
 
-
+definePageMeta({ middleware: 'auth' })
 
 
 export default {
@@ -234,7 +234,6 @@ export default {
 }
 
 .metallic-title {
-    font-family: 'Libre Caslon Display', serif;
     font-size: clamp(2rem, 15vw, 10rem); 
     color: transparent;
     background: linear-gradient(
@@ -288,7 +287,6 @@ export default {
     text-align: center;
     color: #d4af37;
     font-size: 2rem;
-    font-family: 'Cormorant Garamond', serif;
     position: relative;
     overflow: hidden;
     padding: 2rem;
@@ -354,13 +352,11 @@ export default {
     .container h1{
     font-size: 8em;
     text-align: center;
-    font-family: 'Libre Caslon Display', serif;
   }
 
   .container h2{
     font-size: 2rem;
     text-align: center;
-    font-family: 'Libre Caslon Display', serif;
   }
 
   .bullet-list {
@@ -419,9 +415,9 @@ export default {
   }
 
     .page-background {
-    background:
-    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
-    font-family: 'Libre Caslon Display', serif;
+    /* background:
+    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%); */
+    background-color: black;
     min-height: 100vh; /* Makes background cover full viewport height */
   }
 
