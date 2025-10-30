@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../utils/prismaclient";
+import { sendTemplateEmail } from '../utils/sendTemplateEmail';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { v4 as uuidv4 } from 'uuid';
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION });
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
 
@@ -23,20 +23,22 @@ export default defineEventHandler(async (event) => {
     const occupation = body.occupation;
     const email = body.email;
     const description = body.description;
+    const aboutme = body.aboutme;
     const photoURL = body.photoURL;
     const nominatorId = body.nominatorId;
     const adminId = body.adminId;
     const nominatorName = body.nominatorName;
     const nominatorEmail = body.nominatorEmail;
+    const slug = body.slug
 
     let newNominee = null;
     const nomineeId = uuidv4();
-    try {
 
+    try {
         let nominator = await prisma.nominator.findUnique({
           where: { email: nominatorEmail }
         });
-4
+
         if (!nominator) {
           nominator = await prisma.nominator.create({
             data: {
@@ -64,7 +66,9 @@ export default defineEventHandler(async (event) => {
                 occupation: occupation,
                 email: email,
                 description: description,
+                aboutme: aboutme,
                 photoURL: photoURL,
+                slug: slug,
             }
         });
 

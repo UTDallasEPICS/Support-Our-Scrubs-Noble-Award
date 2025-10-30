@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from "../utils/prismaclient";
 
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
     const query = getQuery(event);
@@ -20,6 +19,7 @@ export default defineEventHandler(async (event) => {
             { occupation: { contains: searchTerm } },
             { placeOfWork: { contains: searchTerm,},},
             { description: { contains: searchTerm } },
+            { aboutme: { contains: searchTerm, },},
             { phoneNumber: { contains: searchTerm,},},
             { address: { contains: searchTerm } },
           ],

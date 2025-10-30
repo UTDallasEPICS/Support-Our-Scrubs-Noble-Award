@@ -98,12 +98,22 @@
         email: '',
         description: '',
         photoURL: '',
+        slug: ''
       };
     },
     methods: {
+    slugify(name) {
+        return name
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')  // non-alphanumerics → hyphens
+          .replace(/^-+|-+$/g, '');
+      },
       async submitForm() {
         const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8';
-  
+        this.aboutme = ""
+        this.firstandLast = this.firstName + this.lastName;
+        this.slug = this.slugify(this.firstandLast)
         const formData = {
           nominatorName: this.nominatorName,
           nominatorEmail: this.nominatorEmail,
@@ -116,6 +126,8 @@
           email: this.email,
           description: this.description,
           photoURL: this.photoURL,
+          slug: this.slug,
+          aboutme: this.aboutme, 
           nominatorId: nominatorId,
           adminId: adminId
         };
@@ -139,6 +151,7 @@
             }
           });
         }**/
+          console.log("refresh")
           console.log("idk "+nominatorId);
           const response = await fetch('/api/nominee', {
             method: 'POST',
@@ -182,7 +195,6 @@
 
         const data = await res.json();
         this.photoURL = data.secure_url;
-        console.log("RIIIIIGHT HEERE "+this.photoURL)
         } catch (err){
           console.error("Upload error:", err);
 

@@ -109,6 +109,8 @@
               :recepient="nomineeNames"
               :occupation="nomineeOccupations"
               :description="nomineeInfo"
+              :slug="nomineeSlug"
+              ;
           />
         </div>
       </div>
@@ -151,11 +153,39 @@ export default {
       nomineeOccupations: [],
       nomineeEmails: [],
       nominees: [],
-      nomineeImage: []
+      nomineeImage: [],
+      nomineeAboutMe: [],
       // Rest of your data properties...
     };
   },
   methods: {
+    async fetchNomineeBySlug(slug) { // template function to fetch by slug, but not in place right now
+      try {
+      // Fetch nominee data from the backend API using the slug
+      const response = await $fetch(`/api/nominee?stat=APPROVED&slug=${slug}`);
+      console.log(response);
+
+      if (response){
+        this.nominees = response;
+        
+        this.nomineeNames = response.map(n => `${n.firstName} ${n.lastName}`)
+        this.nomineeEmails = response.map(n => n.email)
+        this.nomineeOccupations = response.map(n => n.occupation)
+        this.nomineeInfo = response.map(n => n.description)
+        this.nomineeImage = response.map(n => n.photoURL)
+        //this.nomineeAboutMe = response.map(n => n.aboutme)
+        this.nomineeSlug = response.map(n => n.slug)
+      } else {
+        console.warn('Nominee not found for slug:', slug);
+      }
+    } catch (error) {
+      console.error('Error parsing form data:', error);
+    }
+    // handle back/forward browser navigation to reload the page
+    window.addEventListener('popstate', () => {
+      window.location.reload();
+    });
+    },
     async fetchNominees() {
       console.log("not calling ")
       try {
@@ -169,6 +199,8 @@ export default {
         this.nomineeOccupations = response.map(n => n.occupation)
         this.nomineeInfo = response.map(n => n.description)
         this.nomineeImage = response.map(n => n.photoURL)
+        this.nomineeAboutMe = response.map(n => n.aboutme)
+        this.nomineeSlug = response.map(n => n.slug)
 
         console.log("sorry man "+this.nomineeImage)
       } catch (error) {

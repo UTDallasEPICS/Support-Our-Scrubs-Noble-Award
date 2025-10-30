@@ -38,7 +38,15 @@ export default {
      description: {
       type: [Array],
       required: true
-     }
+     },
+      aboutme: {
+        type: [Array],
+        required: false
+      },
+     slug: {
+      type: [Array],
+      required: false
+    }
 
    }, 
   data() {
@@ -50,6 +58,9 @@ export default {
   },
   mounted() {
       this.init();
+      console.log("Slug received in ThreeJsScene: " + this.slug);
+      console.log("Aboutme received in ThreeJsScene: " + this.aboutme);
+
       const boundMouseHandler = this.onMouseClick.bind(this)
       window.addEventListener('click', boundMouseHandler)
        onBeforeRouteLeave((to, from, next) => {
@@ -85,6 +96,7 @@ export default {
         profilepage: () => this.loadProfile()      
       };
 
+      this.ballasts = 100
       this.ud = "";
       this.wheelHandler = "";
       this.loadedScene = false;
@@ -110,7 +122,7 @@ export default {
       }
 
       if (this.scene_type == "roster"){
-        this.left = -6 * this.aspectRatio
+        this.left = -4.57 * this.aspectRatio
         this.right = 4 * this.aspectRatio
         this.top = 4
         this.bottom = -8
@@ -200,6 +212,7 @@ export default {
       
       
       const animate = () => {
+        if (!this.scene || !this.renderer) return;
 
         while (this.objectsToDispose.length > this.modellimit) {
           const obj = this.objectsToDispose.shift();
@@ -222,7 +235,11 @@ export default {
           this.hoveredMesh = null
         }
 **/
-        requestAnimationFrame(animate);
+
+        if (this.ballasts >= 0){
+          requestAnimationFrame(animate);
+          this.ballasts -= 1;
+        }
       
         if (this.models && this.models.length > 0) {
           this.models.forEach((m) => {
@@ -308,23 +325,15 @@ export default {
       intersector = true
     }
   }
-  const formData = {
-    image: this.ud.image,
-    recepient: this.ud.recepient,
-    occupation: this.ud.occupation,
-    description: this.ud.description
-  } 
+  
   console.log("before "+ this.ud.occupation);
-  const encodedData = encodeURIComponent(JSON.stringify(formData));
 
-  if (intersector && !this.routeChanged ) {
-    console.log("STILL LOADED!!!")
-   this.$router.push({
-    path: '/profile',
-    query: { form: encodedData }
-    });
-    this.cleanup();
-  }
+  if (intersector && !this.routeChanged) { // Navigate to the profile page using slugs
+  console.log("Navigating to profile for slug:", this.ud.slug);
+  this.$router.push(`/profile/${this.ud.slug}`);
+  this.cleanup();
+}
+
 
 },
    loadProfile(){
@@ -364,15 +373,15 @@ export default {
         var increment = 0;
         var yinc = 0;
         var ylimit = 0;
-        for (var i = 0; i < end; i++){
+        for (var i = 0; i < end; i++){ // profile cards in view nominee page
           const cardscale = 1.1;
-          const fscale = cardscale * 9/10;
+          const fscale = cardscale * 8.5/10;
           if ( i % 3 == 0){
             yinc = i;
             increment = 0;
           }
 
-          var cardposx = -7 + 5*increment;
+          var cardposx = -6 + 5*increment;
           var cardposy = 2 - yinc;
 
           
@@ -404,26 +413,45 @@ export default {
 
 
     },
-    createText(text, size, x, y, z){
-      const myText = new Text()
-       myText.text = text
-       myText.fontSize = size
-       myText.color = 0xffcc00              // Gold
+    createText(text, size, x, y, z, maxWidth = 3.5) {
+  const myText = new Text()
+  myText.text = text
+  myText.fontSize = size
+  myText.color = 0xffcc00
+
+  // Outline
+  myText.strokeColor = 0xffaa00
+  myText.strokeWidth = 0.02
+  myText.outlineBlur = 0.01
+
+  // ✅ Wrap within card
+  myText.maxWidth = maxWidth   // how wide the text can go before wrapping
+  myText.overflowWrap = 'break-word'
+  myText.anchorX = 'left'
+  myText.anchorY = 'top'
+
+  myText.sync()
+  this.scene.add(myText)
+  myText.position.set(x, y, z)
+},
+
+wrapText(str, maxChars) {
+  const words = str.split(' ')
+  let lines = ''
+  let current = ''
+
+  for (const word of words) {
+    if ((current + word).length > maxChars) {
+      lines += current.trim() + '\n'
+      current = ''
+    }
+    current += word + ' '
+  }
+  lines += current.trim()
+  return lines
+},
 
 
-       
-       // Optional styles
-       myText.strokeColor = 0xffaa00        // Outline/glow
-       myText.strokeWidth = 0.02
-       myText.outlineBlur = 0.01
-       myText.outlineOffsetX = 0.005
-       myText.outlineOffsetY = 0.00
-       // Must update after setting text/props
-       myText.sync()
-       this.scene.add(myText)
-       myText.position.set(x, y, z)
-
-    },
     loadhome(){
         if (!this.loadedScene){
         const light = new THREE.DirectionalLight(0xffffff, 9);
@@ -469,7 +497,7 @@ export default {
           end = this.image.length;
         }
 
-        for (var i = 0; i < end; i++){
+        for (var i = 0; i < end; i++){ // profile cards in home page
           const cardscale = 1.1;
           const fscale = cardscale * 9/10;
 
@@ -506,8 +534,11 @@ export default {
           if (!object.isMesh) return;
 
           object.geometry?.dispose();
-          if (object.material?.map) object.material.map.dispose();
-          object.material?.dispose();
+          if (object.material?.map && typeof object.material.map.dispose === 'function') {
+            object.material.map.dispose();
+          }
+
+          //object.material?.dispose();
         });
         this.scene = null;
       }
@@ -537,8 +568,10 @@ export default {
           if (!object.isMesh) return;
 
           object.geometry?.dispose();
-          if (object.material?.map) object.material.map.dispose();
-          object.material?.dispose();
+          if (object.material?.map && typeof object.material.map.dispose === 'function') {
+            object.material.map.dispose();
+          }
+          //object.material?.dispose();
         });
         this.scene = null;
       }
@@ -590,6 +623,8 @@ export default {
               child.userData.recepient = this.recepient[idx]
               child.userData.occupation = this.occupation[idx]
               child.userData.description = this.description[idx]
+              //child.userData.aboutme = this.aboutme[idx]
+              child.userData.slug = this.slug[idx]
               console.log("desired "+this.occupation[idx])
               console.log("obtained "+child.userData.occupation)
               //this.clickableObjects.push(child);
@@ -621,12 +656,20 @@ export default {
             }
           }
 
+          // Recipient stays the same (title)
+          this.createText(this.recepient[idx], 0.45, position.x - 1.9, position.y + 1.0, position.z, 3.5)
+
+          // Occupation bigger
+          this.createText(this.occupation[idx], 0.35, position.x - 1.9, position.y + 0.55, position.z, 3.5)
+
+          // Description bigger
+            this.createText(this.description[idx], 0.20, position.x - 1.9, position.y + 0.15, position.z, 3.0) // wrap at 29 chars
 
 
-
+          /*
           this.createText(this.recepient[idx], 0.4, position.x - 1.9, position.y  + .9, position.z)
           this.createText(this.occupation[idx], this.dsize, position.x - 1.9, position.y + .35, position.z)
-          this.createText(result, this.dsize, position.x - 1.9, position.y + .1, position.z)
+          this.createText(result, this.dsize, position.x - 1.9, position.y + .1, position.z) */
           console.log("going in "+model+" "+this.image.length)
           }
 

@@ -1,15 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -30,30 +27,32 @@ model Nominee {
   placeOfWork String
   occupation  String
   email       String
-  description String    @db.Text
+  description String
+  aboutme     String?
   photoURL    String
+  slug        String    @unique
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String
-  admin       Admin?     @relation(fields: [adminId], references: [id])
+  admin       Admin?    @relation(fields: [adminId], references: [id])
   adminId     String?
-  status      Status    @default(DENIED)
+  status      String    @default("DENIED")
   deleted     Boolean   @default(false)
 }
 
 model MagicToken {
-  id        Int         @id @default(autoincrement())
-  token     String      @unique
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
   email     String
   expiresAt DateTime
-  used      Boolean     @default(false)
-  createdAt DateTime    @default(now())
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 model EmailTemplate {
   id        String            @id @default(uuid())
-  type      EmailTemplateType @unique
+  type      String            @unique
   subject   String
-  content   String            @db.Text
+  content   String
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
 }
@@ -65,18 +64,3 @@ model Admin {
   Nominee  Nominee[]
 }
 
-enum EmailTemplateType {
-  SIGNUP
-  NOMINATION
-  ACCEPTED
-  REJECTED
-}
-
-enum Status {
-  CREATED
-  CONFIRMED
-  VERIFIED
-  APPROVED
-  DENIED
-  SENT
-}
