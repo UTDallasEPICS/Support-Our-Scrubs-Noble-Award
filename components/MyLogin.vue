@@ -1,27 +1,81 @@
  <template>
-    <div class="overlay" @click.self="close">
+    <form class="overlay" @click.self="close" @submit.prevent="sendMagic">
         <div class="login-box">
           <h2>Login</h2>
-          <input type="email" placeholder="Email" />
-          <button @click="submit">Verify</button>
-          <button @click="close">Cancel</button>
+          <input v-model="email" type="email" placeholder="Email" required/>
+          <button :disabled="loading">{{ loading ? 'Sending...' : 'Send login link' }}</button>
+          <p v-if="msg">{{ msg }}</p>
         </div>
-    </div>
+      </form>
 </template> 
 
-<script>
-export default{
-  props: {
-    show:{
-      type: Boolean,
-      default: true,
-    },
-  },
-  methods:{
-    close(){
-    this.$emit("close");
+<script setup lang="ts">
+const emit = defineEmits<(e: 'close' | 'submitted') => void>()
+
+const supabase = useSupabaseClient()
+const route = useRoute()
+
+const email = ref('')
+const loading = ref(false)
+const msg = ref('')
+
+const next = computed(() => (route.query.next as string) || '/')
+
+type CheckEmailResponse = { ok: true } | { ok: false; error: string }
+
+async function sendMagic() {
+try {
+  loading.value = true
+  msg.value = ''
+  // 1️⃣ Check your own API before sending magic link
+  const res = await $fetch('/api/checkEmail', {
+    method: 'POST',
+    body: { email: email.value },
+  })
+  console.log(res.ok)
+  // Your API should respond like: { ok: true } if found, or { ok: false }
+  if (!res.ok) {
+    msg.value = 'Email not found. Please use the email you registered with.'
+    loading.value = false
+    return
   }
-  }
+
+  // 2️⃣ Continue with Supabase magic link sign-in
+  const redirect = `${window.location.origin}/`
+  const { error } = await supabase.auth.signInWithOtp({
+    email: email.value,
+    options: { emailRedirectTo: redirect },
+  })
+
+  if (error) throw error
+
+  msg.value = 'Check your email for the login link.'
+  emit('submitted')
+} catch (e: any) {
+  msg.value = e?.message ?? 'Could not send link. Try again.'
+} finally {
+  loading.value = false
+}
+}
+//   try { 
+//     // Redirect back to where they intended to go
+//     const redirect = `${window.location.origin}/`
+//     const { error } = await supabase.auth.signInWithOtp({
+//       email: email.value,
+//       options: { emailRedirectTo: redirect }
+//     })
+//     if (error) throw error
+//     msg.value = 'Check your email for the login link.'
+//     emit('submitted')
+//   } catch (e: any) {
+//     msg.value = e?.message ?? 'Could not send link. Try again.'
+//   } finally {
+//     loading.value = false
+//   }
+//  }
+
+function close() {
+  emit('close')
 }
 </script>
 
