@@ -1,22 +1,17 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from '@prisma/client'
 
-class prismacl {
-  public prismacl: PrismaClient
-  private static instance: prismacl
-  private constructor() {
-    this.prismacl = new PrismaClient()
-  }
+// This allows reusing the Prisma instance during hot-reloads in dev
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
-  public static getInstance = () => {
-    if (!prismacl.instance) {
-      prismacl.instance = new prismacl()
-    }
-    return prismacl.instance
-  }
-}
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['warn', 'error'],
+  })
 
-export const prisma = prismacl.getInstance().prismacl;
+export default prisma
 
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export const Status = {
   CREATED: "CREATED",
@@ -38,3 +33,5 @@ export const EmailTemplateType = {
 
 export type EmailTemplateType =
   typeof EmailTemplateType[keyof typeof EmailTemplateType];
+
+  
