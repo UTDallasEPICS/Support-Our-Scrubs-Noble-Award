@@ -1,10 +1,10 @@
 <template>
+  <Navbar />
 
       <div class="page-background">
         <div>
             <h1 class="metallic-title">Noble Award Recipients</h1>
         </div>
-              <Navbar />
 
        <div class="three-js-container">
 

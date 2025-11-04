@@ -1,7 +1,6 @@
-import { PrismaClient, Status } from "@prisma/client";
+import { prisma, Status } from "../utils/prismaclient";
 import { getQuery } from 'h3';
 
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
     const query = getQuery(event);

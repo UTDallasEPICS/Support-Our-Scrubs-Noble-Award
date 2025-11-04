@@ -1,7 +1,7 @@
 <template>
+  <Navbar />
   <div class="page-background">
   <div>
-    <Navbar />
     </div>
     <div class="profile-container">
       <img :src="image" alt="Profile Image" class="profile-image" />
@@ -70,7 +70,7 @@ export default {
         console.log("datos "+decodedData.occupation);
         this.photoURL = decodedData.image
         this.name = decodedData.recepient
-        this.occupation = decodedData.occupation\
+        this.occupation = decodedData.occupation
         console.log("change now")
         this.description = decodedData.description
       }
