@@ -1,9 +1,7 @@
 import { prisma } from "../utils/prismaclient";
 import { sendTemplateEmail } from '../utils/sendTemplateEmail';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { v4 as uuidv4 } from 'uuid';
 
-const sesClient = new SESClient({ region: process.env.AWS_REGION });
 
 export default defineEventHandler(async (event) => {
 
@@ -12,7 +10,6 @@ export default defineEventHandler(async (event) => {
     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   });
-    
     const body = await readBody(event);
 
     const firstName = body.firstName;
@@ -34,6 +31,8 @@ export default defineEventHandler(async (event) => {
     const nomineeId = uuidv4();
 
     try {
+        console.log("yo")
+
         let nominator = await prisma.nominator.findUnique({
           where: { email: nominatorEmail }
         });
@@ -43,7 +42,8 @@ export default defineEventHandler(async (event) => {
             data: {
               firstName: nominatorName,
               lastName: nominatorName,
-              email: nominatorEmail
+              email: nominatorEmail,
+              id: nominatorId
             }
           });
 
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
 
     catch(error) {
         console.error(error);
-        throw createError({ statusCode: 500, statusMessage: "Error creating nominee", });
+        throw createError({ statusCode: 500, statusMessage: "Error creating nomineelol", });
     }
 
     return newNominee;
