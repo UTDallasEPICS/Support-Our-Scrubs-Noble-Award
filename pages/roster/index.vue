@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="page-background { blurred: showLogin }">
     <Navbar @open-login="showLogin = true"/>
     <div>
@@ -6,6 +7,18 @@
     </div>
         <div class="three-js-container">
           <ThreeJsScene 
+=======
+  <Navbar />
+
+      <div class="page-background">
+        <div>
+            <h1 class="metallic-title">Noble Award Recipients</h1>
+        </div>
+
+       <div class="three-js-container">
+
+         <ThreeJsScene 
+>>>>>>> regalSocial
               v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
               scene_type="roster"
               :image="nomineeImage"

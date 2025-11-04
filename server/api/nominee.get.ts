@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 // import { prisma, Status } from "../utils/prismaclient";
 // import { getQuery } from 'h3';
+=======
+import { prisma, Status } from "../utils/prismaclient";
+import { getQuery } from 'h3';
+>>>>>>> regalSocial
 
 
 // export default defineEventHandler(async (event) => {

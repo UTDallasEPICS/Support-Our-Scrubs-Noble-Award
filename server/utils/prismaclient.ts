@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client'
 
-// This allows reusing the Prisma instance during hot-reloads in dev
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
 export const prisma =
@@ -8,8 +7,6 @@ export const prisma =
   new PrismaClient({
     log: ['warn', 'error'],
   })
-
-export default prisma
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
@@ -20,18 +17,16 @@ export const Status = {
   APPROVED: "APPROVED",
   DENIED: "DENIED",
   SENT: "SENT"
-} as const;
+} as const
 
-export type Status = typeof Status[keyof typeof Status];
+export type Status = typeof Status[keyof typeof Status]
 
 export const EmailTemplateType = {
   SIGNUP: "SIGNUP",
   NOMINATION: "NOMINATION",
   ACCEPTED: "ACCEPTED",
   REJECTED: "REJECTED"
-} as const;
+} as const
 
 export type EmailTemplateType =
-  typeof EmailTemplateType[keyof typeof EmailTemplateType];
-
-  
+  typeof EmailTemplateType[keyof typeof EmailTemplateType]

@@ -1,7 +1,7 @@
 <template>
+  <Navbar />
   <div class="page-background">
   <div>
-    <Navbar />
     </div>
     <div class="profile-container">
       <img :src="image" alt="Profile Image" class="profile-image" />

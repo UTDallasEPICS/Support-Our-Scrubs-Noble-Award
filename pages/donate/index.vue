@@ -205,6 +205,7 @@ export default {
     font-size: 18px;
     line-height: 1.6;
     color: #d4af37;
+    font-family: 'Libre Caslon Display', serif;
   }
 
   .main-content {
