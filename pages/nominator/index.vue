@@ -1,8 +1,7 @@
 <template>
-  <Navbar @open-login="showLogin = true" />
+      <Navbar @open-login="showLogin = true" />
   <div :class="['page-background', { blurred: showLogin }]">
-
-    <!-- Titles -->
+          <!-- Titles -->
     <p ref="nobleTitle" class="metallic-title">NOBLE AWARD</p>
     <p ref="nominationFormTitle" class="metallic-text">NOMINATION FORM</p>
 

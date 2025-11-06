@@ -10,7 +10,6 @@
 </template> 
 
 <script setup lang="ts">
-import { SupabaseClient } from '@supabase/supabase-js'  
 
 
 const emit = defineEmits<(e: 'close' | 'submitted') => void>()
@@ -35,7 +34,6 @@ try {
     method: 'POST',
     body: { email: email.value },
   })
-  console.log(res.ok)
   // Your API should respond like: { ok: true } if found, or { ok: false }
   if (!res.ok) {
     msg.value = 'Email not found. Please use the email you registered with.'

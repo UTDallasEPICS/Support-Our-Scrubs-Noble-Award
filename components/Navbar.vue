@@ -1,4 +1,5 @@
 <template>
+  <div class="navbar">
     <div class="navbar-left">
       <h1 class="navbar-title">SUPPORT OUR SCRUBS</h1>
 
@@ -32,6 +33,7 @@
           </ul>
         </div>
       </transition>
+    </div>
     </div>
   <!-- Wrap in a real <nav>, pin to top, and lock height 
   <nav class="site-nav sticky top-0 z-50 w-full bg-black text-white">

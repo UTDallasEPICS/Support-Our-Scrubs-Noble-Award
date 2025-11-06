@@ -1,81 +1,75 @@
-import { prisma } from "~/server/utils/prismaclient";
-import { sendEmailTemplate } from "../server/utils/sendEmailTemplate";
-import { v4 as uuidv4 } from 'uuid';
+import { prisma } from '~/server/utils/prismaclient'
+import { v4 as uuidv4 } from 'uuid'
+import { supabaseAdmin } from '~/server/utils/supabaseAdmin'
 
 export default defineEventHandler(async (event) => {
-
   setResponseHeaders(event, {
-    'Access-Control-Allow-Origin': 'http://localhost:3000', // or specific origin
+    'Access-Control-Allow-Origin': 'http://localhost:3000',
     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
-  });
-    const body = await readBody(event);
+  })
 
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const phoneNumber = body.phoneNumber;
-    const address = body.address;
-    const placeOfWork  = body.placeOfWork;
-    const occupation = body.occupation;
-    const email = body.email;
-    const description = body.description;
-    const photoURL = body.photoURL;
-    const nominatorId = body.nominatorId;
-    const adminId = body.adminId;
-    const nominatorName = body.nominatorName;
-    const nominatorEmail = body.nominatorEmail;
-    const slug = body.slug
+  const body = await readBody(event)
+  const {
+    firstName, lastName, phoneNumber, address, placeOfWork,
+    occupation, email, description, photoURL,
+    nominatorId, adminId, nominatorName, nominatorEmail
+  } = body
 
-    let newNominee = null;
-    const nomineeId = uuidv4();
-
-    try {
-        console.log("yo")
-
-        let nominator = await prisma.nominator.findUnique({
-          where: { email: nominatorEmail }
-        });
-
-        if (!nominator) {
-          nominator = await prisma.nominator.create({
-            data: {
-              firstName: nominatorName,
-              lastName: nominatorName,
-              email: nominatorEmail,
-              id: nominatorId
-            }
-          });
-
+  const nomineeId = uuidv4()
+  try {
+    let nominator = await prisma.nominator.findUnique({ where: { email: nominatorEmail } })
+    if (!nominator) {
+      nominator = await prisma.nominator.create({
+        data: {
+          firstName: nominatorName,
+          lastName: nominatorName,
+          email: nominatorEmail,
+          id: nominatorId,
         }
-
-        newNominee = await prisma.nominee.create({
-            data: {
-                nominator: {
-                    connect: {
-                        id: nominator.id
-                    }
-                },
-                id: nomineeId,
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-                address: address,
-                placeOfWork: placeOfWork,
-                occupation: occupation,
-                email: email,
-                description: description,
-                photoURL: photoURL,
-                slug: slug,
-            }
-        });
-
-        await sendTemplateEmail(email, "NOMINATION", {
-          name: firstName
-        });
-    }catch(error) {
-        console.error(error);
-        throw createError({ statusCode: 500, statusMessage: "Error creating nomineelol", });
+      })
     }
 
-    return newNominee;
-  })
+    const newNominee = await prisma.nominee.create({
+      data: {
+        nominator: { connect: { id: nominator.id } },
+        id: nomineeId,
+        firstName, lastName, phoneNumber, address,
+        placeOfWork, occupation, email, description, photoURL,
+        slug: (firstName + lastName).toLowerCase()
+      }
+    })
+
+    // 🔔 Send emails via a Supabase Edge Function
+    const { data, error } = await supabaseAdmin.functions.invoke('send-nomination-emails', {
+      body: {
+        nominee: {
+          id: newNominee.id,
+          firstName: newNominee.firstName,
+          lastName: newNominee.lastName,
+          email: newNominee.email,
+          placeOfWork: newNominee.placeOfWork,
+          occupation: newNominee.occupation,
+          description: newNominee.description,
+        },
+        nominator: {
+          name: nominatorName,
+          email: nominatorEmail
+        },
+        admin: {
+          id: adminId // optional; your function can route to a fixed admin list
+        }
+      }
+    })
+
+    if (error) {
+      console.error('Email function failed:', error)
+      // don't throw; the create succeeded. Return with a soft warning if you want.
+    }
+
+    return newNominee
+  } catch (err) {
+    console.error(err)
+    throw createError({ statusCode: 500, statusMessage: 'Error creating nominee' })
+  }
+})
