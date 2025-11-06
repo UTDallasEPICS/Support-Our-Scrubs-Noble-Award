@@ -1,6 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <nav class="navbar" ref="navRef">
     <div class="navbar-left">
       <h1 class="navbar-title">SUPPORT OUR SCRUBS</h1>
 
@@ -35,16 +33,15 @@
         </div>
       </transition>
     </div>
-=======
-  <!-- Wrap in a real <nav>, pin to top, and lock height -->
+  <!-- Wrap in a real <nav>, pin to top, and lock height 
   <nav class="site-nav sticky top-0 z-50 w-full bg-black text-white">
     <div class="inner mx-auto max-w-7xl h-14 min-h-14 px-4 md:px-6 flex items-center gap-6">
-      <!-- Brand -->
+      <!-- Brand 
       <NuxtLink to="/" class="brand font-extrabold tracking-wide whitespace-nowrap">
         SUPPORT OUR SCRUBS
       </NuxtLink>
-
-      <!-- Links -->
+    -->
+      <!-- Links 
       <ul class="links list-none m-0 p-0 flex items-center gap-6 sm:gap-8">
         <li>
           <NuxtLink class="navlink" to="/">Home</NuxtLink>
@@ -63,12 +60,10 @@
         </li>
       </ul>
     </div>
->>>>>>> regalSocial
-  </nav>
+  </nav> -->
 </template>
 
 <script setup>
-<<<<<<< HEAD
 import { ref, watchEffect, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, navigateTo } from '#imports'
 
@@ -215,12 +210,7 @@ defineExpose({ closeLoginFlag })
   font: inherit;
   cursor: pointer;
 }
-</style>
-=======
-// no script needed
-</script>
 
-<style scoped>
 /* Lock typography so page-level CSS can't change the bar height */
 .site-nav,
 .site-nav * {
@@ -258,4 +248,3 @@ defineExpose({ closeLoginFlag })
   background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
 }
 </style>
->>>>>>> regalSocial

@@ -69,26 +69,14 @@
 
 </div>
 
-
-<<<<<<< HEAD
-  </div>
   <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
   </Teleport>
-=======
-
-  
-
-
-  
->>>>>>> regalSocial
 </template>
 
 <script setup>
 import Navbar from '@/components/Navbar.vue';
-<<<<<<< HEAD
 import LoginModal from "@/components/MyLogin.vue"
-=======
 import nobleImage from '@/assets/nobleaward.png';
 import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
@@ -97,7 +85,6 @@ import ScrollTrigger from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 
->>>>>>> regalSocial
 
 definePageMeta({});
 
@@ -128,9 +115,6 @@ const handleSubmit = async () => {
     console.error('Submit error:', error);
     alert('Submission failed due to network/server issue.');
   }
-<<<<<<< HEAD
-}; 
-=======
 };
 
 onMounted(async () => {
@@ -175,7 +159,6 @@ onMounted(async () => {
 
 
 
->>>>>>> regalSocial
 </script>
 
 <style scoped>
@@ -278,12 +261,9 @@ button {
 .contact-heading {
   text-align: center;
   font-size: 2rem;
-<<<<<<< HEAD
   margin: 2rem 0;
-=======
   margin: 2rem;
   font-family: 'Playfair Display', serif;
->>>>>>> regalSocial
   color: #d4af37;
 }
 .faq-item {
@@ -298,13 +278,9 @@ button {
 }
 
 .metallic-title {
-<<<<<<< HEAD
-  font-size: 70px;
-=======
   margin-top: 3rem;
   font-family: 'Cinzel', serif;
   font-size: 80px;
->>>>>>> regalSocial
   text-align: center;
   /* Metallic gradient */
   background: linear-gradient(
@@ -454,14 +430,6 @@ button {
   }
 }
 
-<<<<<<< HEAD
-.page-background {
-    background:
-    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
-    min-height: 100vh; /* Makes background cover full viewport height */
-  }
-
-=======
 .contact-subtitle {
   font-family: 'Cinzel', serif;
   font-size: 1.5rem;
@@ -470,7 +438,6 @@ button {
   letter-spacing: 0.5px;
   text-shadow: 0 0 4px rgba(212, 175, 55, 0.4);
 }
->>>>>>> regalSocial
 
 .form-section form {
   max-width: 1100px; /* Adjust width here */
