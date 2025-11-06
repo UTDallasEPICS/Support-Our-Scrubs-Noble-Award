@@ -10,6 +10,9 @@
 </template> 
 
 <script setup lang="ts">
+import { SupabaseClient } from '@supabase/supabase-js'  
+
+
 const emit = defineEmits<(e: 'close' | 'submitted') => void>()
 
 const supabase = useSupabaseClient()
