@@ -1,7 +1,6 @@
 import { prisma } from "~/server/utils/prismaclient";
-import { sendTemplateEmail } from '~/utils/sendTemplateEmail';
+import { sendEmailTemplate } from "../server/utils/sendEmailTemplate";
 import { v4 as uuidv4 } from 'uuid';
-
 
 export default defineEventHandler(async (event) => {
 
@@ -73,12 +72,10 @@ export default defineEventHandler(async (event) => {
         await sendTemplateEmail(email, "NOMINATION", {
           name: firstName
         });
-    }
-
-    catch(error) {
+    }catch(error) {
         console.error(error);
         throw createError({ statusCode: 500, statusMessage: "Error creating nomineelol", });
     }
 
     return newNominee;
-})
+  })
