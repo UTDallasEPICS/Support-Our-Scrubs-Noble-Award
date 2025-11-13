@@ -38,3 +38,4 @@ export const EmailTemplateType = {
 
 export type EmailTemplateType =
   typeof EmailTemplateType[keyof typeof EmailTemplateType];
+  

@@ -1,58 +1,57 @@
 import { prisma, Status } from "../utils/prismaclient";
 import { getQuery } from 'h3';
 
-
 export default defineEventHandler(async (event) => {
-    const query = getQuery(event);
-    const findId = typeof query.findId === 'string' ? query.findId : undefined;
-    const stat = typeof query.stat === 'string' ? query.stat : undefined;
-    const nomId = typeof query.nomId === 'string' ? query.nomId : undefined;
-    const email = typeof query.email === 'string' ? query.email : undefined;
+  const query = getQuery(event);
+  const findId = typeof query.findId === 'string' ? query.findId : undefined;
+  const stat = typeof query.stat === 'string' ? query.stat : undefined;
+  const nomId = typeof query.nomId === 'string' ? query.nomId : undefined;
+  const email = typeof query.email === 'string' ? query.email : undefined;
+  const slug = typeof query.slug === 'string' ? query.slug : undefined;
 
-    try {
-        let nominees;
-       
-        if (findId) {
-            nominees = await prisma.nominee.findUnique({
-                where: { id: findId },
-            });
-        } 
-        else if (email) {
-            nominees = await prisma.nominee.findMany({
-                where: { email },
-            });
-        }
-        else if(stat || nomId){
-            const filterConditions: {
-                status?: Status;
-                nominatorId?: string;
-            } = {};
-
-            if (stat && Object.values(Status).includes(stat as Status)) {
-                filterConditions.status = stat as Status;
-            }
-    
-            if (nomId) {
-                filterConditions.nominatorId = nomId;
-            }
-    
-            nominees = await prisma.nominee.findMany({
-                where: filterConditions,
-            });
-    
-        }
-        else if (!stat && !findId) {
-            nominees = await prisma.nominee.findMany();
-        }
-
-        return nominees;
+  try {
+    if (slug) {
+      const nominee = await prisma.nominee.findUnique({
+        where: { slug },
+      });
+      return nominee;
     }
-    catch (error) {
-        console.log(error);
-        throw createError({
-            statusCode: 500,
-            statusMessage: "Error getting nominee",
-        });
+
+    if (findId) {
+      const nominee = await prisma.nominee.findUnique({
+        where: { id: findId },
+      });
+      return nominee;
     }
+
+    if (email) {
+      const nominees = await prisma.nominee.findMany({ where: { email } });
+      return nominees;
+    }
+
+    if (stat || nomId) {
+      const filterConditions: { status?: Status; nominatorId?: string } = {};
+      if (stat && Object.values(Status).includes(stat as Status)) {
+        filterConditions.status = stat as Status;
+      }
+      if (nomId) {
+        filterConditions.nominatorId = nomId;
+      }
+
+      const nominees = await prisma.nominee.findMany({
+        where: filterConditions,
+      });
+      return nominees;
+    }
+
+    // Default: return all nominees
+    const nominees = await prisma.nominee.findMany();
+    return nominees;
+  } catch (error) {
+    console.error(error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Error getting nominee",
+    });
+  }
 });
-     

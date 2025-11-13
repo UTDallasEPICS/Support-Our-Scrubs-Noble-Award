@@ -8,13 +8,10 @@
 
 <script>
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { PMREMGenerator } from 'three';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { Text } from 'troika-three-text'
-import { onBeforeUnmount } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router';
 
 export default {
@@ -38,6 +35,10 @@ export default {
      description: {
       type: [Array],
       required: true
+     },
+     slug: {
+      type: [Array],
+      required: false
      }
 
    }, 
@@ -85,6 +86,8 @@ export default {
         profilepage: () => this.loadProfile()      
       };
 
+      this.toggleballasts = false;
+      this.ballasts = 100;
       this.ud = "";
       this.wheelHandler = "";
       this.loadedScene = false;
@@ -189,10 +192,14 @@ export default {
 
         this.$refs.threeContainer.addEventListener('mouseenter', () => {
           this.scrollEnabled = true;
+          this.toggleballasts = true;
+          animate();
         });
 
         this.$refs.threeContainer.addEventListener('mouseleave', () => {
           this.scrollEnabled = false;
+          this.toggleballasts = false;
+
         });
 
         
@@ -222,8 +229,10 @@ export default {
           this.hoveredMesh = null
         }
 **/
-        requestAnimationFrame(animate);
-      
+        if (this.ballasts >= 0 || this.toggleballasts == true){
+          requestAnimationFrame(animate);
+          this.ballasts -= 1;
+        }      
         if (this.models && this.models.length > 0) {
           this.models.forEach((m) => {
             if (m && this.scene_type == "home")
@@ -317,13 +326,10 @@ export default {
   console.log("before "+ this.ud.occupation);
   const encodedData = encodeURIComponent(JSON.stringify(formData));
 
-  if (intersector && !this.routeChanged ) {
-    console.log("STILL LOADED!!!")
-   this.$router.push({
-    path: '/profile',
-    query: { form: encodedData }
-    });
-    this.cleanup();
+  if (intersector && !this.routeChanged) { // Navigate to the profile page using slugs
+  console.log("Navigating to profile for slug:", this.ud.slug);
+  this.$router.push(`/profile/${this.ud.slug}`);
+  this.cleanup();
   }
 
 },
@@ -590,6 +596,7 @@ export default {
               child.userData.recepient = this.recepient[idx]
               child.userData.occupation = this.occupation[idx]
               child.userData.description = this.description[idx]
+              child.userData.slug = this.slug[idx]
               console.log("desired "+this.occupation[idx])
               console.log("obtained "+child.userData.occupation)
               //this.clickableObjects.push(child);

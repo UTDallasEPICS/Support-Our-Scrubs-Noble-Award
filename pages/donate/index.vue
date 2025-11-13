@@ -1,88 +1,110 @@
 <template>
-  <Navbar />
   <div class="page-background">
-    <!-- Removed here <Navbar /> -->
+    <Navbar />
 
     <div class="donate-container">
-      <!-- Main donate header and description -->
-      <div class="donate-header">
-        <h1 class="metallic-title">Make a Donation</h1>
+      <!-- Header -->
+      <header class="donate-header">
+        <h1 class="metallic-title metallic-title--main">MAKE A DONATION</h1>
         <p class="header-description">
           Your donation powers the impact of the Noble Award program —
           helping fund engraved plaques for honorees, expand community outreach,
           and support day-to-day operations that keep the initiative running strong.
         </p>
-      </div>
+      </header>
 
-      <!-- Main content area with image and text side by side -->
-      <div class="main-content fade-in">
-
-        <!-- Right side - donation call to action -->
-        <div class="donation-cta">
-          <h2 class = "metallic-heading">Support Our Cause</h2>
-          <p>
-            When you donate to our parent organization Support Our Scrubs, you fuel our service projects - projects that 
-            recognize healthcare heroes, promote community support, and improve healthcare communities.
-          </p>
-          <a href="https://paypal.me/SupportOurScrubs?locale.x=en_US" class="donate-button">
-            <div class="donate-content">
-              <img src="https://pngimg.com/d/paypal_PNG7.png" class="paypal-logo" />
-              <span>DONATE</span>
-            </div>
-          </a>
-
+      <!-- Main content -->
+      <section class="main-content fade-in" data-fade>
+        <!-- Left: image -->
+        <div class="image-container">
           <img
             src="https://img1.wsimg.com/isteam/ip/49b121ac-2346-4ca2-93bb-7801e38f5369/0%20(3).jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:2046,h:1537"
             class="profile-image"
             alt="Noble Award Program"
-            style="margin: 20px 0; border-radius: 8px;"
+            loading="lazy"
           />
-          
+        </div>
+
+        <!-- Right: CTA card -->
+        <div class="donation-cta">
+          <h2 class="metallic-title metallic-title--small metallic-title--flat">
+            SUPPORT OUR CAUSE
+          </h2>
+            
           <p>
-            Your donation supports our mission to recognize and honor those who serve with excellence, dedication, and heart.
-            Funds help cover engraved plaques for honorees, expand community outreach, and support operations specific to our 
-            initiative — ensuring your generosity creates real impact through our focused cause.
+            When you donate to our parent organization Support Our Scrubs, you fuel our service projects —
+            projects that recognize healthcare heroes, promote community support, and improve healthcare communities.
           </p>
 
+          <a href="https://paypal.me/SupportOurScrubs?locale.x=en_US" class="donate-button" target="_blank" rel="noopener">
+            <div class="donate-content">
+              <img src="https://pngimg.com/d/paypal_PNG7.png" class="paypal-logo" alt="PayPal" />
+              <span>DONATE</span>
+            </div>
+          </a>
+
+          <p>
+            Your donation supports our mission to recognize and honor those who serve with excellence, dedication, and heart.
+            Funds help cover engraved plaques for honorees, expand community outreach, and support operations specific to our
+            initiative — ensuring your generosity creates real impact through our focused cause.
+          </p>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
-
 <script>
+import { gsap } from "gsap"
+import Navbar from '@/components/Navbar.vue'
+
 export default {
-  mounted() {;
-    // Set up intersection observer for fade-in elements
-    const observer = new IntersectionObserver((entries) => {
+  name: 'DonatePage',
+  components: { Navbar },
+  mounted() {
+    // Scroll fade effect (keep your existing IntersectionObserver)
+    const els = document.querySelectorAll('[data-fade], .fade-in')
+    const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          // Keep observing step boxes for reappearing animation when scrolling back up
-          if (!entry.target.classList.contains('step-box')) {
-            observer.unobserve(entry.target);
-          }
+          entry.target.classList.add('visible')
+          io.unobserve(entry.target)
         }
-      });
-    }, {
-      threshold: 0.1, // 10% of the element must be visible
-      rootMargin: '0px 0px -50px 0px' // Triggers slightly before element comes into view
-    });
+      })
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
+    els.forEach(el => io.observe(el))
 
-    // Observe all fade-in elements
-    document.querySelectorAll('.fade-in').forEach((element) => {
-      observer.observe(element);
-    });
+    // Initial entrance animation
+    const tl = gsap.timeline({ defaults: { duration: 0.8, ease: "power2.out" } })
+    tl.from(".metallic-title--main", { opacity: 0, y: -60 })
+      .from(".header-description", { opacity: 0, y: 20 }, "-=0.4")
+      .from(".image-container", { opacity: 0, x: -80 }, "-=0.3")
+      .from(".donation-cta", { opacity: 0, x: 80 }, "-=0.4")
   }
-}</script>
+}
+
+</script>
 
 <style scoped>
-  .metallic-title {
-  font-family: 'Libre Caslon Display', serif;
-  font-size: 70px;
+/* ====== Page base ====== */
+.page-background {
+  background: #000;
+  color: #fef08a;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+}
+
+.donate-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ====== Metallic titles ====== */
+.metallic-title {
+  margin-top: 3rem;
+  font-family: 'Cinzel', serif;
   text-align: center;
-  color: #d4af37;
   background: linear-gradient(
     120deg,
     #fff4b0 0%,
@@ -95,7 +117,6 @@ export default {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  position: relative;
   text-shadow:
     0 0 5px rgba(212, 175, 55, 0.5),
     0 0 10px rgba(212, 175, 55, 0.4),
@@ -103,197 +124,189 @@ export default {
   animation: metallicShine 3s infinite linear;
 }
 
-  @keyframes metallicShine {
-    0% {
-      background-position: 200% center;
-    }
-    100% {
-      background-position: -200% center;
-    }
-  }
+.metallic-title--main {
+  font-size: clamp(2rem, 6vw, 70px);
+  line-height: 1.1;
+}
 
+.metallic-title--small {
+  margin-top: 1rem;
+  font-size: clamp(1.5rem, 3.2vw, 36px);
+  line-height: 1.15;
+}
 
-  .metallic-heading {
-  font-family: 'Libre Caslon Display', serif;
-  font-size: 50px;
+/* Flat variant for subheadings (no glow/shimmer) */
+.metallic-title--flat {
+  text-shadow: none !important;
+  animation: none !important;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+@keyframes metallicShine {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ====== Header text ====== */
+.donate-header {
   text-align: center;
-  color: #d4af37;
-  background: linear-gradient(
-    120deg,
-    #fff4b0 0%,
-    #f0c75e 20%,
-    #d4af37 40%,
-    #f8e27d 60%,
-    #d4af37 80%,
-    #fff4b0 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  position: relative;
-  text-shadow:
-    0 0 5px rgba(212, 175, 55, 0.5),
-    0 0 10px rgba(212, 175, 55, 0.4),
-    0 0 20px rgba(255, 215, 0, 0.3);
-  animation: metallicShine 3s infinite linear;
+  margin-bottom: 40px;
 }
-.fade-in {
-    opacity: 0;
-    transform: translateY(30px);  
-    transition: opacity 0.8s ease-in-out, transform 0.8s ease-out;
-  }
 
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);  
-  }
-
-  .page-background {
-    /* Removed this background color
-    background:
-    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
-    font-family: 'Libre Caslon Display', serif;
-    min-height: 100vh; 
-    */
-
-    min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #d4af37;
-  padding: 2rem;
-  font-family: 'Roboto', sans-serif;
-  }
-
-  .donate-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-  }
-
-  .donate-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-
-  .donate-header h1 {
-    font-size: 54px;
-    font-weight: 400;
-    color: #d4af37;
-    margin-bottom: 20px;
-    font-family: 'Libre Caslon Display', serif;
-  }
-
-  .donate-header p {
-    font-size: 25px;;
-    line-height: 1.6;
-    color: white;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .header-description {
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 18px;
-    line-height: 1.6;
-    color: #d4af37;
-    font-family: 'Libre Caslon Display', serif;
-  }
-
-  .main-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    align-items: stretch;
-  }
-
-  .image-container {
-    flex: 1;
-    min-width: 300px;
-  }
-
-  .profile-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .donation-cta {
-    flex: 1;
-    min-width: 300px;
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(78, 78, 78);
-    padding: 40px;
-    border-radius: 4px;
-    color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .donation-cta h2 {
-    font-size: 30px;
-    margin-bottom: 20px;
-    font-weight: 600;
-  }
-
-  .donation-cta p {
-    margin-bottom: 25px;
-    line-height: 1.6;
-    font-size: 16px;
-  }
-
-  .donate-button {
-    display: inline-block;
-    background-color: #d4af37;
-    color: white;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 15px 20px;
-    border-radius: 5px;
-    font-size: 18px;
-    text-align: center;
-    transition: background-color 0.3s ease;
-    margin-bottom: 25px;
-  }
+.header-description {
+  max-width: 920px;
+  margin: 12px auto 0;
+  font-size: clamp(0.95rem, 2vw, 1.125rem);
+  line-height: 1.7;
+  color: #e5e5e5;
+  margin-top: 2rem;
+  margin-bottom: 4rem;
   
-  
+}
+
+/* ====== Main content layout ====== */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+/* Image block */
+.image-container {
+  min-width: 280px;
+}
+
+.profile-image {
+  width: 100%;
+  height: 110%;
+  max-height: 640px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* CTA Card */
+.donation-cta {
+  display: flex;
+  flex-direction: column;
+  background: #222;
+  padding: clamp(20px, 3vw, 40px);
+  border-radius: 4px;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  max-width: 100%;
+  height: 110%;
+}
+
+.donation-cta p {
+  margin-bottom: 18px;
+  line-height: 1.7;
+  font-size: clamp(0.95rem, 1.8vw, 1rem);
+  color: #f5f5f5;
+}
+
+/* Donate button */
+.donate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d4af37;
+  color: #0d0d0d;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 14px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: transform 0.08s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  margin: 6px 0 18px;
+  box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .donate-button:hover {
-  background-color: #fff5d6; /* Change to a lighter shade on hover */
-  color: #d4af37;
+  background-color: #ffe08a;
+  box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
+}
+
+.donate-button:active {
+  transform: translateY(1px);
 }
 
 .donate-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Space between image and text */
-  }
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
 
 .paypal-logo {
-    width: 40px;
-    height: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+/* ====== Fade-in animation ====== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-out;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 1024px) {
+  .donate-container {
+    padding: 32px 16px;
+  }
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+  .image-container {
+    order: 1;
+  }
+  .donation-cta {
+    order: 2;
+  }
+  .profile-image {
+    max-height: 420px;
+    border-radius: 4px;
+  }
+}
+
+/* === MOBILE: reduced padding in card and remove bottom gap === */
+@media (max-width: 640px) {
+  .donate-container {
+    padding: 24px 14px;
   }
 
+  .donation-cta {
+    padding: 16px 14px;
+    height: auto; /* fix extra bottom space */
+    margin-bottom: 0; /* remove excess spacing below the card */
+  }
 
-  .additional-info {
-    font-size: 14px;
-    color: #777;
+  .donation-cta p {
+    margin-bottom: 14px;
     line-height: 1.6;
   }
 
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .main-content {
-      flex-direction: column;
-    }
-
-    .donate-header h1 {
-      font-size: 42px;
-    }
-
-    .donation-cta {
-      padding: 30px;
-    }
+  .donate-button {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 14px;
   }
+
+  .metallic-title--small {
+    margin-top: 1.2rem;
+    margin-bottom: 1.4rem;
+  }
+}
+
+.donate-container {
+  padding-bottom: 150px;
+}
 </style>

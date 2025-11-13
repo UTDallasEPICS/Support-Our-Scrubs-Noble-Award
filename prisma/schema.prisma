@@ -28,6 +28,7 @@ model Nominee {
   occupation  String
   email       String
   description String
+  aboutme     String?
   photoURL    String
   slug        String    @unique
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
@@ -62,4 +63,3 @@ model Admin {
   Position String
   Nominee  Nominee[]
 }
-

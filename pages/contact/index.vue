@@ -360,20 +360,21 @@ button {
 }
 
 .faq-item {
-  padding-left: 2rem;
+  padding-left: 1rem;
   padding-right: 2rem;
   padding-top: 1rem;
 }
 
 .faq-pair {
-  border-left: 4px solid #d4af37;
-  font-family: 'Libre Caslon Display', serif;
-  font-size: 20px;;
+  border-left: 3px solid #d4af37;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  font-size: 20px;
   padding-left: 1rem;
   margin-bottom: 2rem;
   animation: fadeIn 0.6s ease-in forwards;
   opacity: 0;
   transform: translateY(10px);
+  background-color: #000000;
 }
 
 .faq-pair:nth-child(1) {
@@ -398,6 +399,7 @@ button {
   /*gap: 0.6rem;*/
   margin-bottom: 0.4rem;
   font-family: 'Cinzel', serif;
+  font-size: 22px;;
 }
 
 .faq-question strong {
@@ -411,7 +413,7 @@ button {
 
 .faq-box {
   background-color: #000000;  /* Dark background for contrast */
-  border: 2px solid #d4af37;  /* Golden border */
+  border: 1.5px solid #d4af37;  /* Golden border */
   padding: 2rem 3rem;          /* Space inside the box */
   max-width: 1100px;
   margin: 2rem auto;           /* Center the box */

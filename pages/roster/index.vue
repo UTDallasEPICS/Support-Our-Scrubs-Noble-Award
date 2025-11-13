@@ -15,6 +15,7 @@
               :recepient="nomineeNames"
               :occupation="nomineeOccupations"
               :description="nomineeInfo"
+              :slug="nomineeSlug"
           />
         </div>
       </div>
@@ -43,6 +44,7 @@ export default {
       nomineeOccupations: [],
       nomineeEmails: [],
       nominees: [],
+      nomineeSlug: [],
       nomineeImage: []
       // Rest of your data properties...
     };
@@ -61,8 +63,10 @@ export default {
         this.nomineeOccupations = response.map(n => n.occupation)
         this.nomineeInfo = response.map(n => n.description)
         this.nomineeImage = response.map(n => n.photoURL)
+        this.nomineeAboutMe = response.map(n => n.aboutme)
+        this.nomineeSlug = response.map(n => n.slug)
 
-        console.log("sorry man "+this.nomineeImage)
+        console.log("sorry man "+this.slug)
       } catch (error) {
         console.error('Error fetching nominees:', error);
       }
@@ -135,23 +139,7 @@ font-family: 'Libre Caslon Display', serif;
   overflow: hidden;
 }
 
-/* Glint Swipe Animation */
-.metallic-title::after {
-content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  animation: glintSwipe 3s ease-in-out infinite;
-}
+
 
 @keyframes glintSwipe {
 0% {
