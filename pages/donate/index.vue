@@ -150,7 +150,7 @@ export default {
 
   .page-background {
     background:
-    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);
+    radial-gradient(circle at top, rgb(0, 0, 0), rgb(0, 0, 0) 100%);
     font-family: 'Libre Caslon Display', serif;
     min-height: 100vh;
   }
@@ -215,11 +215,12 @@ export default {
     min-width: 300px;
     display: flex;
     flex-direction: column;
-    background-color: rgb(78, 78, 78);
+    background-color: rgba(0, 0, 0, 0.6); /* semi-transparent so border is visible against page bg */
     padding: 40px;
-    border-radius: 4px;
+    border-radius: 8px;
     color: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.9); /* visible gold border */
   }
 
   .donation-cta h2 {

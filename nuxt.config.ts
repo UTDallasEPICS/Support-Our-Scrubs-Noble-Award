@@ -14,4 +14,11 @@ export default defineNuxtConfig({
       AUTH0_SECRET: "",
       SERVER_BASE_URL: "",
   },
+  app: {
+    head: {
+      htmlAttrs: { lang: 'en' },
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+    }
+  },
 });

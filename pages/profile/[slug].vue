@@ -5,7 +5,7 @@
     <Navbar />
     </div>
     <div class="profile-container">
-      <img :src="profileImage" alt="" class="profile-image" /> 
+      <img :src="profileImage" :alt="`${title} - ${subtitle}`" class="profile-image" /> 
       <div class="profile-text">
         <h1 class="metallic-title">{{ title }}</h1>
         <p class="metallic-heading">{{ subtitle }}</p>
@@ -15,89 +15,130 @@
    
     <div class="additional-info">
         <div class="bio-text">
-          <h1 class="metallic-heading" >About Me</h1>
+          <h2 class="metallic-heading" >About Me</h2>
           <p class="bio-description">{{ profileAboutme }}</p>
       </div>
-      <img src="https://i.insider.com/5980b7ca87543302234a1a57?width=800&format=jpeg&auto=webp" class="extra-image "/>
     </div>
   </div>
 </template>
 
 
-<script>
-export default {
-  name: "profilePage",
-  data() {
-      return {
-        nominatorName: '',
-        nominatorEmail: '',
-        name: '',
-        phoneNumber: '',
-        address: '',
-        placeOfWork: '',
-        occupation: '',
-        email: '',
-        description: '',
-        aboutme: '',
-        photoURL: '',
-        slug: '',
-      };
-    },
-  computed: {
-    title() { // I have these comments below so the default strings are not shown when a user clicks on a profile
-      return this.name;// || "Default Name";
-    },
-    subtitle() {
-      return this.occupation;// || "Default Occupation";
-    },
-    profileDescription() {
-      return this.description;// || "Default Description";
-    },
-    profileImage() {
-      return this.photoURL;// || "Default Image";
-    },
-    profileAboutme(){
-      return this.aboutme;// || "Default About Me";
-    }
-  },
-  methods: {
-    async fetchNomineeBySlug(slug) {
-      try {
-      // Fetch nominee data from the backend API using the slug
-      const nominee = await $fetch(`/api/nominee?stat=APPROVED&slug=${slug}`);
-      console.log(nominee);
+<script setup>
+const route = useRoute();
+const slug = route.params.slug;
 
-      if (nominee){
-        this.photoURL = nominee.photoURL || "";
-        this.name = `${nominee.firstName} ${nominee.lastName}` || "";
-        this.occupation = nominee.occupation || "";
-        this.description = nominee.description || "";
-        this.aboutme = nominee.aboutme || "";
-        this.slug = nominee.slug || "";
-      } else {
-        console.warn('Nominee not found for slug:', slug);
-      }
-    } catch (error) {
-      console.error('Error parsing form data:', error);
-    }
-    // handle back/forward browser navigation to reload the page
-    window.addEventListener('popstate', () => {
-      window.location.reload();
-    });
-    }
-  },
-  mounted() {
-    const slug = this.$route.params.slug;
-    console.log("Slug from URL: "+slug);
-    this.fetchNomineeBySlug(slug);
-    
+// Server-side data fetching for SEO
+const { data: nominee, error } = await useAsyncData(
+  `nominee-${slug}`,
+  async () => {
+    const response = await $fetch(`/api/nominee?stat=APPROVED&slug=${slug}`);
+    return response;
   }
-};
+);
+
+// Handle errors
+if (error.value) {
+  console.error('Error fetching nominee:', error.value);
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Nominee not found',
+  });
+}
+
+// Computed properties (these replace your old computed section)
+const title = computed(() => nominee.value ? `${nominee.value.firstName} ${nominee.value.lastName}` : '');
+const subtitle = computed(() => nominee.value?.occupation || '');
+const profileDescription = computed(() => nominee.value?.description || '');
+const profileImage = computed(() => nominee.value?.photoURL || '');
+const profileAboutme = computed(() => nominee.value?.aboutme || '');
+
+// SEO Meta Tags - UPDATE YOUR DOMAIN HERE!
+useHead({
+  title: () => `${title.value} - ${subtitle.value}`,
+  meta: [
+    {
+      name: 'description',
+      content: () => profileDescription.value.substring(0, 160),
+    },
+    // Open Graph tags for social media
+    {
+      property: 'og:title',
+      content: () => `${title.value} - ${subtitle.value}`,
+    },
+    {
+      property: 'og:description',
+      content: () => profileDescription.value.substring(0, 160),
+    },
+    {
+      property: 'og:image',
+      content: () => profileImage.value,
+    },
+    {
+      property: 'og:type',
+      content: 'profile',
+    },
+    // Twitter Card tags
+    {
+      name: 'twitter:card',
+      content: 'summary_large_image',
+    },
+    {
+      name: 'twitter:title',
+      content: () => `${title.value} - ${subtitle.value}`,
+    },
+    {
+      name: 'twitter:description',
+      content: () => profileDescription.value.substring(0, 160),
+    },
+    {
+      name: 'twitter:image',
+      content: () => profileImage.value,
+    },
+  ],
+  link: [
+    {
+      rel: 'canonical',
+      href: () => `https://localhost:3000/profile/${slug}`, // UPDATE THIS!
+    },
+  ],
+});
+
+// Structured Data (JSON-LD) for rich snippets - manual implementation
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: title.value,
+        jobTitle: subtitle.value,
+        description: profileDescription.value,
+        image: profileImage.value,
+      }),
+    },
+  ],
+});
+
+// Handle browser back/forward navigation
+onMounted(() => {
+  window.addEventListener('popstate', () => {
+    window.location.reload();
+  });
+});
+
+onUnmounted(() => {
+  window.removeEventListener('popstate', () => {
+    window.location.reload();
+  });
+});
 </script>
 <style>
   .metallic-title {
   font-family: 'Libre Caslon Display', serif;
-  font-size: clamp(2rem, 10vw, 7rem);
+  font-size: clamp(2rem, 6.5vw, 7rem);
+  margin-top: -20px;
+  margin-bottom: -20px;
   text-align: center;
   color: #d4af37;
   background: linear-gradient(
@@ -130,7 +171,8 @@ export default {
  
   .metallic-heading {
   font-family: 'Libre Caslon Display', serif;
-  font-size: 50px;
+  font-size: 40px;
+  margin-top: 20px;
   text-align: center;
   color: #d4af37;
   background: linear-gradient(
@@ -153,23 +195,25 @@ export default {
   animation: metallicShine 3s infinite linear;
 }
   .page-background {
-    font-family: 'Cormorant Garamond', serif;
-    background:
-    radial-gradient(circle at top, rgb(61, 61, 61), rgb(34, 34, 34) 100%);
+    font-family: 'roboto', sans-serif;
+    background-color: rgb(0, 0, 0);
     min-height: 100vh; /* Makes background cover full viewport height */
   }
   .profile-container {    
     display: flex;
-    padding: 40px;
+    padding: 20px;
     color: white;
     /* margin: 0 auto; */
   }
   .profile-image {
-    width: 500px;
-    height: 500px;  
+    width: 380px;
+    height: 380px;  
     object-fit: cover;
     margin-right: 70px;
+    margin-top: 0px;
     border-radius: 50%;
+    border-width: 4px;
+    border-style: solid;
   }
   .profile-text {
     text-align: center;
@@ -177,7 +221,7 @@ export default {
     flex: 1;
   }
   .profile-title {
-    color:#d4af37;
+    color:#d4af37; 
     font-size: 80px;
     font-weight: bold;
     margin: 0;
@@ -189,15 +233,17 @@ export default {
   }
   .profile-description {
     text-align: left;
-    font-size: 30px;
-    line-height: 1.5;
+    font-size: 20px;
+    line-height: 1.2;
   }
   .additional-info {
+    text-align: left;
     display: flex;
-    color:white;
-    align-items: flex;
+    justify-content: center;
+    color: white;
     padding: 40px;
-    margin-top: 60px;
+    margin: 0 auto;
+    margin-top: -80px;
     width: 100%;
   }
   .extra-image {
@@ -220,6 +266,6 @@ export default {
   }
   .bio-description {
     font-size: 20px;
-    line-height: 1.5;
+    line-height: 1.2;
   }
 </style>
