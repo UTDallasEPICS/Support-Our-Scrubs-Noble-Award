@@ -1,7 +1,10 @@
 <template>
   <Navbar />
   <div class="contact-wrapper">
-    <!-- Removed here <Navbar /> -->
+    
+    <section>
+      <h1 class="metallic-title">CONTACT US</h1>
+    </section>
 
     <section class="socials-section">
       <div class="socials">
@@ -9,9 +12,9 @@
           <img src="/assets/instagram.png" alt="Instagram" class="social-icon" />
         </a>
         <a href="https://x.com/ScrubsSupport" target="_blank" rel="noopener">
-          <img src="/assets/threads.png" alt="Threads" class="social-icon" />
+          <img src="/assets/x.png" alt="Threads" class="social-icon" />
         </a>
-        <a href="#">
+        <a href="https://www.linkedin.com/company/support-our-scrubs/" target="_blank" rel="noopener">
           <img src="/assets/linkedin.png" alt="LinkedIn" class="social-icon" />
         </a>
         <a href="https://www.facebook.com/SupportOurScrubs/#" target="_blank" rel="noopener">
@@ -20,45 +23,10 @@
       </div>
     </section>
 
-    <!-- Added white-title -->
+    <section class="form-section" style="margin-bottom: 150px; text-align: center;">
+      <h3 class="contact-subtitle"> If you have any questions,</h3>
+      <h3 class="contact-subtitle"> please do not hesitate to send us a message.</h3>
 
-    <section>
-      <h1 class="metallic-title white-title">FACTS AND QUESTIONS</h1>
-    </section>
-
-    <div class="faq-item">
-  <div class="faq-pair">
-    <div class="faq-question">
-      <span class="glow-bullet"></span>
-      <strong>How can I nominate someone?</strong>
-    </div>
-    <p>You can submit nominations through the inquiry form below or via email.</p>
-  </div>
-
-  <div class="faq-pair">
-    <div class="faq-question">
-      <span class="glow-bullet"></span>
-      <strong>Who is eligible to be nominated?</strong>
-    </div>
-    <p>Any healthcare worker is eligible to be nominated for the Noble Award.</p>
-  </div>
-
-  <div class="faq-pair">
-    <div class="faq-question">
-      <span class="glow-bullet"></span>
-      <strong>Who can nominate a candidate?</strong>
-    </div>
-    <p>Any member of our society can nominate someone for the Noble Award.</p>
-  </div>
-</div>
-
-  <!-- Added white-title -->
-
-    <section>
-      <h1 class="metallic-title white-title">CONTACT US</h1>
-    </section>
-
-    <section style="margin-bottom: 150px;">
       <form @submit.prevent="handleSubmit">
         <input type="text" v-model="form.name" name="name" placeholder="Your Name" required />
         <input type="email" v-model="form.email" name="email" placeholder="Your Email" required />
@@ -67,20 +35,46 @@
         <button type="submit">Submit Inquiry</button>
       </form>
     </section>
+  
+    <section class="faq-box-section">
+      <h1 class="faq-title">Facts and Questions</h1>
+      
+      <div class="faq-box">
+        <div class="faq-item">
+          <div class="faq-pair">
+            <div class="faq-question">
+              <strong>How can I nominate someone?</strong>
+            </div>
+            <p>You can submit nominations through the inquiry form below or via email.</p>
+          </div>
 
+          <div class="faq-pair">
+            <div class="faq-question">
+              <strong>Who is eligible to be nominated?</strong>
+            </div>
+            <p>Any healthcare worker is eligible to be nominated for the Noble Award.</p>
+          </div>
 
-
+          <div class="faq-pair">
+            <div class="faq-question">
+              <strong>Who can nominate a candidate?</strong>
+            </div>
+            <p>Any member of our society can nominate someone for the Noble Award.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
   </div>
-
-
-  
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, onMounted, nextTick } from 'vue';
 import Navbar from '@/components/Navbar.vue';
-import nobleImage from '@/assets/nobleaward.png';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 definePageMeta({});
 
@@ -110,35 +104,61 @@ const handleSubmit = async () => {
     alert('Submission failed due to network/server issue.');
   }
 };
+
+onMounted(async () => {
+  await nextTick();
+
+  const timeline = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.6 } });
+
+  timeline
+    .from(".metallic-title", { opacity: 0, y: -50 })
+    .from(".socials a", { opacity: 0, scale: 0.5, stagger: 0.05 }, "-=0.2")
+    .from(".contact-subtitle", { opacity: 0, y: 30, stagger: 0.1 }, "-=0.1")
+    .from("form", { opacity: 0, y: 30, duration: 0.3, ease: "power2.out" }, "-=0.1")
+    .from("form input, form textarea, form button", { opacity: 0, y: 20, stagger: 0.05, duration: 0.4 }, "-=0.2");
+
+  // Animation for FAQ section
+  gsap.from([".faq-title", ".faq-box"], {
+    scrollTrigger: {
+      trigger: ".faq-box",
+      start: "top 85%", // start when box enters viewport
+      toggleActions: "play none none none", // only play once
+    },
+    opacity: 0,
+    y: 50,
+    duration: 1,
+    ease: "power2.out"
+  });
+
+  gsap.from(".faq-pair", {
+    scrollTrigger: {
+      trigger: ".faq-box-section",
+      start: "top 75%",
+      toggleActions: "play none none reverse"
+    },
+    opacity: 0,
+    y: 30,
+    stagger: 0.2,
+    duration: 0.5,
+    ease: "power2.out"
+  });
+});
 </script>
 
 <style scoped>
-body {
+:global(body) {
   background-color: #0d0d0d;
   color: #d4af37;
   font-family: 'Roboto', sans-serif;
   margin: 0;
- ;
 }
-header {
-  text-align: center;
-  padding: 2rem;
-  background-color: #1a1a1a;
-}
-header h1 {
-  text-align: center;
-  font-weight: bold;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 10rem;
-}
-header img {
-  width: 550px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 0 5px #d4af37);
-  transition: transform 0.3s ease;
-}
+
+/* (old generic header styles removed so they don't affect <Navbar />)
+header { ... }
+header h1 { ... }
+header img { ... }
+*/
+
 .container {
   max-width: 1000px;
   margin: 2rem auto;
@@ -149,12 +169,16 @@ h2 {
   border-bottom: 1px solid #d4af37;
   padding-bottom: 0.5rem;
 }
+
 .contact-wrapper {
   min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #ffffff; /* Changed #d4af37 to white */
+  background-color: #000000;
+  color: #ffffff; 
   padding: 2rem;
   font-family: 'Roboto', sans-serif;
+}
+.contact-subtitle:last-of-type {
+  margin-bottom: 3rem;
 }
 form {
   display: flex;
@@ -171,60 +195,81 @@ input, textarea {
   border-radius: 5px;
   color: #d4af37;
 }
+
+/* 🔥 Donate-style glow + hover + active for the submit button */
 button {
   background-color: #d4af37;
   color: #0d0d0d;
-  font-weight: bold;
-  padding: 1rem;
-  border: none;
-  border-radius: 5px;
+  font-weight: 700;
+  padding: 14px 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  transition:
+    transform 0.08s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
+}
+
+button:hover {
+  background-color: #ffe08a;
+  box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
+}
+
+button:active {
+  transform: translateY(1px);
 }
 
 .socials a {
-  width: 60px;
-  height: 60px;
+  width: 45px;
+  height: 45px;
   margin-right: 1rem;
   text-decoration: none;
-  margin-top: 80px;
-  margin-bottom: 80px;
+  margin-top: 40px;
+  margin-bottom: 70px;
+  color: transparent;
 }
 .socials {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
 }
+.social-icon {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+}
+
 .contact-heading {
   text-align: center;
   font-size: 2rem;
-  margin: 2rem 0;
+  margin: 2rem;
   font-family: 'Playfair Display', serif;
   color: #d4af37;
 }
 .faq-item {
   margin-bottom: 1.5rem;
+  max-width: 800px;
+  text-align: left;
+  padding-left: 8rem;
 }
 .faq-item strong {
   display: block;
   margin-bottom: 0.25rem;
 }
 
-/* Added */
-.white-title {
-  background: none !important;
-  color: white !important;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  text-shadow: none; /* optional, removes gold shadow */
-}
-
 .metallic-title {
-  font-family: 'Libre Caslon Display', serif;
-  font-size: 70px;
+  margin-top: 3rem;
+  font-family: 'Cinzel', serif;
+  font-size: 80px;
   text-align: center;
-  color: #d4af37;
+  /* Metallic gradient */
   background: linear-gradient(
     120deg,
     #fff4b0 0%,
@@ -237,7 +282,8 @@ button {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  position: relative;
+
+  /* Glow & animation */
   text-shadow:
     0 0 5px rgba(212, 175, 55, 0.5),
     0 0 10px rgba(212, 175, 55, 0.4),
@@ -279,14 +325,40 @@ button {
   animation: metallicShine 3s infinite linear;
 }
 
+.faq-title {
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  font-size: 50px; 
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  /* Metallic gradient */
+  background: linear-gradient(
+    120deg,
+    #fff4b0 0%,
+    #f0c75e 20%,
+    #d4af37 40%,
+    #f8e27d 60%,
+    #d4af37 80%,
+    #fff4b0 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow:
+    0 0 3px rgba(212, 175, 55, 0.3),
+    0 0 6px rgba(255, 215, 0, 0.2);
+}
+
 .faq-item {
-  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 1rem;
 }
 
 .faq-pair {
   border-left: 4px solid #d4af37;
   font-family: 'Libre Caslon Display', serif;
-  font-size: 20px;;
+  font-size: 20px;
   padding-left: 1rem;
   margin-bottom: 2rem;
   animation: fadeIn 0.6s ease-in forwards;
@@ -313,28 +385,22 @@ button {
 .faq-question {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
   margin-bottom: 0.4rem;
-}
-
-.glow-bullet {
-  width: 10px;
-  height: 10px;
-  background-color: #e2d276;
-  border-radius: 50%;
-  box-shadow: 0 0 6px #ffd700, 0 0 12px #d4af37;
-  animation: pulseGlow 1.5s infinite ease-in-out;
+  font-family: 'Cinzel', serif;
 }
 
 .faq-question strong {
   color: #ffd700; 
   font-weight: lighter;
-  text-shadow:
-    0 0 2px #dcc168,
-    0 0 4px #ffd700,
-    0 0 2px #fef4b0;
 }
 
+.faq-box {
+  background-color: #000000;
+  border: 2px solid #d4af37;
+  padding: 2rem 3rem;
+  max-width: 1100px;
+  margin: 2rem auto;
+}
 
 @keyframes pulseGlow {
   0%, 100% {
@@ -345,5 +411,92 @@ button {
   }
 }
 
+.contact-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 4px rgba(212, 175, 55, 0.4);
+}
 
+.form-section form {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pop-in {
+  animation: popIn 0.6s ease-out forwards;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .contact-wrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .metallic-title {
+    font-size: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  .contact-subtitle {
+    font-size: 1.1rem;
+    padding: 0 0.5rem;
+  }
+
+  form {
+    padding: 1.5rem 1rem;
+  }
+
+  .form-section form {
+    max-width: 100%;
+  }
+
+  .faq-title {
+    font-size: 2rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-box {
+    padding: 1.5rem 1rem;
+    margin: 1.5rem 1rem;
+  }
+
+  .faq-item {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .faq-pair {
+    font-size: 1rem;
+  }
+
+  .socials {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .socials a {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  /* extra breathing room below the icons on mobile */
+  .socials-section {
+    margin-bottom: 1.25rem;
+  }
+}
 </style>

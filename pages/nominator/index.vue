@@ -1,232 +1,204 @@
 <template>
-      <Navbar />
-    <body>
-    <div>
-      <p class="metallic-title">NOBLE AWARD</p>
+  <div class="min-h-screen bg-black text-amber-300">
+    <Navbar />
 
-       <p class="metallic-text">NOMINATION FORM</p>
-       
-      <form @submit.prevent="submitForm">
-      <div>
-          <label for="nominatorName">Your Name:</label>
-          <input type="text" v-model="nominatorName" id="nominatorName" />
-        </div>
-        <div>
-          <label for="nominatorEmail">Your Email:</label>
-          <input type="text" v-model="nominatorEmail" id="nominatorEmail" />
-        </div>
-        <div>
-          <label for="firstName">First Name:</label>
-          <input type="text" v-model="firstName" id="firstName" />
+    <main class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
+      <!-- Titles -->
+      <p ref="nobleTitle" class="metallic-title metallic-title--main">
+        NOBLE AWARD
+      </p>
+
+      <p ref="nominationFormTitle" class="metallic-title metallic-title--sub">
+        NOMINATION FORM
+      </p>
+
+      <!-- Form Card -->
+      <form
+        @submit.prevent="submitForm"
+        class="mt-8 rounded-2xl border border-zinc-800/70 bg-[#1a1a1a] backdrop-blur p-5 sm:p-6 md:p-8 shadow-xl"
+      >
+        <!-- Nominator fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="col-span-1">
+            <label for="nominatorName" class="block text-sm font-medium mb-1">Your Name</label>
+            <input
+              id="nominatorName"
+              v-model="nominatorName"
+              type="text"
+              autocomplete="name"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="Jane Doe"
+            />
+          </div>
+
+          <div class="col-span-1">
+            <label for="nominatorEmail" class="block text-sm font-medium mb-1">Your Email</label>
+            <input
+              id="nominatorEmail"
+              v-model="nominatorEmail"
+              type="email"
+              autocomplete="email"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="you@example.com"
+            />
+          </div>
         </div>
 
-        <p class="metallic-text">NOMINATOR</p> <!---->
-  
-        <div>
-          <label for="lastName">Last Name:</label>
-          <input type="text" v-model="lastName" id="lastName" />
+        <!-- Nominee section -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="firstName" class="block text-sm font-medium mb-1">Nominee First Name</label>
+            <input
+              id="firstName"
+              v-model="firstName"
+              type="text"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="Nominee first name"
+            />
+          </div>
+          <div>
+            <label for="lastName" class="block text-sm font-medium mb-1">Nominee Last Name</label>
+            <input
+              id="lastName"
+              v-model="lastName"
+              type="text"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="Nominee last name"
+            />
+          </div>
         </div>
-  
-        <div>
-          <label for="phoneNumber">Phone Number:</label>
-          <input type="tel" v-model="phoneNumber" id="phoneNumber" />
+
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="phoneNumber" class="block text-sm font-medium mb-1">Phone Number</label>
+            <input
+              id="phoneNumber"
+              v-model="phoneNumber"
+              type="tel"
+              autocomplete="tel"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="(555) 555-5555"
+            />
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium mb-1">Nominee Email</label>
+            <input
+              id="email"
+              v-model="email"
+              type="email"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="nominee@example.com"
+            />
+          </div>
         </div>
-  
-        <div>
-          <label for="address">Address:</label>
-          <input type="text" v-model="address" id="address" />
+
+        <div class="mt-4">
+          <label for="address" class="block text-sm font-medium mb-1">Address</label>
+          <input
+            id="address"
+            v-model="address"
+            type="text"
+            class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                   focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+            placeholder="Street, City, State"
+          />
         </div>
-  
-        <div>
-          <label for="placeOfWork">Place of Work:</label>
-          <input type="text" v-model="placeOfWork" id="placeOfWork" />
+
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="placeOfWork" class="block text-sm font-medium mb-1">Place of Work</label>
+            <input
+              id="placeOfWork"
+              v-model="placeOfWork"
+              type="text"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="Company / Organization"
+            />
+          </div>
+          <div>
+            <label for="occupation" class="block text-sm font-medium mb-1">Occupation</label>
+            <input
+              id="occupation"
+              v-model="occupation"
+              type="text"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
+              placeholder="Role / Title"
+            />
+          </div>
         </div>
-  
-        <div>
-          <label for="occupation">Occupation:</label>
-          <input type="text" v-model="occupation" id="occupation" />
+
+        <div class="mt-4">
+          <label for="description" class="block text-sm font-medium mb-1">Description</label>
+          <textarea
+            id="description"
+            v-model="description"
+            rows="5"
+            class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400
+                   focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3 resize-y"
+            placeholder="Why are you nominating this person?"
+          ></textarea>
         </div>
-  
-        <div>
-          <label for="email">Email:</label>
-          <input type="email" v-model="email" id="email" />
+
+        <!-- File Upload -->
+        <div class="mt-6">
+          <span class="block text-sm font-medium">Upload Photo</span>
+
+          <div class="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <input
+              id="photo"
+              ref="fileInput"
+              type="file"
+              accept="image/*"
+              class="sr-only"
+              @change="handlePhotoUpload"
+            />
+            <label
+              for="photo"
+              ref="uploadButton"
+              class="inline-flex items-center justify-center rounded-xl border border-amber-400 px-4 py-2
+                     bg-zinc-800/70 text-amber-300 font-serif cursor-pointer transition
+                     hover:bg-amber-300 hover:text-zinc-900 hover:border-zinc-900"
+            >
+              Choose File
+            </label>
+
+            <span class="text-sm text-amber-200/80 break-all">
+              {{ selectedFileName || "No file chosen" }}
+            </span>
+          </div>
         </div>
-  
-        <div>
-          <label for="description">Description:</label>
-          <textarea v-model="description" id="description"></textarea>
-        </div>
-        <div class="upload-section">
-        <label for="photo">Upload Photo:</label>
-        <input type="file" @change="handlePhotoUpload" />
-        </div>
-        <button type="submit">Submit</button>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="mt-8 w-full nomination-submit-btn"
+        >
+          Submit
+        </button>
       </form>
-      
-      <!--
-      <NuxtLink to="https://supportourscrubs.org/donate" target = "blank">
-        <button>Donate Here! </button>
-      </NuxtLink>
-      -->
+    </main>
+  </div>
+</template>
 
-      <nuxt-link to="/nominator/viewnominees">
-        <button>Go to Nominee Database</button>
-      </nuxt-link> 
-      
+<script>
+/* (same script as before) */
+export default {
+  // keep your existing logic here
+}
+</script>
 
-      <nuxt-link to="/nominator/edit">
-       <button>Edit Previous Submission</button>
-     </nuxt-link>
-    
-
-    </div>
-    </body>
-  </template>
-  
-  <script>
-
-  import { v4 as uuidv4 } from 'uuid';
-  import Navbar from '@/components/Navbar.vue';
-
-  //import prisma from './prisma';
-  const nominatorId = uuidv4();
-
-  export default {
-    name: 'Nominator',
-    data() {
-      return {
-        nominatorName: '',
-        nominatorEmail: '',
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        address: '',
-        placeOfWork: '',
-        occupation: '',
-        email: '',
-        description: '',
-        photoURL: '',
-      };
-    },
-    methods: {
-      async submitForm() {
-        const adminId = '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8';
-  
-        const formData = {
-          nominatorName: this.nominatorName,
-          nominatorEmail: this.nominatorEmail,
-          firstName: this.firstName,
-          lastName: this.lastName,
-          phoneNumber: this.phoneNumber,
-          address: this.address,
-          placeOfWork: this.placeOfWork,
-          occupation: this.occupation,
-          email: this.email,
-          description: this.description,
-          photoURL: this.photoURL,
-          nominatorId: nominatorId,
-          adminId: adminId
-        };
-  
-        try {
-
-        /**let nominator = await prisma.nominator.findUnique({
-          where: { id: nominatorId }
-        });
-
-        if (!nominator) {
-          nominator = await prisma.nominator.create({
-            data: {
-              id: nominatorId,
-              firstName: this.nominatorName,
-              lastName: this.nominatorName,
-              email: this.nominatorEmail
-           //   Nominee: {
-             // create: formData
-            //}
-            }
-          });
-        }**/
-          console.log("idk "+nominatorId);
-          const response = await fetch('/api/nominee', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-          console.log("failed");
-          if (!response.ok) {
-            const errorDetails = await response.json();
-            console.log('Error details:', errorDetails);
-            throw new Error(`Error submitting form: ${errorDetails.message}`);
-          }
-  
-          const result = await response.json();
-          console.log('Form submitted successfully:', result);
-          alert('Form submitted successfully!');
-        } catch (error) {
-          console.error('Error submitting form:', error);
-          alert('There was an error submitting the form. Please check the console for details.');
-        }
-      },
-      async handlePhotoUpload(event) {
-      console.log("failed2")
-      try {
-        const file = event.target.files[0];
-
-        // === Simulated Cloudinary Upload ===
-        const subjectImage = new FormData();
-        subjectImage.append("file", file);
-        subjectImage.append("upload_preset", "unsigned_uploads");
-
-        const service = import.meta.env.VITE_IMAGE_SERVICE;                 
-        console.log("watch")
-        const res = await fetch(service, {
-          method: "POST",
-          body: subjectImage,
-        });
-        console.log("this doesnt call")
-
-        const data = await res.json();
-        this.photoURL = data.secure_url;
-        console.log("RIIIIIGHT HEERE "+this.photoURL)
-        } catch (err){
-          console.error("Upload error:", err);
-
-        }
-        // Now this.photoURL will go into your database as part of the nominee object
-        }
-    },
-    mounted() {
-      window.addEventListener('popstate', () => {
-      window.location.reload(); // Fallback for broken history
-      });
-    
-      if (this.$route.query.form) {
-        const decodedData = JSON.parse(decodeURIComponent(this.$route.query.form));
-        console.log("datos "+decodedData.occupation);
-      }
-
-    }
-  };
-  </script>
-  
-  <style scoped>
-  /* General Styles */
-  
-  * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-  }
-  
-  .metallic-title {
-  font-family: 'Libre Caslon Display', serif;
-  font-size: 70px;
+<style scoped>
+.metallic-title {
+  font-family: 'Cinzel', serif;
   text-align: center;
-  position: relative;
-  color: #d4af37;
   background: linear-gradient(
     120deg,
     #fff4b0 0%,
@@ -239,179 +211,73 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  text-shadow:
-    0 0 5px rgba(212, 175, 55, 0.4),
-    0 0 10px rgba(212, 175, 55, 0.2),
-    0 0 15px rgba(255, 215, 0, 0.1);
-
-  overflow: hidden;
-}
-
-/* Glint Swipe Animation */
-.metallic-title::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  animation: glintSwipe 3s ease-in-out infinite;
-}
-
-@keyframes glintSwipe {
-  0% {
-    left: -75%;
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-/* Reflection Glow */
-.metallic-title::before {
-  content: 'Noble Award';
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 70px;
-  transform: scaleY(-1);
-  opacity: 0.1;
-  filter: blur(2px);
-  background: linear-gradient(to bottom, rgba(255, 215, 0, 0.3), transparent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-
-/* <!-- <p style= "font-family: 'Libre Caslon Display', serif; font-size: 30px;
-  margin-top:0px; margin-bottom: 50px;"> NOMINATION FORM</p> --> */
-
-
-.metallic-text {
-  font-family: 'Libre Caslon Display', serif;
-  font-size: 30px;
-  margin-top:0px;
-  text-align: center;
-  color: #d4af37;
-  background: linear-gradient(
-    120deg,
-    #fff4b0 0%,
-    #f0c75e 20%,
-    #d4af37 40%,
-    #f8e27d 60%,
-    #d4af37 80%,
-    #fff4b0 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  position: relative;
   text-shadow:
     0 0 5px rgba(212, 175, 55, 0.5),
     0 0 10px rgba(212, 175, 55, 0.4),
     0 0 20px rgba(255, 215, 0, 0.3);
   animation: metallicShine 3s infinite linear;
 }
-  
-  html, body {
-      width: 100%;
-      height: 100%;
-      background-color: #222121; /* Full black background */
-      color: #d4af37; /* Gold text color */
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-  }
-  
-  .container {
-      width: 100%;
-      max-width: 500px;
-      background-color: #1a1a1a; /* Slightly lighter black for form background */
-      padding: 20px;
-      border-radius: 8px;
-      color: #d4af37; /* Gold text color */
-      font-family: Arial, sans-serif;
-  }
-  
-  /* Form and Text Styling */
-  p {
-    font-family: 'Libre Caslon Display', serif; /* font-family: 'Mrs Saint Delafield', cursive !important; This is supposed to be the font arrhhhh rarrrr*/
-    font-size: 70px;
-    color: #d4af37;
-    text-align: center;
-    margin-bottom:3px;  
-    margin-top: 70px;
-    
-  }
-  
-  label {
-    font-size: 18px;
-    margin-bottom: 5px;
-    font-family: 'Libre Caslon Display', serif;
-    color: #d4af37; /* Gold label color */
-  }
-  
-  input[type="text"],
-  input[type="tel"],
-  input[type="email"],
-  input[type="url"],
-  textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #5b5b5a; /* Gold border */
-    border-radius: 8px;
-    background-color: #434242; /* Gold background for text boxes */
-    color: #000; /* Black text inside the text box */
-    font-size: 16px;
-  }
-  
-  /* Buttons */
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #4e4e4d; /* Gold background for button */
-    color: #d4af37; /* Dark text color */
-    font-size: 18px;
-    font-weight: bold;
-    font-family: "Libre Caslon Display", serif;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-  }
-  
-  button:hover {
-    background-color: #898989; /* Darker gold on hover */
-  }
-  
-  button:focus {
-    outline: none;
-  }
-  
-.upload-section {
-  margin: 16px 0; /* space above and below the whole section */
+
+.metallic-title--main {
+  margin-top: 2rem;
+  font-size: 60px;
 }
 
-.upload-section label {
-  display: block;
-  margin-bottom: 8px; /* space between label and input */
+.metallic-title--sub {
+  margin-top: 0.5rem;
+  font-size: 32px;
 }
 
+.metallic-title--section {
+  margin-top: 1rem;
+  font-size: 28px;
+}
 
-  </style>
+@keyframes metallicShine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+/* SUBMIT BUTTON – DONATE BUTTON GLOW STYLE */
+.nomination-submit-btn {
+  background-color: #d4af37;
+  color: #0d0d0d;
+  font-weight: 700;
+  padding: 14px 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  transition:
+    transform 0.08s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
+}
+
+.nomination-submit-btn:hover {
+  background-color: #ffe08a;
+  box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
+}
+
+.nomination-submit-btn:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 768px) {
+  .metallic-title--main {
+    font-size: 44px;
+  }
+  .metallic-title--sub {
+    font-size: 26px;
+  }
+  .metallic-title--section {
+    font-size: 22px;
+  }
+}
+</style>

@@ -1,10 +1,10 @@
 <template>
+  <Navbar />
 
       <div class="page-background">
         <div>
             <h1 class="metallic-title">Noble Award Recipients</h1>
         </div>
-              <Navbar />
 
        <div class="three-js-container">
 
@@ -235,17 +235,6 @@ font-family: 'Libre Caslon Display', serif;
     0 0 10px rgba(212, 175, 55, 0.4),
     0 0 20px rgba(255, 215, 0, 0.3);
   animation: metallicShine 3s infinite linear;
-}
-
-html, body {
-      width: 100%;
-      height: 100%;
-      background-color:rgb(0, 0, 0); /* Full black background */
-      color: #a77c43; /* Gold text color */
-      font-family: Times New Roman, serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
 }
 
 /* Form and Text Styling */

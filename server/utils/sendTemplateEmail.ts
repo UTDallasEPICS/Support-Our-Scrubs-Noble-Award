@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma, EmailTemplateType} from "../utils/prismaclient";
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import type { $Enums } from "@prisma/client";
 
-const prisma = new PrismaClient();
 const sesClient = new SESClient({ region: process.env.AWS_REGION });
 
-export default async function (destinationEmail: string, template: $Enums.EmailTemplateType, args: {[k: string]: string}) {
+export async function sendTemplateEmail(destinationEmail: string, template: EmailTemplateType, args: {[k: string]: string}) {
     const templateData = await prisma.emailTemplate.findUniqueOrThrow({
         where: { type: template }
     });
