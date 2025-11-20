@@ -15,17 +15,23 @@ export default defineEventHandler(async (event) => {
 
   // ---- 2) Query your allowed tables ----
   try {
-    const [admin, nominee] = await Promise.all([
+    const [admin, nominator, nominee] = await Promise.all([
       prisma.admin.findUnique({ where: { email } }),
       prisma.nominee.findUnique({ where: { email }}),
+      prisma.nominator.findUnique({ where: { email }})
     ])  
 
-    if (!admin && !nominee) {
+    if (!admin && !nominator && !nominee) {
       // generic so you don't leak which emails exist
       return { ok: false, reason: 'not_found' as const }
     }
 
-    const role = admin ? 'admin' : 'nominator'
+    let role: 'admin' | 'nominator' | 'nominee'
+
+    if (admin) role = 'admin'
+    else if (nominator) role = 'nominator'
+    else role = 'nominee'
+
     return { ok: true, role }
   } catch (err) {
     // log server-side if you want details

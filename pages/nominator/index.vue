@@ -164,7 +164,6 @@ export default {
       selectedFileName: '',
       // ids
       nominatorId: generatedNominatorId,
-      adminId: '7ce1ff18-5c4a-4eb1-aa67-d7d7f5c10be8'
     }
   },
 
@@ -176,7 +175,7 @@ export default {
         .replace(/[^a-z0-9]+/g, '-')   // non-alphanumerics → hyphens
         .replace(/^-+|-+$/g, '')
     },
-
+    
     async submitForm() {
       // use the id from data(), do not shadow it
       const { nominatorId, adminId } = this
@@ -190,6 +189,10 @@ export default {
         nominatorEmail: this.nominatorEmail,
         firstName: this.firstName,
         lastName: this.lastName,
+        phoneNumber: this.phoneNumber,
+        address: this.address,
+        placeOfWork: this.placeOfWork,
+        occupation: this.occupation,
         email: this.email,
         description: this.description
       }

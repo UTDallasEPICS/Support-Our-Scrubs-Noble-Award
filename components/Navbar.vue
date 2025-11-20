@@ -1,90 +1,145 @@
 <template>
-  <div class="navbar">
-    <div class="navbar-left">
-      <h1 class="navbar-title">SUPPORT OUR SCRUBS</h1>
+  <div class="navbar" ref="navRef">
+    <h1 class="navbar-title">SUPPORT OUR SCRUBS</h1>
 
-      <nuxt-link class="navbar-buttons" to="/" @click="scrollToTop" :class="{ active: route.path === '/' }">Home</nuxt-link>
+    <div class="navbar-center">
+      <nuxt-link
+        class="navbar-buttons"
+        to="/"
+        @click="scrollToTop"
+        :class="{ active: route.path === '/' }"
+      >Home</nuxt-link>
 
-      <nuxt-link class="navbar-buttons" to="/roster" :class="{ active: route.path === '/roster' }">View Nominees</nuxt-link>
+      <nuxt-link
+        class="navbar-buttons"
+        to="/roster"
+        :class="{ active: route.path === '/roster' }"
+      >View Nominees</nuxt-link>
 
-      <nuxt-link class="navbar-buttons" to="/nominator" :class="{ active: route.path === '/nominator' }">Submit Nomination</nuxt-link>
+      <nuxt-link
+        class="navbar-buttons"
+        to="/nominator"
+        :class="{ active: route.path === '/nominator' }"
+      >Submit Nomination</nuxt-link>
 
-      <nuxt-link class="navbar-buttons" to="/contact" :class="{ active: route.path === '/contact' }">Contact Us</nuxt-link>
+      <nuxt-link
+        class="navbar-buttons"
+        to="/contact"
+        :class="{ active: route.path === '/contact' }"
+      >Contact Us</nuxt-link>
 
-      <nuxt-link class="navbar-buttons" to="/donate" :class="{ active: route.path === '/donate' }">Donate</nuxt-link>
+      <nuxt-link
+        class="navbar-buttons"
+        to="/donate"
+        :class="{ active: route.path === '/donate' }"
+      >Donate</nuxt-link>
     </div>
 
     <div class="menu-anchor">
-      <!-- Logged in -->
-      <button v-if="user" class="login-button caret-btn" @click.stop="toggleDropdown" :aria-expanded="dropdownOpen ? 'true' : 'false'" aria-haspopup="menu">
-        <i class="fa-solid fa-user-circle" style="font-size: 24px; padding-right: 6px;"></i>
-        <span class="caret" :class="{ rotated: dropdownOpen }" >▼</span>
+      <!-- Logged IN -->
+      <button
+        v-if="user"
+        class="login-button caret-btn logged-in"
+        @click.stop="toggleDropdown"
+        :aria-expanded="dropdownOpen ? 'true' : 'false'"
+        aria-haspopup="menu"
+        aria-label="Account menu"
+      >
+        <i class="fa-solid fa-user-circle user-icon"></i>
+        <span class="user-label" :title="user.email">
+          {{ user.email || 'Account' }}
+        </span>
+        <span class="caret" :class="{ rotated: dropdownOpen }">▼</span>
       </button>
-      <!-- Logged out -->
-      <button v-else class="login-button caret-btn" @click.stop="emit('open-login'); openLogin()" aria-haspopup="dialog">Log in</button>
 
-      <!-- Optional: user dropdown (kept scaffolded; toggle when you want) -->
+      <!-- Logged OUT -->
+      <button
+        v-else
+        class="login-button caret-btn"
+        @click.stop="handleOpenLogin"
+        aria-haspopup="dialog"
+      >
+        Log in
+      </button>
+
+      <!-- Dropdown when logged in -->
       <transition name="dropdown">
-        <div v-if="dropdownOpen && user" class="dropdown" role="menu">
+        <div
+          v-if="dropdownOpen && user"
+          class="dropdown"
+          role="menu"
+          @click.stop
+        >
           <ul>
+            <li class="dropdown-header">
+              Signed in as
+              <div class="dropdown-email">
+                {{ user.email }}
+              </div>
+            </li>
             <li>
+              <li v-if="isAdmin">
+                <button class="dropdown-item" @click="goToAdmin">
+                  Admin Panel
+                </button>
+              </li>
+              <button class="dropdown-item" @click="redirectToViewNominees">View My Nominees</button>
               <button class="dropdown-item" @click="logoutAndReset">Log out</button>
             </li>
           </ul>
         </div>
       </transition>
     </div>
-    </div>
-  <!-- Wrap in a real <nav>, pin to top, and lock height 
-  <nav class="site-nav sticky top-0 z-50 w-full bg-black text-white">
-    <div class="inner mx-auto max-w-7xl h-14 min-h-14 px-4 md:px-6 flex items-center gap-6">
-      <!-- Brand 
-      <NuxtLink to="/" class="brand font-extrabold tracking-wide whitespace-nowrap">
-        SUPPORT OUR SCRUBS
-      </NuxtLink>
-    -->
-      <!-- Links 
-      <ul class="links list-none m-0 p-0 flex items-center gap-6 sm:gap-8">
-        <li>
-          <NuxtLink class="navlink" to="/">Home</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink class="navlink" to="/roster">View Nominees</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink class="navlink" to="/nominator">Submit Nomination</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink class="navlink" to="/contact">Contact Us</NuxtLink>
-        </li>
-        <li>
-          <NuxtLink class="navlink" to="/donate">Donate</NuxtLink>
-        </li>
-      </ul>
-    </div>
-  </nav> -->
+  </div>
 </template>
 
 <script setup>
-import { ref, watchEffect, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute, navigateTo } from '#imports'
+import { ref, computed, watchEffect, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute, navigateTo, useSupabaseUser, useSupabaseClient } from '#imports'
 
-/** Props & emits */
-const props = defineProps({
-  user: { type: [Object, Boolean], default: null },
-})
+/** Emits */
 const emit = defineEmits(['open-login'])
+
+/** Supabase auth state */
+const user = useSupabaseUser()
+const supabase = useSupabaseClient()
+
+/** Verify type of user */
+const role = useState('role',() => null)
+const isAdmin = computed(() => role.value === 'admin')
 
 /** State */
 const route = useRoute()
-const showLogin = ref(false)         // for your modal to read if desired
+const showLogin = ref(false) // mirrors ?showLogin for your modal
 const dropdownOpen = ref(false)
 const navRef = ref(null)
 
 /** Auto-open when ?showLogin=1 is present */
 watchEffect(() => {
+  // existing line:
   showLogin.value = route.query.showLogin === '1'
+
+  // new: check admin when user is available
+  if (user.value && user.value.email) {
+    fetchUserRole(user.value.email)
+  } else {
+    role.value = null
+  }
 })
+
+//** Checks if user is admin */
+async function fetchUserRole(email) {
+  const res = await $fetch('/api/checkAdmin', {
+    method: 'POST',
+    body: { email }
+  })
+
+  if (res.ok && res.role === 'admin') {
+    role.value = 'admin'
+  } else {
+    role.value = null
+  }
+}
 
 /** Add ?showLogin=1 when clicking Login */
 function openLogin () {
@@ -93,6 +148,16 @@ function openLogin () {
     query: { ...route.query, showLogin: '1', next: route.fullPath },
     replace: true,
   })
+}
+
+/** Combined handler for login button */
+function handleOpenLogin () {
+  emit('open-login')
+  openLogin()
+}
+
+function goToAdmin() {
+  navigateTo('/nominator/viewnominees')
 }
 
 /** Call this from your modal on close (optional helper) */
@@ -107,9 +172,23 @@ function scrollToTop () {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
-function logoutAndReset () {
+
+function toggleDropdown () {
+  dropdownOpen.value = !dropdownOpen.value
+}
+function redirectToViewNominees(){
+  navigateTo('nominator/edit')
+}
+async function logoutAndReset () {
   dropdownOpen.value = false
-  // add your actual logout logic here
+  try {
+    await supabase.auth.signOut()
+  } catch (e) {
+    console.error('Error signing out:', e)
+  } finally {
+    // force refresh of UI/state after logout
+    navigateTo({ path: '/', replace: true })
+  }
 }
 
 /** Close dropdown when clicking outside */
@@ -117,8 +196,13 @@ function onDocClick (e) {
   if (!navRef.value) return
   if (!navRef.value.contains(e.target)) dropdownOpen.value = false
 }
-onMounted(() => document.addEventListener('click', onDocClick))
-onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
+
+onMounted(() => {
+  document.addEventListener('click', onDocClick)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocClick)
+})
 
 /** Optional: expose to parent if you want to call it */
 defineExpose({ closeLoginFlag })
@@ -131,6 +215,7 @@ defineExpose({ closeLoginFlag })
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
   z-index: 100;
@@ -138,16 +223,27 @@ defineExpose({ closeLoginFlag })
   font-size: 18px;
 }
 .navbar-left { display: flex; color: white; }
-.navbar-buttons, .login-button, .navbar-title { 
-  padding: 10px; 
+.navbar-buttons, .login-button, .navbar-title {
+  padding: 10px;
 }
 .navbar-title{
-  margin-right: 40px;
+  flex: 1;
+  text-align: left;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+}
+.navbar-center{
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  gap: .25rem;
+  color: white;
 }
 .menu-anchor {
   position: relative;
   display: inline-block;
-  width: 110px;
+  width: 180px;
   height: 40px;
   text-align: end;
 }
@@ -181,17 +277,39 @@ defineExpose({ closeLoginFlag })
   transition: all 0.25s ease;
 }
 
+/* Logged-in visual variant */
+.logged-in {
+  background: rgba(17, 24, 39, 0.9); /* darker */
+  border-radius: 5px;
+  padding-inline: 0.6rem;
+}
+
+.user-icon {
+  font-size: 20px;
+  margin-right: 6px;
+}
+
+.user-label {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 4px;
+  font-size: 0.9rem;
+}
+
 /* Dropdown panel */
 .dropdown{
   position: absolute;
   top: calc(100% + 7px);
   right: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(10px);
   color: white;
   z-index: 10;
-  min-width: 160px;
+  min-width: 200px;
   padding: 8px 0;
+  border-radius: 2px;
 }
 .dropdown-enter-active, .dropdown-leave-active {
   transition: opacity 160ms ease, transform 160ms ease;
@@ -200,8 +318,21 @@ defineExpose({ closeLoginFlag })
   opacity:0;
   transform: translateY(-6px) scale(0.98);
 }
-.dropdown ul { text-align: left; padding-left: 8px; list-style:none; }
+.dropdown ul { text-align: left; padding-left: 0; list-style:none; margin: 0; }
 .dropdown li:hover { background: rgba(255,255,255,0.06); }
+
+.dropdown-header {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  padding: 8px 12px 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.dropdown-email {
+  font-size: 0.85rem;
+  font-weight: 600;
+  word-break: break-all;
+}
+
 .dropdown-item {
   background: none;
   border: none;
@@ -216,7 +347,7 @@ defineExpose({ closeLoginFlag })
 /* Lock typography so page-level CSS can't change the bar height */
 .site-nav,
 .site-nav * {
-  line-height: 1;         /* stop inherited tall line-heights */
+  line-height: 1;
 }
 
 /* Optional: normalize font size inside nav */
@@ -229,7 +360,7 @@ defineExpose({ closeLoginFlag })
 .navlink {
   display: inline-flex;
   align-items: center;
-  height: 2.25rem;         /* visual touch area; nav is 3.5rem (h-14) */
+  height: 2.25rem;
   padding: 0 .25rem;
   text-decoration: none;
   color: #fff;
@@ -237,12 +368,12 @@ defineExpose({ closeLoginFlag })
 }
 
 .navlink:hover {
-  color: #d1d5db;          /* Tailwind gray-300 */
+  color: #d1d5db;
 }
 
 /* Show an active state (Nuxt adds .router-link-active) */
 .router-link-active.navlink {
-  color: #fef08a;          /* Tailwind yellow-200-ish */
+  color: #fef08a;
 }
 
 /* Sheen class kept from your original (unused but safe) */

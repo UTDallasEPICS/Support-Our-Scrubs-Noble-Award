@@ -6,8 +6,8 @@
 
   <!-- MAIN CONTENT -->
   <div v-show="!showIntro" ref="mainContent" class="main-content">
-    <Navbar/>
-    <div class="page-background">
+    <Navbar @open-login="showLogin = true"/>
+    <div class="page-background { blurred: showLogin }">
 
       <!-- Welcome Section -->
       <div class="welcome">
@@ -152,8 +152,6 @@ import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "../components/MyLogin.vue";
 
 definePageMeta({ middleware: 'auth' })
-import caesarImage from '../assets/caeser_bust.png';
-import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
 
