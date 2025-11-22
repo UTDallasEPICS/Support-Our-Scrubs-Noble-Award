@@ -414,44 +414,52 @@ export default {
 
     },
     createText(text, size, x, y, z, maxWidth = 3.5) {
-  const myText = new Text()
-  myText.text = text
-  myText.fontSize = size
-  myText.color = 0xffcc00
+      const myText = new Text()
 
-  // Outline
-  myText.strokeColor = 0xffaa00
-  myText.strokeWidth = 0.02
-  myText.outlineBlur = 0.01
+      myText.text = text
+      myText.fontSize = size
+      myText.color = 0xffcc00
 
-  // ✅ Wrap within card
-  myText.maxWidth = maxWidth   // how wide the text can go before wrapping
-  myText.overflowWrap = 'break-word'
-  myText.anchorX = 'left'
-  myText.anchorY = 'top'
+      // Outline
+      myText.strokeColor = 0xffaa00
+      myText.strokeWidth = 0.02
+      myText.outlineBlur = 0.01
 
-  myText.sync()
-  this.scene.add(myText)
-  myText.position.set(x, y, z)
-},
+      // ✅ Wrap within card
+      myText.maxWidth = maxWidth          // Max width before wrapping
+      myText.overflowWrap = 'break-word'  // Break long words if needed
+      myText.whiteSpace = 'normal'        // Allow normal line wrapping
+      myText.lineHeight = 1.2             // Spacing between lines
+      myText.textAlign = 'left'           // Text alignment
 
-wrapText(str, maxChars) {
-  const words = str.split(' ')
-  let lines = ''
-  let current = ''
+      // Anchoring - 'left' and 'top' means position is top-left corner
+      myText.anchorX = 'left'
+      myText.anchorY = 'top'
+      
+      myText.position.set(x, y, z)
+      this.scene.add(myText)
+      myText.sync()
+      return myText
+    },
+    truncateText(text, maxLength = 100){
+      if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength).trim() + '...';
+    },
+    wrapText(str, maxChars) {
+      const words = str.split(' ')
+      let lines = ''
+      let current = ''
 
-  for (const word of words) {
-    if ((current + word).length > maxChars) {
-      lines += current.trim() + '\n'
-      current = ''
-    }
-    current += word + ' '
-  }
-  lines += current.trim()
-  return lines
-},
-
-
+      for (const word of words) {
+        if ((current + word).length > maxChars) {
+          lines += current.trim() + '\n'
+          current = ''
+        }
+        current += word + ' '
+      }
+      lines += current.trim()
+      return lines
+    },
     loadhome(){
         if (!this.loadedScene){
         const light = new THREE.DirectionalLight(0xffffff, 9);
@@ -632,44 +640,20 @@ wrapText(str, maxChars) {
             }
           });
 
-           const longtext = this.description[idx]
-    
-
-          let result = '';
-          let currentLineLength = 0;
-          let charcount = 0; 
-          for (let i = 0; i < longtext.length; i++) {
-
-            if (charcount >= 440) {
-              result += ' ...';
-              break;
-            }
-
-            const char = longtext[i];
-            result += char;
-            currentLineLength++;
-            charcount++;
-            // If we've just added a space and we're past the line length limit
-            if (char === ' ' && currentLineLength >= 53) {
-              result += '\n'; // Add newline
-              currentLineLength = 0; // Reset line length counter
-            }
-          }
-
           // Recipient stays the same (title)
-          this.createText(this.recepient[idx], 0.45, position.x - 1.9, position.y + 1.0, position.z, 3.5)
+          //this.createText(this.recepient[idx], 0.45, position.x - 1.9, position.y + 1.0, position.z + 0.01, 3.0)
 
           // Occupation bigger
-          this.createText(this.occupation[idx], 0.35, position.x - 1.9, position.y + 0.55, position.z, 3.5)
+          //this.createText(this.occupation[idx], 0.35, position.x - 1.9, position.y - 0.2, position.z + 0.01, 3.0)
 
           // Description bigger
-            this.createText(this.description[idx], 0.20, position.x - 1.9, position.y + 0.15, position.z, 3.0) // wrap at 29 chars
+          //this.createText(this.truncateText(this.description[idx]), 0.20, position.x - 1.9, position.y + 0.15, position.z + 0.01, 3.0) // wrap at 29 chars
 
 
-          /*
+          
           this.createText(this.recepient[idx], 0.4, position.x - 1.9, position.y  + .9, position.z)
-          this.createText(this.occupation[idx], this.dsize, position.x - 1.9, position.y + .35, position.z)
-          this.createText(result, this.dsize, position.x - 1.9, position.y + .1, position.z) */
+          this.createText(this.occupation[idx], 0.2, position.x - 1.9, position.y + .35, position.z)
+          //this.createText(result, this.dsize, position.x - 1.9, position.y + .1, position.z) 
           console.log("going in "+model+" "+this.image.length)
           }
 
