@@ -2,6 +2,7 @@ import { prisma } from '~/server/utils/prismaclient'
 import { v4 as uuidv4 } from 'uuid'
 import { supabaseAdmin } from '~/server/utils/supabaseAdmin'
 
+
 export default defineEventHandler(async (event) => {
   setResponseHeaders(event, {
     'Access-Control-Allow-Origin': 'http://localhost:3000',

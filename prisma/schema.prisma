@@ -26,10 +26,11 @@ model Nominee {
   address     String
   placeOfWork String
   occupation  String
-  email       String    @unique
+  email       String
   description String
+  aboutme     String?
   photoURL    String
-  slug        String?    @unique
+  slug        String    @unique
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String
   admin       Admin?    @relation(fields: [adminId], references: [id])

@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
     const occupation = body.occupation;
     const email = body.email;
     const description = body.description;
+    const aboutme = body.aboutme;
     const photoURL = body.photoURL;
     const nominatorId = body.nominatorId;
     const adminId = body.adminId;
@@ -46,6 +47,7 @@ export default defineEventHandler(async (event) => {
                 occupation: occupation,
                 email: email,
                 description: description,
+                aboutme: aboutme,
                 photoURL: photoURL,
                 status: status,
             }

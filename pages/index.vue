@@ -185,7 +185,8 @@ export default {
       nomineeOccupations: [],
       nomineeEmails: [],
       nominees: [],
-      nomineeImage: []
+      nomineeImage: [],
+      nomineeAboutMe: [],
       // Rest of your data properties...
     };
   },
@@ -204,6 +205,8 @@ export default {
         this.nomineeOccupations = response.map(n => n.occupation)
         this.nomineeInfo = response.map(n => n.description)
         this.nomineeImage = response.map(n => n.photoURL)
+        this.nomineeAboutMe = response.map(n => n.aboutme)
+        this.nomineeSlug = response.map(n => n.slug)
 
         console.log("sorry man "+this.nomineeImage)
       } catch (error) {
