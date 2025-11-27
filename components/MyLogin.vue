@@ -23,23 +23,33 @@ const msg = ref('')
 
 const next = computed(() => (route.query.next as string) || '/')
 
-type CheckEmailResponse = { ok: true } | { ok: false; error: string }
+type CheckEmailResponse =   | { ok: false; reason: 'not_found' | 'server_error' }
+  | { ok: true; role: 'admin' | 'nominator' | 'nominee' }
 
+const roleState = useState<'admin' | 'nominator' | 'nominee' | null>('role',() => null)
 async function sendMagic() {
+  
 try {
   loading.value = true
   msg.value = ''
   // 1️⃣ Check your own API before sending magic link
-  const res = await $fetch('/api/checkEmail', {
+  const res = await $fetch<CheckEmailResponse>('/api/checkEmail', {
     method: 'POST',
     body: { email: email.value },
   })
   // Your API should respond like: { ok: true } if found, or { ok: false }
   if (!res.ok) {
     msg.value = 'Email not found. Please use the email you registered with.'
-    loading.value = false
+    roleState.value = null
     return
   }
+
+    if (res.role === 'admin' || res.role === 'nominator' || res.role === 'nominee') {
+      roleState.value = res.role
+    } else {
+      console.warn('Unexpected role from API:', res)
+      roleState.value = null
+    }
 
   // 2️⃣ Continue with Supabase magic link sign-in
   const redirect = `${window.location.origin}/`
@@ -48,15 +58,21 @@ try {
     options: { emailRedirectTo: redirect },
   })
 
-  if (error) throw error
+  if (error) {
+      console.error('Supabase OTP error:', error)
+      throw error
+    }
 
-  msg.value = 'Check your email for the login link.'
-  emit('submitted')
-} catch (e: any) {
-  msg.value = e?.message ?? 'Could not send link. Try again.'
-} finally {
-  loading.value = false
-}
+    // Normal success
+    msg.value = 'Check your email for the login link.'
+    emit('submitted')
+
+  } catch (e: any) {
+    console.warn('IGNORING ERROR:', e)
+    msg.value = 'If this email exists, a login link has been sent.'
+  } finally {
+    loading.value = false
+  }
 }
 //   try { 
 //     // Redirect back to where they intended to go

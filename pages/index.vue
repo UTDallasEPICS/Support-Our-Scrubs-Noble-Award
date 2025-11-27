@@ -18,7 +18,7 @@
 
 
         <div class="top-button-container fade-in">
-          <nuxt-link to="/nominator" class="top-button">NOMINATE A HERO</nuxt-link>
+          <nuxt-link to="/nominator/form" class="top-button">NOMINATE A HERO</nuxt-link>
           <nuxt-link to="/donate" class="top-button">DONATE</nuxt-link>
         </div>
 
@@ -163,8 +163,7 @@ import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "@/components/MyLogin.vue";
 
-// definePageMeta({ middleware: 'auth' })
-import axios from 'axios'
+definePageMeta({ middleware: 'auth' })
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
 

@@ -80,42 +80,28 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, navigateTo } from '#imports'
 
 const emit = defineEmits(['open-login'])
+
+/* STATE */
 const open = ref(false)
+const dropdownOpen = ref(false)
+const isMobile = ref(false)
+
 const panel = ref(null)
 const btn = ref(null)
+const navRef = ref(null)
+
 const route = useRoute()
 
+/* Supabase */
 const user = useSupabaseUser()
 const supabase = useSupabaseClient()
 
-/** Verify type of user */
-const role = useState('role',() => null)
+/* ROLE / ADMIN */
+const role = useState('role', () => null)
 const isAdmin = computed(() => role.value === 'admin')
-const showLogin = ref(false) // mirrors ?showLogin for your modal
-const dropdownOpen = ref(false)
-const navRef = ref(null)
-
-const isMobile = ref(false)
-
-function toggle(){
-  open.value = !open.value
-  if(open.value){
-    nextTick(() => panel.value?.querySelector('a')?.focus({ preventScroll: true }))
-  }
-}
-function close(){ open.value = false }
-
-function onDocClick(e){
-  if(!open.value) return
-  if(!panel.value?.contains(e.target) && e.target !== btn.value) close()
-  if (!navRef.value) return
-  if (!navRef.value.contains(e.target)) dropdownOpen.value = false
-}
-
-function onKey(e){ if(e.key === 'Escape' && open.value) close() }
 
 async function fetchUserRole(email) {
   const res = await $fetch('/api/checkAdmin', {
@@ -123,63 +109,100 @@ async function fetchUserRole(email) {
     body: { email }
   })
 
-  if (res.ok && res.role === 'admin') {
-    role.value = 'admin'
-  } else {
-    role.value = null
+  role.value = res.role === 'admin' ? 'admin' : null
+}
+
+/* --- MOBILE MENU LOGIC --- */
+function toggle() {
+  open.value = !open.value
+
+  if (open.value) {
+    nextTick(() => {
+      panel.value?.querySelector('a')?.focus({ preventScroll: true })
+    })
   }
 }
 
-/** Add ?showLogin=1 when clicking Login */
-function openLogin () {
-  navigateTo(route.path)
-}
-function handleOpenLogin () {
-  emit('open-login')
-  openLogin()
+function close() {
+  open.value = false
 }
 
+/* --- DROPDOWN LOGIC --- */
+function toggleDropdown() {
+  dropdownOpen.value = !dropdownOpen.value
+}
+
+function closeDropdown() {
+  dropdownOpen.value = false
+}
+
+/* --- LOGIN BUTTON --- */
+function handleOpenLogin() {
+  emit('open-login')
+}
+
+/* --- ADMIN BUTTON --- */
 function goToAdmin() {
   navigateTo('/nominator/viewnominees')
 }
 
-/** Call this from your modal on close (optional helper) */
-function closeLoginFlag () {
-  const { showLogin: _drop, ...rest } = route.query
-  navigateTo({ path: route.path, query: rest, replace: true })
+/* --- VIEW MY NOMINEES --- */
+function redirectToViewNominees() {
+  navigateTo('/nominator/edit')
 }
 
-function toggleDropdown () {
-  dropdownOpen.value = !dropdownOpen.value
-}
-function redirectToViewNominees(){
-  navigateTo('nominator/edit')
-}
-async function logoutAndReset () {
+/* --- LOGOUT --- */
+async function logoutAndReset() {
   dropdownOpen.value = false
+
   try {
     await supabase.auth.signOut()
   } catch (e) {
     console.error('Error signing out:', e)
-  } finally {
-    // force refresh of UI/state after logout
-    navigateTo({ path: '/', replace: true })
+  }
+
+  navigateTo({ path: '/', replace: true })
+}
+
+/* --- CLICK OUTSIDE + ESCAPE KEY --- */
+function onDocClick(e) {
+  // Close mobile menu
+  if (open.value && !panel.value?.contains(e.target) && e.target !== btn.value) {
+    close()
+  }
+
+  // Close dropdown
+  if (navRef.value && !navRef.value.contains(e.target)) {
+    closeDropdown()
   }
 }
+
+function onKey(e) {
+  if (e.key === 'Escape') {
+    close()
+    closeDropdown()
+  }
+}
+
+/* --- LIFECYCLE --- */
 onMounted(() => {
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKey)
+
   const mq = window.matchMedia('(max-width: 768px)')
   isMobile.value = mq.matches
-  mq.addEventListener('change', e => isMobile.value = e.matches)
+  mq.addEventListener('change', e => (isMobile.value = e.matches))
 })
+
 onBeforeUnmount(() => {
   document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onKey)
 })
 
+/* Close mobile nav on route change */
 watch(() => route.fullPath, close)
 </script>
+
 
 <style scoped>
 :root { --gap: .75rem; --radius: 14px; --border: rgba(255,255,255,.15); }

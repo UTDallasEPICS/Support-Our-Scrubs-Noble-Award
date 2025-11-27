@@ -1,7 +1,7 @@
 <template>
   <div class="three-container" ref="threeContainer"></div>
 
-    <nuxt-link v-if="shouldRedirect" to="/nominator">
+    <nuxt-link v-if="shouldRedirect" to="/nominator/form">
   </nuxt-link>
 
 </template>
