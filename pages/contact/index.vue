@@ -1,6 +1,5 @@
 <template>
-  <div class="page-background { blurred: showLogin }">
-    <Navbar @open-login="showLogin = true"/>
+  <Navbar @open-login="showLogin = true"/>
   <div class="contact-wrapper">
     
     <section>
@@ -23,7 +22,6 @@
         </a>
       </div>
     </section>
-  </div>
 
     <section class="form-section" style="margin-bottom: 100px; text-align: center;">
       <h3 class="contact-subtitle"> If you have any questions,</h3>
@@ -38,22 +36,21 @@
           </form>
     </section>
 </div>
-
-  <Teleport to="body">
+<Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
   </Teleport>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { reactive } from 'vue';
 import Navbar from '@/components/Navbar.vue';
-import LoginModal from "@/components/MyLogin.vue"
+import nobleImage from '@/assets/nobleaward.png';
 import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import LoginModal from '@/components/MyLogin.vue'
 
 gsap.registerPlugin(ScrollTrigger)
-
-
 
 definePageMeta({});
 
@@ -131,16 +128,17 @@ onMounted(async () => {
 body {
   background-color: #0d0d0d;
   color: #d4af37;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
 }
 header {
-  text-align: center;
   padding: 2rem;
   background-color: #1a1a1a;
 }
 header h1 {
   text-align: center;
   font-weight: bold;
+  font-family: "Cormorant Garamond", serif;
   font-size: 10rem;
 }
 header img {
@@ -156,13 +154,8 @@ header img {
   margin: 2rem auto;
   padding: 1rem;
 }
-.blurred {
-  filter: blur(8px);
-  pointer-events: none; 
-  user-select: none;
-  transform: translateZ(0);
-  }
 h2 {
+  font-family: 'Playfair Display', serif;
   border-bottom: 1px solid #d4af37;
   padding-bottom: 0.5rem;
 }
@@ -172,6 +165,7 @@ h2 {
   background-color: #000000;
   color: #ffffff; 
   padding: 2rem;
+  font-family: 'Roboto', sans-serif;
 }
 .contact-subtitle:last-of-type {
   margin-bottom: 3rem;
@@ -227,7 +221,6 @@ button {
 .contact-heading {
   text-align: center;
   font-size: 2rem;
-  margin: 2rem 0;
   margin: 2rem;
   font-family: 'Playfair Display', serif;
   color: #d4af37;
@@ -280,6 +273,7 @@ button {
 }
 
 .metallic-heading {
+  font-family: 'Libre Caslon Display', serif;
   font-size: 50px;
   text-align: center;
   color: #d4af37;

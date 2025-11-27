@@ -64,7 +64,7 @@ import LoginModal from "@/components/MyLogin.vue"
 
 export default {
   name: 'DonatePage',
-  components: { Navbar },
+  components: { Navbar, LoginModal },
   data(){
     return{
       showLogin: false,

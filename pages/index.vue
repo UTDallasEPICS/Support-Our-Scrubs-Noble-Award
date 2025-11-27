@@ -6,7 +6,7 @@
 
   <!-- MAIN CONTENT -->
   <div v-show="!showIntro" ref="mainContent" class="main-content">
-    <Navbar/>
+    <Navbar @open-login="showLogin = true"/>
     <div class="page-background">
 
       <!-- Welcome Section -->
@@ -161,7 +161,7 @@
 import CarouselMain from '../components/CarouselMain.vue';
 import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
-import LoginModal from "../components/MyLogin.vue";
+import LoginModal from "@/components/MyLogin.vue";
 
 definePageMeta({ middleware: 'auth' })
 import axios from 'axios'

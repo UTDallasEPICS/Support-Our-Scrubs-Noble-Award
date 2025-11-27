@@ -1,6 +1,6 @@
 <template>
-  <Navbar/>
-  <div class="contact-wrapper">
+  <Navbar @open-login="showLogin = true"/>
+  <div class="contact-wrapper" :class="['page-background', { blurred: showLogin }]">
     
     <section>
       <h1 class="metallic-title">Frequently Asked Questions</h1>
@@ -27,6 +27,9 @@
     </div>
 
   </div>
+    <Teleport to="body">
+    <LoginModal v-if="showLogin" @close="showLogin = false" />
+  </Teleport>
 </section>
 
 </div>
@@ -40,6 +43,7 @@ import nobleImage from '@/assets/nobleaward.png';
 import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
+import LoginModal from '@/components/MyLogin.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -53,6 +57,8 @@ const form = reactive({
   subject: '',
   message: ''
 });
+
+const showLogin = ref(false);
 
 const handleSubmit = async () => {
   try {
@@ -259,5 +265,12 @@ onMounted(async () => {
     padding: 0.9rem 1rem;
   }
 }
+.blurred {
+  filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+  transform: translateZ(0);
+}
+
 
 </style>
