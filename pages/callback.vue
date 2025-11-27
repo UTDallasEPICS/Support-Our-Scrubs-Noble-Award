@@ -10,9 +10,10 @@ const client = useSupabaseClient()
 const route = useRoute()
 
 onMounted(async () => {
-  await supabase.auth.getUser()
+  await client.auth.getUser()
 
-  await supabase.auth.getUser()
+  await client.auth.getUser()
+  
   navigateTo((Array.isArray(route.query.next) ? route.query.next[0] : route.query.next) || '/')
 })  
 </script>

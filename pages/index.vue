@@ -152,7 +152,6 @@ import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "../components/MyLogin.vue";
 
 definePageMeta({ middleware: 'auth' })
-import caesarImage from '../assets/caeser_bust.png';
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'

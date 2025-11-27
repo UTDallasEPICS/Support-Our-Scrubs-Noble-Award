@@ -12,6 +12,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
       AUTH0_DOMAIN: "",
       AUTH0_CLIENT_ID: "",
       AUTH0_SECRET: "",

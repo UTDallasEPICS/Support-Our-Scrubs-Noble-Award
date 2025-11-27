@@ -77,7 +77,6 @@
 <script setup>
 import Navbar from '@/components/Navbar.vue';
 import LoginModal from "@/components/MyLogin.vue"
-import nobleImage from '@/assets/nobleaward.png';
 import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
