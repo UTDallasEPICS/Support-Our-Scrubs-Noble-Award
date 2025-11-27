@@ -25,6 +25,8 @@
       <nuxt-link to="/roster" class="nav__link" @click="close">View Nominees</nuxt-link>
       <nuxt-link to="/donate" class="nav__link" @click="close">Donate</nuxt-link>
       <nuxt-link to="/contact" class="nav__link" @click="close">Contact Us</nuxt-link>
+      <nuxt-link to="/FAQ" class="nav__link" @click="close">FAQ</nuxt-link>
+      <nuxt-link to="/aboutUs" class="nav__link" @click="close">About Us</nuxt-link>
     </nav>
   </header>
 </template>

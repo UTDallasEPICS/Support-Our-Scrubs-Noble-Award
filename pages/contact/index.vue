@@ -23,7 +23,7 @@
       </div>
     </section>
 
-    <section class="form-section" style="margin-bottom: 150px; text-align: center;">
+    <section class="form-section" style="margin-bottom: 100px; text-align: center;">
       <h3 class="contact-subtitle"> If you have any questions,</h3>
       <h3 class="contact-subtitle"> please do not hesitate to send us a message.</h3>
 
@@ -35,44 +35,7 @@
             <button type="submit">Submit Inquiry</button>
           </form>
     </section>
-  
-  <section class="faq-box-section">
-    <h1 class="faq-title">Facts and Questions</h1>
-    
-    <div class="faq-box">
-      <div class="faq-item">
-        <div class="faq-pair">
-          <div class="faq-question">
-            <strong>How can I nominate someone?</strong>
-          </div>
-          <p>You can submit nominations through the inquiry form below or via email.</p>
-        </div>
-
-        <div class="faq-pair">
-          <div class="faq-question">
-            <strong>Who is eligible to be nominated?</strong>
-          </div>
-          <p>Any healthcare worker is eligible to be nominated for the Noble Award.</p>
-        </div>
-
-        <div class="faq-pair">
-          <div class="faq-question">
-            <strong>Who can nominate a candidate?</strong>
-          </div>
-          <p>Any member of our society can nominate someone for the Noble Award.</p>
-        </div>
-      </div>
-    </div>
-</section>
-
 </div>
-
-
-
-  
-
-
-  
 </template>
 
 <script setup lang="ts">
@@ -155,9 +118,6 @@ onMounted(async () => {
     ease: "power2.out"
   });
 });
-
-
-
 </script>
 
 <style scoped>
@@ -264,9 +224,9 @@ button {
 }
 .faq-item {
   margin-bottom: 1.5rem;
-   max-width: 800px; /* optional — keeps text from stretching too wide */
-  text-align: left; /* ensures left alignment */
-  padding-left: 8rem; /* shifts it a bit to the left visually */
+   max-width: 800px; 
+  text-align: left; 
+  padding-left: 8rem; 
 }
 .faq-item strong {
   display: block;
@@ -278,7 +238,6 @@ button {
   font-family: 'Cinzel', serif;
   font-size: 80px;
   text-align: center;
-  /* Metallic gradient */
   background: linear-gradient(
     120deg,
     #fff4b0 0%,
@@ -396,7 +355,6 @@ button {
 .faq-question {
   display: flex;
   align-items: center;
-  /*gap: 0.6rem;*/
   margin-bottom: 0.4rem;
   font-family: 'Cinzel', serif;
   font-size: 22px;;
@@ -405,18 +363,14 @@ button {
 .faq-question strong {
   color: #ffd700; 
   font-weight: lighter;
-  /*text-shadow:
-    0 0 2px #dcc168,
-    0 0 4px #ffd700,
-    0 0 2px #fef4b0;*/
 }
 
 .faq-box {
-  background-color: #000000;  /* Dark background for contrast */
-  border: 1.5px solid #d4af37;  /* Golden border */
-  padding: 2rem 3rem;          /* Space inside the box */
+  background-color: #000000;  
+  border: 1.5px solid #d4af37; 
+  padding: 2rem 3rem;  
   max-width: 1100px;
-  margin: 2rem auto;           /* Center the box */
+  margin: 2rem auto;  
   
 }
 
@@ -440,8 +394,8 @@ button {
 }
 
 .form-section form {
-  max-width: 1100px; /* Adjust width here */
-  margin: 0 auto; /* Center horizontally */
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 * {
@@ -463,8 +417,82 @@ button {
   }
 }
 
+/* Mobile friendly */
 
+@media (max-width: 600px) {
 
+  .contact-wrapper {
+    padding: 1.5rem;
+  }
 
+  .metallic-title {
+    font-size: 2.3rem !important;
+    margin-top: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .contact-subtitle {
+    font-size: 1.025rem !important;
+    padding: 0 1rem;
+    line-height: 1.3;
+  }
+
+  .socials {
+    gap: 1.3rem;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
+
+  .socials a {
+    width: 32px;
+    height: 32px;
+    margin: 0;
+  }
+
+  .social-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  form {
+    margin-top: -0.5rem !important; 
+    padding: 1.3rem !important;
+    gap: 0.8rem;
+  }
+
+  input,
+  textarea {
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+
+  button {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .faq-box {
+    padding: 1.5rem !important;
+    margin: 1rem auto;
+  }
+
+  .faq-pair {
+    font-size: 1rem !important;
+    padding-left: 0.8rem;
+  }
+
+  .faq-question {
+    font-size: 1.2rem !important;
+  }
+
+  .faq-title {
+    font-size: 2rem !important;
+  }
+
+  .faq-item {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
 
 </style>

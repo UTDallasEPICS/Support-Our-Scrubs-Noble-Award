@@ -171,7 +171,7 @@ export default {
         const envMap = pmremGenerator.fromEquirectangular(hdrTexture).texture;
 
         this.scene.environment = envMap; // Enable PBR lighting (for glass)
-        this.scene.background = null;    // You can also set = envMap if you want to show the HDRI
+        this.scene.background = new THREE.Color(0x000000);    // You can also set = envMap if you want to show the HDRI
 
         hdrTexture.dispose();
         pmremGenerator.dispose();
@@ -419,7 +419,7 @@ export default {
 
        
        // Optional styles
-       myText.strokeColor = 0xffaa00        // Outline/glow
+       myText.strokeColor = 0xd4af37       // Outline/glow
        myText.strokeWidth = 0.02
        myText.outlineBlur = 0.01
        myText.outlineOffsetX = 0.005

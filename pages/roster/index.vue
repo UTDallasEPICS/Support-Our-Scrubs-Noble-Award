@@ -111,7 +111,7 @@ export default {
 
 
 .metallic-title {
-font-family: 'Libre Caslon Display', serif;
+font-family: 'Cinzel', serif;
   font-size: 70px;
   text-align: center;
   position: relative;
@@ -262,10 +262,34 @@ h2 {
 }
 
  .page-background {
-    background:
-    radial-gradient(circle at top, rgb(43, 41, 41), rgb(20, 20, 20) 100%);
-    
-    min-height: 100vh; /* Makes background cover full viewport height */
+  background-color: #000;
+  min-height: 100vh;
+}
+
+/* Mobile friendly */
+
+@media (max-width: 600px) {
+  .metallic-title {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    margin-top: 0px;
+    margin-bottom: 10px;
   }
+
+  .metallic-title::before {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+    top: 95%;
+    opacity: 0.12;
+  }
+}
+
+@media (max-width: 400px) {
+  .metallic-title {
+    font-size: clamp(1.6rem, 8vw, 2.2rem);
+  }
+
+  .metallic-title::before {
+    font-size: clamp(1.6rem, 8vw, 2.2rem);
+  }
+}
 
 </style>

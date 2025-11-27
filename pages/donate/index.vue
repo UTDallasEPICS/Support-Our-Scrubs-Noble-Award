@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style scoped>
-/* ====== Page base ====== */
+
 .page-background {
   background: #000;
   color: #fef08a;
@@ -100,7 +100,6 @@ export default {
   padding: 40px 20px;
 }
 
-/* ====== Metallic titles ====== */
 .metallic-title {
   margin-top: 3rem;
   font-family: 'Cinzel', serif;
@@ -135,7 +134,6 @@ export default {
   line-height: 1.15;
 }
 
-/* Flat variant for subheadings (no glow/shimmer) */
 .metallic-title--flat {
   text-shadow: none !important;
   animation: none !important;
@@ -148,7 +146,6 @@ export default {
   100% { background-position: -200% center; }
 }
 
-/* ====== Header text ====== */
 .donate-header {
   text-align: center;
   margin-bottom: 40px;
@@ -165,7 +162,6 @@ export default {
   
 }
 
-/* ====== Main content layout ====== */
 .main-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -173,7 +169,6 @@ export default {
   align-items: stretch;
 }
 
-/* Image block */
 .image-container {
   min-width: 280px;
 }
@@ -187,7 +182,6 @@ export default {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
 }
 
-/* CTA Card */
 .donation-cta {
   display: flex;
   flex-direction: column;
@@ -208,7 +202,6 @@ export default {
   color: #f5f5f5;
 }
 
-/* Donate button */
 .donate-button {
   display: inline-flex;
   align-items: center;
@@ -246,7 +239,6 @@ export default {
   height: 40px;
 }
 
-/* ====== Fade-in animation ====== */
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -257,7 +249,8 @@ export default {
   transform: translateY(0);
 }
 
-/* ====== Responsive ====== */
+/* Mobile friendly */
+
 @media (max-width: 1024px) {
   .donate-container {
     padding: 32px 16px;
@@ -277,7 +270,6 @@ export default {
   }
 }
 
-/* === MOBILE: reduced padding in card and remove bottom gap === */
 @media (max-width: 640px) {
   .donate-container {
     padding: 24px 14px;
@@ -285,8 +277,8 @@ export default {
 
   .donation-cta {
     padding: 16px 14px;
-    height: auto; /* fix extra bottom space */
-    margin-bottom: 0; /* remove excess spacing below the card */
+    height: auto;
+    margin-bottom: 0;
   }
 
   .donation-cta p {
