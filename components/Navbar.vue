@@ -21,10 +21,10 @@
       :hidden="!open && isMobile"
     >
       <nuxt-link to="/" class="nav__link" @click="close">Home</nuxt-link>
-      <nuxt-link to="/nominator" class="nav__link" @click="close">Nominate a Hero</nuxt-link>
+      <nuxt-link to="/nominator/form" class="nav__link" @click="close">Nominate a Hero</nuxt-link>
       <nuxt-link to="/roster" class="nav__link" @click="close">View Nominees</nuxt-link>
       <nuxt-link to="/donate" class="nav__link" @click="close">Donate</nuxt-link>
-      <nuxt-link to="/contact" class="nav__link" @click="close">Contact Us</nuxt-link>
+      <nuxt-link to="/contact" class="nav__link" @click="close">Contact Us</nuxt-link> 
       <nuxt-link to="/FAQ" class="nav__link" @click="close">FAQ</nuxt-link>
       <nuxt-link to="/aboutUs" class="nav__link" @click="close">About Us</nuxt-link>
       <button v-if="user"

@@ -163,7 +163,7 @@ import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "@/components/MyLogin.vue";
 
-definePageMeta({ middleware: 'auth' })
+// definePageMeta({ middleware: 'auth' })
 import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'

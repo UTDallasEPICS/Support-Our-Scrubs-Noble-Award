@@ -47,13 +47,13 @@ export default defineNuxtRouteMiddleware((to) => {
   if (to.path.startsWith('/auth/callback')) return
 
   const user = useSupabaseUser()
+  const showing = to.query.showLogin === '1'
 
-  // Protect only routes that SHOULD require login
-  const protectedPaths = ['/account']
-
-  if (!user.value && protectedPaths.some(p => to.path.startsWith(p))) {
-    // Redirect to home WITHOUT adding showLogin
-    return navigateTo('/')
+  if (!user.value && !showing) {
+    return navigateTo({
+      path: to.path,
+      query: { ...to.query, showLogin: '1' },
+      replace: true
+    })
   }
 })
-
