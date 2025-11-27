@@ -13,6 +13,10 @@
       <div class="welcome">
         <h1 class="metallic-title fade-in title-shift">THE NOBLE AWARD</h1>
 
+        <!-- NEW SUBTITLE HERE -->
+        <h2 class="welcome-subtitle fade-in">Honoring the heroes among us</h2>
+
+
         <div class="top-button-container fade-in">
           <nuxt-link to="/nominator" class="top-button">NOMINATE A HERO</nuxt-link>
           <nuxt-link to="/donate" class="top-button">DONATE</nuxt-link>
@@ -26,6 +30,7 @@
       <!-- Info Section -->
       <div class="container fade-in scroll-fade">
 
+       <!-- 
         <h1 class="metallic-title mb-40">The Noble Award:</h1>
         <h2 class="subtitle mb-60">Honoring Those Who Serve with Excellence, Dedication, and Heart</h2>
 
@@ -42,6 +47,7 @@
             a talented group of students and professors at the University of Texas at Dallas have contributed their time, creativity,
             and expertise to develop this platform, ensuring that every nominee is celebrated with the honor they deserve.</p>
         </div>
+        -->
 
         <div class="info-container section-gap">
           <h1 class="section-header">How It Works:</h1>
@@ -62,6 +68,10 @@
             <div class="step-card fade-in scroll-fade" style="transition-delay: 0.4s;">
               <h1>Step 3: Honoring & Celebration</h1>
               <p>Award recipients are showcased on our website and social media, receiving the Noble Award as a token of appreciation.</p>
+            </div>
+            <div class="step-card fade-in scroll-fade" style="transition-delay: 0.4s;">
+              <h1>Step 4: View & Share the Profile</h1>
+              <p>Review the completed hero profile and share it with others to celebrate their achievements!</p>
             </div>
           </div>
 
@@ -115,6 +125,8 @@
                 </div>
                 <p>More!</p>
               </div>
+
+              
             </div>
           </div>
         </div>
@@ -297,14 +309,14 @@ export default {
   }
 
 .three-js-container {
-  width: 100%;     /* 50% of parent width */
-  height: 60vh;   /* 60% of viewport height */
-  max-width: 10000px; /* Optional: maximum size */
+  width: 100%;     
+  height: 60vh;   
+  max-width: 10000px;
 }
 
 .metallic-title {
     font-family: 'Libre Caslon Display', serif;
-    font-size: clamp(2rem, 15vw, 10rem);
+    font-size: clamp(2rem, 8vw, 10rem);
     color: transparent;
     background: linear-gradient(
       120deg,
@@ -326,9 +338,9 @@ export default {
     text-align: center;
     margin: 0 auto;
     z-index: 10;
-    white-space: normal; /* allow wrapping */
+    white-space: normal;
     max-width: 90vw;
-    line-height: 1.1; /* decrease gap between lines */
+    line-height: 1.1;
   }
   .metallic-title2 {
     font-family: 'Libre Caslon Display', serif;
@@ -355,7 +367,7 @@ export default {
   }
 
   .title-shift {
-  margin-top: -180px; /* lift the title upward */
+  margin-top: -180px;
   }
 
 
@@ -402,7 +414,7 @@ export default {
 
   .top-button-container{
     position: absolute;
-    bottom: 150px;
+    bottom: 237px;
     gap: 2rem;
     flex-wrap: wrap;
     justify-content: center;
@@ -488,20 +500,23 @@ export default {
     text-transform: uppercase;    /* MAKE ALL CAPS */
     letter-spacing: 2px;  
     font-size: 3rem;      
+    
   }
 
   .info-container h1{
     text-align: left;
     color: #d4af37;
-    font-size: 2.8rem;
+    font-size: 3.3rem;
     text-align: left;
     margin-bottom: 40px;
-   
+  
   }
 
   .info-container p{
     font-size: 1.4rem;
     margin-bottom: 40px;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
   }
 
 .button-container {
@@ -509,7 +524,7 @@ export default {
   justify-content: center;
   align-items: center;
   margin-top: 40%;
-  z-index: 2; /* Ensure it's above the background */  
+  z-index: 2;
 }
 
 .donate-button {
@@ -525,14 +540,14 @@ export default {
   transition: background-color 0.3s;
   margin: 50px;
   align-self: flex-start;
-  z-index: 2; /* Ensure it's above the background */
+  z-index: 2; 
 }
 
 .page-background {
   background:
   radial-gradient(circle at top, rgb(0, 0, 0), rgb(33, 33, 33) 300%);
   font-family: 'Libre Caslon Display', serif;
-  min-height: 100vh; /* Makes background cover full viewport height */
+  min-height: 100vh;
 }
 
 .profile-image {
@@ -540,6 +555,8 @@ export default {
   height: auto;    
   max-width: 100%; 
   display: block; 
+  border: none;    
+  transition: transform 0.3s ease;
  
   /* Glow effect */
   filter: drop-shadow(0 0 20px rgb(255, 255, 255))
@@ -556,10 +573,10 @@ export default {
 .hero-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6rem 8rem;
+  gap: 4rem 8.6rem;
   justify-content: center;
   align-items: start;
-  margin: 3rem auto;
+  margin: 2em auto;
   max-width: 1200px;
 }
 
@@ -590,13 +607,12 @@ export default {
 }
 
 .hero-item p {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   font-size: 1rem;
   color: #ffffff;
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-weight: 500;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  font-weight: 400;
 }
 
   .step-card {
@@ -611,24 +627,28 @@ export default {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* content starts at top */
+    justify-content: flex-start; 
     min-height: 290px;  
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
   }
 
   .step-card h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     color: #d4af37; 
-    margin-top: 0;     /* remove any default margin-top */
+    margin-top: 0;  
     margin-bottom: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    
   }
 
   .step-card p {
     font-size: 1.1rem;
-    color: #ffffffcc;
+    color: #ffffff;
     line-height: 1.5;
     margin-top: 0;  
+    line-height: 1.7;
   }
 
 .section-header {
@@ -650,7 +670,7 @@ export default {
   font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin: 4rem 0 2rem; /* space above and below */
+  margin: 4rem 0 2rem;
 
 }
 
@@ -658,8 +678,8 @@ export default {
 .section-header::after {
   content: '';
   flex: 1;
-  border-bottom: 2px solid white; /* line thickness and color */
-  margin: 0 1rem; /* space between line and text */
+  border-bottom: 2px solid white;
+  margin: 0 1rem;
 }
 
 .cards-border {
@@ -680,7 +700,6 @@ export default {
   transition: opacity 1s ease;
 }
 
-/* Title Styling */
 .intro-title {
   position: relative;
   font-family: 'Cinzel', serif;
@@ -694,7 +713,6 @@ export default {
   text-align: center;
 }
 
-/* Soft radial glow behind the title */
 .intro-title::before {
   content: '';
   position: absolute;
@@ -710,7 +728,6 @@ export default {
   animation: pulseGlow 4s infinite ease-in-out;
 }
 
-/* Glow pulse animation */
 @keyframes pulseGlow {
   0% {
     opacity: 0.4;
@@ -726,7 +743,6 @@ export default {
   }
 }
 
-/* Smooth fade-in for the homepage after intro */
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -744,7 +760,6 @@ export default {
   transition: opacity 1.5s ease;
 }
 
-/* Spacing Utility Classes */
 .section-gap {
   margin-top: clamp(4rem, 10vw, 8rem);
   margin-bottom: clamp(4rem, 10vw, 8rem);
@@ -757,28 +772,35 @@ export default {
 .mb-200 { margin-bottom: 200px; }
 
 .nominate-section {
-  margin-top: 10rem; /* more space above the section */
+  margin-top: 10rem;
 }
 
-/* Subtitle Styling */
 .subtitle {
   font-size: 2rem;
   text-align: center;
   font-family: 'Libre Caslon Display', serif;
 }
 
-/* Text Centering Helper */
 .text-center { text-align: center!important; }
 
-/* Info Container Adjustments */
 .info-container h1, .info-container h2 {
   margin-bottom: 2rem;
 }
 .info-container p {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Optional: responsive layout */
+.welcome-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: #ffffffdd;
+  margin-top: -15px;
+  letter-spacing: 5px;
+  z-index: 10;
+  text-align: center;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
 @media (max-width: 1000px) {
   .hero-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -789,6 +811,157 @@ export default {
 @media (max-width: 600px) {
   .hero-grid {
     grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Mobile friendly */
+
+@media (max-width: 600px) {
+
+  .intro-title {
+    font-size: 1.6rem !important;
+    letter-spacing: 3px;
+  }
+
+  .title-shift {
+    margin-top: -60px; 
+  }
+
+  .welcome {
+    padding: 2rem;
+    height: 85vh;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem !important;
+    margin-top: 8px !important;
+    padding: 0 20px;
+    line-height: 1.3;
+  }
+
+  .title-shift {
+    margin-top: -120px !important;
+  }
+
+  .welcome {
+    padding-top: 6rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  .top-button-container {
+    bottom: 100px;
+    display: flex;
+    flex-direction: row;    
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;            
+    flex-wrap: nowrap;   
+    width: 100%;
+  }
+
+  .top-button {
+    margin: 0;            
+    padding: 12px 20px;     
+    font-size: 0.9rem;
+    width: auto;            
+    margin-bottom: 132px 
+  }
+
+  .metallic-title {
+    font-size: 2.8rem !important;
+    max-width: 95vw;
+    line-height: 1.15;
+  }
+
+  .metallic-title2 {
+    font-size: 1.9rem !important;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    padding: 0 1rem;
+  }
+
+  .container {
+    margin-top: 120px !important;
+    padding: 0.5rem;
+  }
+
+  .container h1 {
+    font-size: 1.8  rem !important;
+    text-align: center;
+  }
+
+  .step-card h1{
+    font-size: 1.5rem !important;
+  }
+
+  .section-header {
+    font-size: 1.8rem !important;
+    text-align: center;
+  }
+
+  .container h2 {
+    font-size: 1.3rem !important;
+  }
+
+  .info-container p {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-top: -1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .profile-image {
+    max-width: 70%;
+  }
+
+  .step-card {
+    max-width: 100%;
+    min-height: 220px;
+    padding: 1.2rem;
+  }
+  .step-card h1 {
+    font-size: 1.3rem;
+  }
+  .step-card p {
+    font-size: 1rem;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+
+  .hero-img {
+    width: 90px;
+    height: 90px;
+  }
+  .hero-item p {
+    font-size: 0.9rem;
+  }
+
+  .three-js-container {
+    height: 38vh !important;
+  }
+
+  .mb-40 { margin-bottom: 20px; }
+  .mb-60 { margin-bottom: 30px; }
+}
+
+@media (max-width: 900px) {
+  .metallic-title,
+  .metallic-title2 {
+    font-size: 4rem;
+  }
+
+  .container {
+    margin-top: 180px;
+  }
+
+  .hero-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 3rem;
   }
 }

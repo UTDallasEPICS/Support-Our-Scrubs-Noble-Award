@@ -17,6 +17,7 @@ CREATE TABLE "Nominee" (
     "occupation" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "aboutme" TEXT,
     "photoURL" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "nominatorId" TEXT NOT NULL,

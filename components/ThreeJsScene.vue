@@ -93,6 +93,7 @@ export default {
         profilepage: () => this.loadProfile()      
       };
 
+      this.toggleballasts = false;
       this.ballasts = 100;
       this.ud = "";
       this.wheelHandler = "";
@@ -177,7 +178,7 @@ export default {
         const envMap = pmremGenerator.fromEquirectangular(hdrTexture).texture;
 
         this.scene.environment = envMap; // Enable PBR lighting (for glass)
-        this.scene.background = null;    // You can also set = envMap if you want to show the HDRI
+        this.scene.background = new THREE.Color(0x000000);    // You can also set = envMap if you want to show the HDRI
 
         hdrTexture.dispose();
         pmremGenerator.dispose();
@@ -198,10 +199,14 @@ export default {
 
         this.$refs.threeContainer.addEventListener('mouseenter', () => {
           this.scrollEnabled = true;
+          this.toggleballasts = true;
+          animate();
         });
 
         this.$refs.threeContainer.addEventListener('mouseleave', () => {
           this.scrollEnabled = false;
+          this.toggleballasts = false;
+
         });
 
         
@@ -232,7 +237,7 @@ export default {
           this.hoveredMesh = null
         }
 **/
-        if (this.ballasts >= 0){
+        if (this.ballasts >= 0 || this.toggleballasts == true){
           requestAnimationFrame(animate);
           this.ballasts -= 1;
         }      
@@ -327,8 +332,7 @@ export default {
   console.log("Navigating to profile for slug:", this.ud.slug);
   this.$router.push(`/profile/${this.ud.slug}`);
   this.cleanup();
-}
-
+  }
 
 },
    loadProfile(){
@@ -415,10 +419,17 @@ export default {
       myText.fontSize = size
       myText.color = 0xffcc00
 
-      // Outline
-      myText.strokeColor = 0xffaa00
-      myText.strokeWidth = 0.02
-      myText.outlineBlur = 0.01
+       
+       // Optional styles
+       myText.strokeColor = 0xd4af37       // Outline/glow
+       myText.strokeWidth = 0.02
+       myText.outlineBlur = 0.01
+       myText.outlineOffsetX = 0.005
+       myText.outlineOffsetY = 0.00
+       // Must update after setting text/props
+       myText.sync()
+       this.scene.add(myText)
+       myText.position.set(x, y, z)
 
       // ✅ Wrap within card
       myText.maxWidth = maxWidth          // Max width before wrapping
@@ -626,7 +637,7 @@ export default {
               child.userData.recepient = this.recepient[idx]
               child.userData.occupation = this.occupation[idx]
               child.userData.description = this.description[idx]
-              //child.userData.aboutme = this.aboutme[idx]
+              child.userData.aboutme = this.aboutme[idx]
               child.userData.slug = this.slug[idx]
               console.log("desired "+this.occupation[idx])
               console.log("obtained "+child.userData.occupation)

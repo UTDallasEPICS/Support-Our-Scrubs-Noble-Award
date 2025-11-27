@@ -63,4 +63,3 @@ model Admin {
   Position String
   Nominee  Nominee[]
 }
-
