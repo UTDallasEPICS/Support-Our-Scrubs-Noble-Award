@@ -199,6 +199,14 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKey)
 })
 
+watch(user, (newUser) => {
+  if (newUser?.email) {
+    fetchUserRole(newUser.email)
+  } else {
+    role.value = null
+  }
+}, { immediate: true })
+
 /* Close mobile nav on route change */
 watch(() => route.fullPath, close)
 </script>
@@ -300,4 +308,68 @@ watch(() => route.fullPath, close)
   }
   .nav__link, .login-button { padding: .5rem .75rem; border-radius: 8px; }
 }
+/* === Dropdown transition === */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.15s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === Dropdown panel styling === */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: .3rem;
+  background: #111;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.4);
+  padding: .5rem;
+  width: 210px;
+  z-index: 200;
+}
+
+.dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: .6rem .8rem;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,.12);
+}
+.dropdown-header {
+  font-size: .8rem;
+  opacity: .7;
+  margin-bottom: .25rem;
+}
+.dropdown-email {
+  font-size: .85rem;
+  word-break: break-all;
+  margin-bottom: .6rem;
+}
+
 </style>

@@ -140,7 +140,7 @@
         </div>
       </div>
       <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-gray-700 rounded-lg w-96 rounded-lg px-4">
+      <div class="bg-gray-700 rounded-lg w-96 px-4">
         <h3 class="text-2xl font-bold mb-4">Nominee Details</h3>
         <p><strong>First Name:</strong> {{ selectedNominee.firstName }}</p>
         <p><strong>Last Name:</strong> {{ selectedNominee.lastName }}</p>
