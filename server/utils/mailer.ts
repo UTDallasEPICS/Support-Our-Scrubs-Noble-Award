@@ -19,7 +19,7 @@ export function routeRecipient(to: string) {
 // optional helper function
 export async function sendEmail(to: string, subject: string, html: string) {
   await mailer.sendMail({
-    from: process.env.MAIL_FROM || "onboarding@resend.dev",
+    from: process.env.MAIL_FROM || "SupportOurScrubs@noreply.dev",
     to,
     subject,
     html

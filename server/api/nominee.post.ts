@@ -78,12 +78,39 @@ export default defineEventHandler(async (event) => {
         console.log('[email] sending to nominator:', nominatorEmail)
         await sendEmail(
         routeRecipient(nominatorEmail),
-        `We received your nomination for ${firstName} ${lastName}`,
-        `
-          <h2>Thank you, ${nominatorName}!</h2>
-          <p>Your nomination for <b>${firstName} ${lastName}</b> has been received.</p>
-          <p>We’ll review it and get back to you soon.</p>
-        `
+          `We received your nomination for ${firstName} ${lastName}`,
+          `
+          <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
+
+            <h2 style="color: #2c3e50; margin-bottom: 10px;">
+              Thank you, ${nominatorName}!
+            </h2>
+
+            <p style="font-size: 15px; line-height: 1.5; margin-bottom: 12px;">
+              Your nomination for <b>${firstName} ${lastName}</b> has been received.
+            </p>
+
+            <p style="font-size: 15px; line-height: 1.5; margin-bottom: 20px;">
+              We’ll review it and get back to you soon.
+            </p>
+
+            <div
+              style="
+                margin-top: 25px;
+                padding: 14px 18px;
+                background: #f3f6fa;
+                border-left: 4px solid #2c3e50;
+                border-radius: 6px;
+                font-size: 14px;
+                line-height: 1.5;
+              "
+            >
+              If you have any additional information you'd like to share, feel free to reply
+              directly to this email.
+            </div>
+
+          </div>
+          `
       )
       console.log('[email] nominator email sent (or at least attempted)')
       } catch (e) {
@@ -96,14 +123,45 @@ export default defineEventHandler(async (event) => {
           await sendEmail(
             routeRecipient(process.env.ADMIN_TO),
             `New Nomination: ${firstName} ${lastName}`,
-            `<h3>New nomination submitted</h3>
-             <ul>
-               <li><b>Nominee:</b> ${firstName} ${lastName} (${email})</li>
-               <li><b>Occupation:</b> ${occupation}</li>
-               <li><b>Place of Work:</b> ${placeOfWork}</li>
-               <li><b>Nominator:</b> ${nominatorName} (${nominatorEmail})</li>
-             </ul>
-             <p>${description}</p>`
+            `
+            <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
+              <h2 style="color: #2c3e50; margin-bottom: 15px;">
+                New Nomination Submitted
+              </h2>
+
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 6px 0;"><strong>Nominee:</strong></td>
+                  <td>${firstName} ${lastName} (${email})</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0;"><strong>Occupation:</strong></td>
+                  <td>${occupation}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0;"><strong>Place of Work:</strong></td>
+                  <td>${placeOfWork}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0;"><strong>Nominator:</strong></td>
+                  <td>${nominatorName} (${nominatorEmail})</td>
+                </tr>
+              </table>
+
+              <div
+                style="
+                  margin-top: 20px;
+                  background: #f7f7f7;
+                  padding: 12px 16px;
+                  border-radius: 8px;
+                  line-height: 1.5;
+                  white-space: pre-wrap;
+                "
+              >
+                ${description}
+              </div>
+            </div>
+  `
           )
           console.log('[email] admin email sent (or at least attempted)') 
         } catch (e) {
