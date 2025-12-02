@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // import { prisma, EmailTemplateType} from "../utils/prismaclient";
 // import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
@@ -7,17 +6,6 @@
 //     const templateData = await prisma.emailTemplate.findUniqueOrThrow({
 //         where: { type: template }
 //     });
-=======
-import { prisma, EmailTemplateType} from "../utils/prismaclient";
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-
-const sesClient = new SESClient({ region: process.env.AWS_REGION });
-
-export async function sendTemplateEmail(destinationEmail: string, template: EmailTemplateType, args: {[k: string]: string}) {
-    const templateData = await prisma.emailTemplate.findUniqueOrThrow({
-        where: { type: template }
-    });
->>>>>>> origin/mobileFriendly
 
 //     let templateSubject = templateData.subject;
 //     let templateText = templateData.content;

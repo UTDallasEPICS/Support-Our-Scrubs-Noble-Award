@@ -1,11 +1,6 @@
 <template>
-<<<<<<< HEAD
   <Navbar @open-login="showLogin = true"/>
   <div class="page-background { blurred: showLogin}">
-=======
-  <div class="page-background">
-    <Navbar />
->>>>>>> origin/mobileFriendly
 
     <div class="donate-container">
       <!-- Header -->
@@ -65,7 +60,6 @@
 <script>
 import { gsap } from "gsap"
 import Navbar from '@/components/Navbar.vue'
-<<<<<<< HEAD
 import LoginModal from "@/components/MyLogin.vue"
 
 export default {
@@ -76,12 +70,6 @@ export default {
       showLogin: false,
     }
   },
-=======
-
-export default {
-  name: 'DonatePage',
-  components: { Navbar },
->>>>>>> origin/mobileFriendly
   mounted() {
     // Scroll fade effect (keep your existing IntersectionObserver)
     const els = document.querySelectorAll('[data-fade], .fade-in')
@@ -107,11 +95,7 @@ export default {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-
-=======
 /* ====== Page base ====== */
->>>>>>> origin/mobileFriendly
 .page-background {
   background: #000;
   color: #fef08a;
@@ -125,10 +109,7 @@ export default {
   padding: 40px 20px;
 }
 
-<<<<<<< HEAD
-=======
 /* ====== Metallic titles ====== */
->>>>>>> origin/mobileFriendly
 .metallic-title {
   margin-top: 3rem;
   font-family: 'Cinzel', serif;
@@ -163,10 +144,7 @@ export default {
   line-height: 1.15;
 }
 
-<<<<<<< HEAD
-=======
 /* Flat variant for subheadings (no glow/shimmer) */
->>>>>>> origin/mobileFriendly
 .metallic-title--flat {
   text-shadow: none !important;
   animation: none !important;
@@ -179,10 +157,7 @@ export default {
   100% { background-position: -200% center; }
 }
 
-<<<<<<< HEAD
-=======
 /* ====== Header text ====== */
->>>>>>> origin/mobileFriendly
 .donate-header {
   text-align: center;
   margin-bottom: 40px;
@@ -199,10 +174,7 @@ export default {
   
 }
 
-<<<<<<< HEAD
-=======
 /* ====== Main content layout ====== */
->>>>>>> origin/mobileFriendly
 .main-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -210,10 +182,7 @@ export default {
   align-items: stretch;
 }
 
-<<<<<<< HEAD
-=======
 /* Image block */
->>>>>>> origin/mobileFriendly
 .image-container {
   min-width: 280px;
 }
@@ -227,10 +196,7 @@ export default {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
 }
 
-<<<<<<< HEAD
-=======
 /* CTA Card */
->>>>>>> origin/mobileFriendly
 .donation-cta {
   display: flex;
   flex-direction: column;
@@ -251,10 +217,7 @@ export default {
   color: #f5f5f5;
 }
 
-<<<<<<< HEAD
-=======
 /* Donate button */
->>>>>>> origin/mobileFriendly
 .donate-button {
   display: inline-flex;
   align-items: center;
@@ -292,10 +255,7 @@ export default {
   height: 40px;
 }
 
-<<<<<<< HEAD
-=======
 /* ====== Fade-in animation ====== */
->>>>>>> origin/mobileFriendly
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -306,12 +266,7 @@ export default {
   transform: translateY(0);
 }
 
-<<<<<<< HEAD
-/* Mobile friendly */
-
-=======
 /* ====== Responsive ====== */
->>>>>>> origin/mobileFriendly
 @media (max-width: 1024px) {
   .donate-container {
     padding: 32px 16px;
@@ -331,10 +286,7 @@ export default {
   }
 }
 
-<<<<<<< HEAD
-=======
 /* === MOBILE: reduced padding in card and remove bottom gap === */
->>>>>>> origin/mobileFriendly
 @media (max-width: 640px) {
   .donate-container {
     padding: 24px 14px;
@@ -342,13 +294,8 @@ export default {
 
   .donation-cta {
     padding: 16px 14px;
-<<<<<<< HEAD
-    height: auto;
-    margin-bottom: 0;
-=======
     height: auto; /* fix extra bottom space */
     margin-bottom: 0; /* remove excess spacing below the card */
->>>>>>> origin/mobileFriendly
   }
 
   .donation-cta p {
@@ -371,8 +318,4 @@ export default {
 .donate-container {
   padding-bottom: 150px;
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> origin/mobileFriendly

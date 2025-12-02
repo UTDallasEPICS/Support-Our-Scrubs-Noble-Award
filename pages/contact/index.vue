@@ -23,11 +23,7 @@
       </div>
     </section>
 
-<<<<<<< HEAD
-    <section class="form-section" style="margin-bottom: 100px; text-align: center;">
-=======
     <section class="form-section" style="margin-bottom: 150px; text-align: center;">
->>>>>>> origin/mobileFriendly
       <h3 class="contact-subtitle"> If you have any questions,</h3>
       <h3 class="contact-subtitle"> please do not hesitate to send us a message.</h3>
 
@@ -39,63 +35,21 @@
             <button type="submit">Submit Inquiry</button>
           </form>
     </section>
-<<<<<<< HEAD
 </div>
 <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
   </Teleport>
-=======
-  
-    <section class="faq-box-section">
-      <h1 class="faq-title">Facts and Questions</h1>
-      
-      <div class="faq-box">
-        <div class="faq-item">
-          <div class="faq-pair">
-            <div class="faq-question">
-              <strong>How can I nominate someone?</strong>
-            </div>
-            <p>You can submit nominations through the inquiry form below or via email.</p>
-          </div>
-
-          <div class="faq-pair">
-            <div class="faq-question">
-              <strong>Who is eligible to be nominated?</strong>
-            </div>
-            <p>Any healthcare worker is eligible to be nominated for the Noble Award.</p>
-          </div>
-
-          <div class="faq-pair">
-            <div class="faq-question">
-              <strong>Who can nominate a candidate?</strong>
-            </div>
-            <p>Any member of our society can nominate someone for the Noble Award.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </div>
->>>>>>> origin/mobileFriendly
 </template>
 
 <script setup lang="ts">
 import { reactive, onMounted, nextTick } from 'vue';
 import Navbar from '@/components/Navbar.vue';
-<<<<<<< HEAD
 import nobleImage from '@/assets/nobleaward.png';
-import { onMounted, nextTick } from 'vue'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import LoginModal from '@/components/MyLogin.vue'
 
 gsap.registerPlugin(ScrollTrigger)
-=======
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
->>>>>>> origin/mobileFriendly
 
 definePageMeta({});
 
@@ -134,7 +88,6 @@ onMounted(async () => {
   const timeline = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.6 } });
 
   timeline
-<<<<<<< HEAD
   .from(".metallic-title", { opacity: 0, y: -50 })
   .from(".socials a", { opacity: 0, scale: 0.5, stagger: 0.05}, "-=0.2")
   .from(".contact-subtitle", { opacity: 0, y: 30, stagger: 0.1}, "-=0.1")
@@ -143,15 +96,6 @@ onMounted(async () => {
 
 
   //Animation for FAQ section
-=======
-    .from(".metallic-title", { opacity: 0, y: -50 })
-    .from(".socials a", { opacity: 0, scale: 0.5, stagger: 0.05 }, "-=0.2")
-    .from(".contact-subtitle", { opacity: 0, y: 30, stagger: 0.1 }, "-=0.1")
-    .from("form", { opacity: 0, y: 30, duration: 0.3, ease: "power2.out" }, "-=0.1")
-    .from("form input, form textarea, form button", { opacity: 0, y: 20, stagger: 0.05, duration: 0.4 }, "-=0.2");
-
-  // Animation for FAQ section
->>>>>>> origin/mobileFriendly
   gsap.from([".faq-title", ".faq-box"], {
     scrollTrigger: {
       trigger: ".faq-box",
@@ -185,7 +129,6 @@ onMounted(async () => {
   color: #d4af37;
   font-family: 'Roboto', sans-serif;
   margin: 0;
-<<<<<<< HEAD
 }
 header {
   padding: 2rem;
@@ -204,8 +147,6 @@ header img {
   display: block;
   filter: drop-shadow(0 0 5px #d4af37);
   transition: transform 0.3s ease;
-=======
->>>>>>> origin/mobileFriendly
 }
 
 /* (old generic header styles removed so they don't affect <Navbar />)
@@ -284,11 +225,7 @@ button:active {
   margin-right: 1rem;
   text-decoration: none;
   margin-top: 40px;
-<<<<<<< HEAD
   margin-bottom: 50px;
-=======
-  margin-bottom: 70px;
->>>>>>> origin/mobileFriendly
   color: transparent;
 }
 .socials {
@@ -314,15 +251,9 @@ button:active {
 }
 .faq-item {
   margin-bottom: 1.5rem;
-<<<<<<< HEAD
-   max-width: 800px; 
-  text-align: left; 
-  padding-left: 8rem; 
-=======
   max-width: 800px;
   text-align: left;
   padding-left: 8rem;
->>>>>>> origin/mobileFriendly
 }
 .faq-item strong {
   display: block;
@@ -334,10 +265,7 @@ button:active {
   font-family: 'Cinzel', serif;
   font-size: 80px;
   text-align: center;
-<<<<<<< HEAD
-=======
   /* Metallic gradient */
->>>>>>> origin/mobileFriendly
   background: linear-gradient(
     120deg,
     #fff4b0 0%,
@@ -419,23 +347,14 @@ button:active {
 }
 
 .faq-item {
-<<<<<<< HEAD
   padding-left: 1rem;
-=======
-  padding-left: 2rem;
->>>>>>> origin/mobileFriendly
   padding-right: 2rem;
   padding-top: 1rem;
 }
 
 .faq-pair {
-<<<<<<< HEAD
   border-left: 3px solid #d4af37;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
-=======
-  border-left: 4px solid #d4af37;
-  font-family: 'Libre Caslon Display', serif;
->>>>>>> origin/mobileFriendly
   font-size: 20px;
   padding-left: 1rem;
   margin-bottom: 2rem;
@@ -466,27 +385,12 @@ button:active {
   align-items: center;
   margin-bottom: 0.4rem;
   font-family: 'Cinzel', serif;
-<<<<<<< HEAD
   font-size: 22px;;
-=======
->>>>>>> origin/mobileFriendly
 }
 
 .faq-question strong {
   color: #ffd700; 
   font-weight: lighter;
-<<<<<<< HEAD
-}
-
-.faq-box {
-  background-color: #000000;  
-  border: 1.5px solid #d4af37; 
-  padding: 2rem 3rem;  
-  max-width: 1100px;
-  margin: 2rem auto;  
-  
-=======
->>>>>>> origin/mobileFriendly
 }
 
 .faq-box {
@@ -520,13 +424,10 @@ button:active {
   margin: 0 auto;
 }
 
-<<<<<<< HEAD
 * {
   transform-origin: center;
 }
 
-=======
->>>>>>> origin/mobileFriendly
 .pop-in {
   animation: popIn 0.6s ease-out forwards;
 }
@@ -542,7 +443,6 @@ button:active {
   }
 }
 
-<<<<<<< HEAD
 /* Mobile friendly */
 
 @media (max-width: 600px) {
@@ -622,65 +522,3 @@ button:active {
 }
 
 </style>
-=======
-/* Mobile tweaks */
-@media (max-width: 768px) {
-  .contact-wrapper {
-    padding: 1.5rem 1rem;
-  }
-
-  .metallic-title {
-    font-size: 2.5rem;
-    margin-top: 2rem;
-  }
-
-  .contact-subtitle {
-    font-size: 1.1rem;
-    padding: 0 0.5rem;
-  }
-
-  form {
-    padding: 1.5rem 1rem;
-  }
-
-  .form-section form {
-    max-width: 100%;
-  }
-
-  .faq-title {
-    font-size: 2rem;
-    margin-top: 2.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .faq-box {
-    padding: 1.5rem 1rem;
-    margin: 1.5rem 1rem;
-  }
-
-  .faq-item {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .faq-pair {
-    font-size: 1rem;
-  }
-
-  .socials {
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .socials a {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
-
-  /* extra breathing room below the icons on mobile */
-  .socials-section {
-    margin-bottom: 1.25rem;
-  }
-}
-</style>
->>>>>>> origin/mobileFriendly
