@@ -265,23 +265,6 @@
           </button>
         </div>
       </div>
-<<<<<<< HEAD
-      <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-gray-700 rounded-lg w-96 px-4">
-        <h3 class="text-2xl font-bold mb-4">Nominee Details</h3>
-        <p><strong>First Name:</strong> {{ selectedNominee.firstName }}</p>
-        <p><strong>Last Name:</strong> {{ selectedNominee.lastName }}</p>
-        <p><strong>Email:</strong> {{ selectedNominee.email }}</p>
-        <p><strong>Phone Number:</strong> {{ selectedNominee.phoneNumber }}</p>
-        <p><strong>Address:</strong> {{ selectedNominee.address }}</p>
-        <p><strong>Place of Work:</strong> {{ selectedNominee.placeOfWork }}</p>
-        <p><strong>Occupation:</strong> {{ selectedNominee.occupation }}</p>
-        <p><strong>Description:</strong> {{ selectedNominee.description }}</p>
-        <p><strong>Status:</strong> {{ selectedNominee.status }}</p>
-        <button @click="closeModal" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-md">Close</button>
-      </div>
-=======
->>>>>>> origin/mobileFriendly
     </div>
   </div>
 </template>

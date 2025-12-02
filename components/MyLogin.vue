@@ -74,22 +74,6 @@ try {
     loading.value = false
   }
 }
-//   try { 
-//     // Redirect back to where they intended to go
-//     const redirect = `${window.location.origin}/`
-//     const { error } = await supabase.auth.signInWithOtp({
-//       email: email.value,
-//       options: { emailRedirectTo: redirect }
-//     })
-//     if (error) throw error
-//     msg.value = 'Check your email for the login link.'
-//     emit('submitted')
-//   } catch (e: any) {
-//     msg.value = e?.message ?? 'Could not send link. Try again.'
-//   } finally {
-//     loading.value = false
-//   }
-//  }
 
 function close() {
   emit('close')

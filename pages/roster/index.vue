@@ -286,8 +286,7 @@ h2 {
 }
 
  .page-background {
-    background:
-    radial-gradient(circle at top, rgb(78, 78, 78), rgb(33, 33, 33) 100%);  
+    background:black;  
     min-height: 100vh; /* Makes background cover full viewport height */
   }
 
