@@ -1,6 +1,10 @@
 import { prisma, Status } from "../utils/prismaclient";
 import { getQuery } from 'h3';
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/mobileFriendly
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const findId = typeof query.findId === 'string' ? query.findId : undefined;

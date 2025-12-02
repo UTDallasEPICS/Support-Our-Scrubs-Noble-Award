@@ -1,72 +1,217 @@
 <template>
-      <Navbar />
+  <div class="min-h-screen bg-black text-amber-300">
+    <Navbar />
 
-  <body>
-  <div>
-    <p class="metallic-title"> Noble Award </p>
-    <p class="metallic-text"> Update Nominee Profile </p>
-    
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="emailSearch">Enter Nominee Email:</label>
-        <input type="text" v-model="emailSearch" id="emailSearch" />
-        <button type="button" @click="fetchNominee">Search</button>
-      </div>
+    <main class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
+      <!-- Title -->
+      <p class="metallic-title metallic-title--main">NOBLE AWARD</p>
+      <p class="metallic-title metallic-title--sub">UPDATE NOMINEE PROFILE</p>
 
+      <!-- Card Container -->
+      <div
+        class="mt-8 rounded-2xl border border-zinc-800/70 bg-[#1a1a1a] backdrop-blur p-6 sm:p-8 md:p-10 shadow-xl"
+      >
+        <!-- Search Section -->
+        <div class="mb-8">
+          <label for="emailSearch" class="block text-sm font-medium mb-2">Nominee Email</label>
 
-      <div>
-        <label for="firstName">First Name:</label>
-        <input type="text" v-model="formData.firstName" id="firstName" />
-      </div>
-       <div>
-        <label for="lastName">Last Name:</label>
-        <input type="text" v-model="formData.lastName" id="lastName" />
-      </div>
-       <div>
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" v-model="formData.phoneNumber" id="phoneNumber" />
-      </div>
-       <div>
-        <label for="address">Address:</label>
-        <input type="text" v-model="formData.address" id="address" />
-      </div>
-       <div>
-        <label for="placeOfWork">Place of Work:</label>
-        <input type="text" v-model="formData.placeOfWork" id="placeOfWork" />
-      </div>
-       <div>
-        <label for="occupation">Occupation:</label>
-        <input type="text" v-model="formData.occupation" id="occupation" />
-      </div>
-       <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="formData.email" id="email" />
-      </div>
-       <div>
-        <label for="description">Description:</label>
-        <textarea v-model="formData.description" id="description"></textarea>
-      </div>
-       <div>
-        <label for="photoURL">Photo URL:</label>
-        <input type="url" v-model="formData.photoURL" id="photoURL" />
-      </div>
-       <button type="submit">Submit</button>
-    </form>
+          <div class="flex gap-3">
+            <input
+              id="emailSearch"
+              v-model="emailSearch"
+              type="text"
+              class="flex-1 rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100
+                     placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 p-3"
+              placeholder="nominee@example.com"
+            />
 
-    <nuxt-link to="/nominator">
-      <button>Go To Nomination Page</button>
-    </nuxt-link>
+            <button
+              type="button"
+              class="px-5 py-2 bg-amber-400 text-black font-semibold rounded-lg hover:bg-amber-300"
+              @click="fetchNominee"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+
+        <!-- Editable Form -->
+        <form @submit.prevent="submitForm" class="space-y-5">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="firstName" class="block text-sm mb-1">First Name</label>
+              <input
+                id="firstName"
+                v-model="formData.firstName"
+                type="text"
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+              />
+            </div>
+
+            <div>
+              <label for="lastName" class="block text-sm mb-1">Last Name</label>
+              <input
+                id="lastName"
+                v-model="formData.lastName"
+                type="text"
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="phoneNumber" class="block text-sm mb-1">Phone Number</label>
+              <input
+                id="phoneNumber"
+                v-model="formData.phoneNumber"
+                type="tel"
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+              />
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm mb-1">Email</label>
+              <input
+                id="email"
+                v-model="formData.email"
+                type="email"
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="address" class="block text-sm mb-1">Address</label>
+            <input
+              id="address"
+              v-model="formData.address"
+              type="text"
+              class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="placeOfWork" class="block text-sm mb-1">Place of Work</label>
+              <input
+                id="placeOfWork"
+                v-model="formData.placeOfWork"
+                type="text"
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+              />
+            </div>
+
+            <div>
+              <label for="occupation" class="block text-sm mb-1">Occupation</label>
+              <input
+                id="occupation"
+                v-model="formData.occupation"
+                type="text"
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="description" class="block text-sm mb-1">Description</label>
+            <textarea
+              id="description"
+              v-model="formData.description"
+              rows="5"
+              class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100 resize-y"
+            ></textarea>
+          </div>
+
+          <!-- Current Photo + Upload New -->
+          <div class="space-y-3">
+            <span class="block text-sm font-medium">Photo</span>
+
+            <!-- Current photo preview -->
+            <div v-if="formData.photoURL" class="flex items-center gap-4">
+              <img
+                :src="formData.photoURL"
+                alt="Current nominee photo"
+                class="h-16 w-16 rounded-full object-cover border border-amber-400"
+              />
+              <span class="text-xs text-amber-200/80 break-all">
+                Current: {{ formData.photoURL }}
+              </span>
+            </div>
+            <div v-else class="text-xs text-amber-200/70">
+              No photo on file yet.
+            </div>
+
+            <!-- File upload to replace photo -->
+            <div class="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <input
+                id="photo"
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                class="sr-only"
+                @change="handlePhotoUpload"
+              />
+              <label
+                for="photo"
+                class="inline-flex items-center justify-center rounded-xl border border-amber-400 px-4 py-2
+                       bg-zinc-800/70 text-amber-300 font-serif cursor-pointer transition
+                       hover:bg-amber-300 hover:text-zinc-900 hover:border-zinc-900"
+              >
+                Choose New Photo
+              </label>
+
+              <span class="text-sm text-amber-200/80 break-all">
+                {{ selectedFileName || "No new file chosen" }}
+              </span>
+            </div>
+
+            <!-- Optional: manual URL edit if you still want it -->
+            <div>
+              <label for="photoURL" class="block text-xs mb-1 text-amber-200/70">
+                Photo URL (optional override)
+              </label>
+              <input
+                id="photoURL"
+                v-model="formData.photoURL"
+                type="url"
+                placeholder="/uploads/..."
+                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-2 text-amber-100 text-xs"
+              />
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full nomination-submit-btn mt-6"
+          >
+            Save Changes
+          </button>
+        </form>
+
+        <!-- Back button -->
+        <nuxt-link to="/nominator">
+          <button
+            class="mt-6 w-full px-4 py-2 bg-zinc-800 text-amber-300 rounded-lg border border-zinc-700 hover:bg-zinc-700"
+          >
+            Back to Nomination Page
+          </button>
+        </nuxt-link>
+
+      </div>
+    </main>
   </div>
-  </body>
 </template>
 
 <script>
 export default {
-  name: 'YourComponentName',
   data() {
     return {
       emailSearch: '',
       formData: {
+        id: '',           // will be filled from API
         firstName: '',
         lastName: '',
         phoneNumber: '',
@@ -76,310 +221,146 @@ export default {
         email: '',
         description: '',
         photoURL: '',
+        // status, slug, nominatorId, etc. will also come from API and be preserved
       },
+      selectedFile: null,
+      selectedFileName: '',
     };
   },
   methods: {
     async fetchNominee() {
       try {
-        const response = await fetch(`http://localhost:3000/api/nominee?email=${encodeURIComponent(this.emailSearch)}`);
+        // NOTE: currently this searches by nominee.email
+        // If you change your backend to search via Nominator.Nominee[], you can hit a different endpoint
+        const res = await fetch(`/api/nominee?email=${encodeURIComponent(this.emailSearch)}`);
 
-
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          console.log('Error details:', errorDetails);
-          throw new Error(`Error fetching nominee: ${errorDetails.statusMessage || 'Unknown error'}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          console.error("Error details:", err);
+          throw new Error(err.statusMessage || "Error fetching nominee");
         }
 
-
-        const data = await response.json();
+        const data = await res.json();
         if (data && data.length > 0) {
           this.formData = { ...data[0] };
+          this.selectedFile = null;
+          this.selectedFileName = '';
+        } else {
+          alert('No nominee found for that email.');
         }
       } catch (error) {
-        console.log(error);
-        throw createError({
-          statusCode: 500,
-          statusMessage: "Error getting nominee",
-        });
+        console.error("Error fetching nominee:", error);
+        alert("Error fetching nominee.");
       }
     },
+
+    handlePhotoUpload(event) {
+      const input = event.target;
+      const file = input.files && input.files[0] ? input.files[0] : null;
+      this.selectedFile = file;
+      this.selectedFileName = file ? file.name : '';
+    },
+
     async submitForm() {
       try {
-        const response = await fetch('http://localhost:3000/api/nominee', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(this.formData),
+        const payload = new FormData();
+
+        // Append all nominee fields from formData
+        Object.entries(this.formData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            payload.append(key, value);
+          }
         });
 
-
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          console.log('Error details:', errorDetails);
-          throw new Error(`Error updating nominee: ${errorDetails.statusMessage || 'Unknown error'}`);
+        // If a new file was selected, append it as "photo"
+        if (this.selectedFile) {
+          payload.append('photo', this.selectedFile);
         }
-      } catch (error) {
-        console.log(error);
-        throw createError({
-          statusCode: 500,
-          statusMessage: "Error updating nominee",
+
+        const res = await fetch('/api/nominee', {
+          method: 'PUT',
+          // do NOT set Content-Type here; browser will set multipart boundary
+          body: payload,
         });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          console.error("Error details:", err);
+          throw new Error(err.statusMessage || "Error updating nominee");
+        }
+
+        alert('Nominee updated successfully!');
+      } catch (error) {
+        console.error("Error updating nominee:", error);
+        alert("Error updating profile.");
       }
     }
   }
 };
 </script>
 
-
 <style scoped>
-/* General Styles */
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* Metallic styles reused from nomination page */
 .metallic-title {
-font-family: 'Libre Caslon Display', serif;
-font-size: 70px;
-text-align: center;
-position: relative;
-color: #a77c43;
-background: linear-gradient(
-  120deg,
-  #a77c43 0%,
-  #a77c43 20%,
-  #a77c43 40%,
-  #a77c43 60%,
-  #a77c43 80%,
-  #a77c43 100%
-);
-background-clip: text;
--webkit-background-clip: text;
-color: transparent;
-text-shadow:
-  0 0 5px rgba(212, 175, 55, 0.4),
-  0 0 10px rgba(212, 175, 55, 0.2),
-  0 0 15px rgba(255, 215, 0, 0.1);
-
-overflow: hidden;
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  background: linear-gradient(
+    120deg,
+    #fff4b0 0%,
+    #f0c75e 20%,
+    #d4af37 40%,
+    #f8e27d 60%,
+    #d4af37 80%,
+    #fff4b0 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow:
+    0 0 5px rgba(212, 175, 55, 0.5),
+    0 0 10px rgba(212, 175, 55, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.3);
+  animation: metallicShine 3s infinite linear;
 }
 
-/* Glint Swipe Animation */
-.metallic-title::after {
-content: '';
-position: absolute;
-top: 0;
-left: -75%;
-width: 50%;
-height: 100%;
-background: linear-gradient(
-  120deg,
-  transparent 0%,
-  rgba(255, 255, 255, 0.8) 50%,
-  transparent 100%
-);
-transform: skewX(-20deg);
-animation: glintSwipe 3s ease-in-out infinite;
+.metallic-title--main {
+  margin-top: 2rem;
+  font-size: 60px;
 }
 
-@keyframes glintSwipe {
-0% {
-  left: -75%;
+.metallic-title--sub {
+  margin-top: 0.5rem;
+  font-size: 28px;
 }
-50% {
-  left: 100%;
-}
-100% {
-  left: 100%;
-}
-}
-
-/* Reflection Glow */
-.metallic-title::before {
-content: 'Noble Award';
-position: absolute;
-top: 100%;
-left: 0;
-width: 100%;
-text-align: center;
-font-size: 70px;
-transform: scaleY(-1);
-opacity: 0.1;
-filter: blur(2px);
-background: linear-gradient(to bottom, rgba(255, 215, 0, 0.3), transparent);
--webkit-background-clip: text;
-background-clip: text;
-color: transparent;
-}
-
-/* Metallic Text Animation */
 
 @keyframes metallicShine {
-  0% {
-    text-shadow:
-      0 0 5px rgba(212, 175, 55, 0.5),
-      0 0 10px rgba(212, 175, 55, 0.4),
-      0 0 20px rgba(255, 215, 0, 0.3);
-    transform: translateY(0);
-    opacity: 1;
-  }
-  
-  50% {
-    text-shadow:
-      0 0 10px rgba(212, 175, 55, 0.5),
-      0 0 20px rgba(212, 175, 55, 0.4),
-      0 0 30px rgba(255, 215, 0, 0.3);
-    transform: translateY(0);
-    opacity: .9;
-    
-}
-  100% {
-    text-shadow:
-      0 0 5px rgba(212, 175, 55, 0.5),
-      0 0 10px rgba(212, 175, 55, 0.4),
-      0 0 20px rgba(255, 215, 0, 0.3);
-    transform: translateY(0);
-    opacity: 1;
-    
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
 }
 
-}
-  
-/* Glint Swipe Animation */
-  
-.metallic-text {
-font-family: 'Libre Caslon Display', serif;
-font-size: 30px;
-margin-top:0px;
-text-align: center;
-color: #a77c43;
-background: linear-gradient(
-  120deg,
-  #a77c43 0%,
-  #a77c43 20%,
-  #a77c43 40%,
-  #a77c43 60%,
-  #a77c43 80%,
-  #a77c43 100%
-);
-background-clip: text;
--webkit-background-clip: text;
-color: transparent;
-position: relative;
-text-shadow:
-  0 0 5px rgba(212, 175, 55, 0.5),
-  0 0 10px rgba(212, 175, 55, 0.4),
-  0 0 20px rgba(255, 215, 0, 0.3);
-animation: metallicShine 3s infinite linear;
+/* Submit button (from nomination page) */
+.nomination-submit-btn {
+  background-color: #d4af37;
+  color: #0d0d0d;
+  font-weight: 700;
+  padding: 14px 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  font-size: 1rem;
+  transition:
+    transform 0.08s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  background-color:#222121; /* Full black background */
-  color:rgb(57, 45, 45); /* Gold text color */
-  font-family: Times New Roman, serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.nomination-submit-btn:hover {
+  background-color: #ffe08a;
+  box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
 }
 
-
-.container {
-  width: 100%;
-  max-width: 00px;
-  background-color:rgb(45, 40, 40); /* Slightly lighter black for form background */
-  padding: 20px;
-  border-radius: 8px;
-  color:rgb(0, 0, 0); /* Black text color */
-  font-family: Times New Roman, serif;
+.nomination-submit-btn:active {
+  transform: translateY(1px);
 }
-
-
-/* Form and Text Styling */
-p {
-font-size: 50px;
-    color:#a77c43;
-    text-align: center;
-    margin-bottom: 1px;
-    font-family: Snell Roundhand, cursive;
-}
-
-cite {
-    font-size: 25px;
-    color:rgb(167, 124, 67);
-    text-align: center;
-    margin-bottom: 50px;
-    font-family: Snell Roundhand, cursive;
-}
-
-form > div:first-of-type {
-  margin-top: 30px;       /* Adds space before enter nominee email */
-  margin-bottom: 30px;    /* Adds space after search button */
-}
-
-label {
-font-size: 18px;
-margin-top: 10px;
-margin-bottom: 5px;
-color:#d4af37; /* Gold label color */
-}
-
-
-input[type="text"],
-input[type="tel"],
-input[type="email"],
-input[type="url"],
-textarea {
-width: 100%;
-max-width: 500px;
-padding: 10px;
-margin-bottom: 15px;
-border: 2px solid #a77c43; /* Gold border */
-border-radius: 8px;
-background-color:#4e4e4d; /* Gray background for text boxes */
-color: #ffffff; /* White text inside the text box */
-font-size: 16px;
-}
-
-
-/* Buttons */
-button {
-width: 100%;
-padding: 12px;
-background-color:#4e4e4d; /* Gray background for button */
-color:#d4af37; /* Dark text color */
-font-size: 18px;
-font-weight: bold;
-border: none;
-border-radius: 20px;
-cursor: pointer;
-transition: background-color 0.3s ease;
-margin-top: 12px;
-/*margin-bottom: 12px;*/
-}
-
-
-button:hover {
-background-color: #a77c43; /* Darker gold on hover */
-}
-
-
-button:focus {
-outline: none;
-}
-
-body > div {
-  width: 90%;
-  max-width: 500px; /* Wider container */
-  margin: 0 auto;
-}
-
-
-
 </style>

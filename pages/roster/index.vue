@@ -1,9 +1,15 @@
 <template>
+<<<<<<< HEAD
 <Navbar @open-login="showLogin = true"/>
+=======
+  <Navbar />
+
+>>>>>>> origin/mobileFriendly
       <div class="page-background">
         <div>
             <h1 class="metallic-title">Noble Award Recipients</h1>
         </div>
+<<<<<<< HEAD
               
 
               <!-- Search Section -->
@@ -24,6 +30,8 @@
                 </div>
                 <div v-if="searchError" class="search-error">{{ searchError }}</div>
               </div>
+=======
+>>>>>>> origin/mobileFriendly
 
        <div class="three-js-container">
 
