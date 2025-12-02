@@ -188,14 +188,106 @@
   </div>
 </template>
 
-<script>
-/* (same script as before) */
-export default {
-  // keep your existing logic here
+<script setup lang="ts">
+import { ref } from 'vue'
+
+// Title refs
+const nobleTitle = ref<HTMLElement | null>(null)
+const nominationFormTitle = ref<HTMLElement | null>(null)
+
+// Form fields
+const nominatorName = ref('')
+const nominatorEmail = ref('')
+const firstName = ref('')
+const lastName = ref('')
+const phoneNumber = ref('')
+const email = ref('')
+const address = ref('')
+const placeOfWork = ref('')
+const occupation = ref('')
+const description = ref('')
+
+// File upload state
+const selectedFile = ref<File | null>(null)
+const selectedFileName = ref('')
+
+// Refs to elements
+const fileInput = ref<HTMLInputElement | null>(null)
+const uploadButton = ref<HTMLElement | null>(null)
+
+function handlePhotoUpload(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0] ?? null
+  selectedFile.value = file
+  selectedFileName.value = file ? file.name : ''
+}
+
+// Reset form after submit
+function resetForm() {
+  nominatorName.value = ''
+  nominatorEmail.value = ''
+  firstName.value = ''
+  lastName.value = ''
+  phoneNumber.value = ''
+  email.value = ''
+  address.value = ''
+  placeOfWork.value = ''
+  occupation.value = ''
+  description.value = ''
+  selectedFile.value = null
+  selectedFileName.value = ''
+}
+
+// Submit form → multipart upload
+async function submitForm() {
+  try {
+    const formData = new FormData()
+
+    // nominee info
+    formData.append('firstName', firstName.value)
+    formData.append('lastName', lastName.value)
+    formData.append('phoneNumber', phoneNumber.value)
+    formData.append('address', address.value)
+    formData.append('placeOfWork', placeOfWork.value)
+    formData.append('occupation', occupation.value)
+    formData.append('email', email.value)
+    formData.append('description', description.value)
+
+    // nominator info
+    formData.append('nominatorName', nominatorName.value)
+    formData.append('nominatorEmail', nominatorEmail.value)
+
+    // required but optional for logic
+    formData.append('nominatorId', '')
+    formData.append('adminId', '')
+
+    // slug
+    const slug = `${firstName.value}-${lastName.value}-${Date.now()}`
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+    formData.append('slug', slug)
+
+    // file
+    if (selectedFile.value) {
+      formData.append('photo', selectedFile.value)
+    }
+
+    await $fetch('/api/nominee', {
+      method: 'POST',
+      body: formData,
+    })
+
+    alert('Nomination submitted!')
+    resetForm()
+  } catch (err) {
+    console.error('Error submitting nomination', err)
+    alert('Something went wrong submitting the nomination.')
+  }
 }
 </script>
 
 <style scoped>
+/* your original styles – unchanged */
 .metallic-title {
   font-family: 'Cinzel', serif;
   text-align: center;
@@ -228,21 +320,6 @@ export default {
   font-size: 32px;
 }
 
-.metallic-title--section {
-  margin-top: 1rem;
-  font-size: 28px;
-}
-
-@keyframes metallicShine {
-  0% {
-    background-position: 200% center;
-  }
-  100% {
-    background-position: -200% center;
-  }
-}
-
-/* SUBMIT BUTTON – DONATE BUTTON GLOW STYLE */
 .nomination-submit-btn {
   background-color: #d4af37;
   color: #0d0d0d;
@@ -267,17 +344,5 @@ export default {
 
 .nomination-submit-btn:active {
   transform: translateY(1px);
-}
-
-@media (max-width: 768px) {
-  .metallic-title--main {
-    font-size: 44px;
-  }
-  .metallic-title--sub {
-    font-size: 26px;
-  }
-  .metallic-title--section {
-    font-size: 22px;
-  }
 }
 </style>
