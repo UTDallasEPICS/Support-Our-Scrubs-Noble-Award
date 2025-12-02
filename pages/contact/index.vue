@@ -201,7 +201,7 @@ button {
   margin-right: 1rem;
   text-decoration: none;
   margin-top: 40px;
-  margin-bottom: 70px;
+  margin-bottom: 50px;
   color: transparent;
 }
 .socials {
@@ -442,8 +442,8 @@ button {
 
   .socials {
     gap: 1.3rem;
-    margin-top: 20px;
-    margin-bottom: 30px;
+    margin-top: 30px;
+    margin-bottom: 20px;
   }
 
   .socials a {
