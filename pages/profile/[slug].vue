@@ -45,7 +45,7 @@ if (error.value) {
 }
 
 // Computed properties (these replace your old computed section)
-const title = computed(() => nominee.value ? `${nominee.value.firstName} ${nominee.value.lastName}` : '');
+const title = computed(() => nominee.firstName ? `${nominee.value.firstName} ${nominee.value.lastName}` : '');
 const subtitle = computed(() => nominee.value?.occupation || '');
 const profileDescription = computed(() => nominee.value?.description || '');
 const profileImage = computed(() => nominee.value?.photoURL || '');

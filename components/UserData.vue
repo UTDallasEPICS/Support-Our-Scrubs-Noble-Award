@@ -15,7 +15,7 @@
         <div class="card-content">
           <h1 class="name">{{ nominee.name }}</h1>
           <h2 class="name">{{ nominee.occupation }}</h2>
-          <h2 class="name">{{  nominee.placeOfWork }}</h2>
+          <h2 class="name">{{ nominee.placeOfWork }}</h2>
         </div>
       </div>
 

@@ -87,8 +87,10 @@ const emit = defineEmits(['open-login'])
 /* STATE */
 const open = ref(false)
 const dropdownOpen = ref(false)
-const isMobile = computed(() => matchMedia('(max-width: 768px)').matches)
-
+const isMobile = ref(false)
+if (process.client) {
+  const isMobile = window.matchMedia("(max-width: 600px)").matches
+}
 const panel = ref(null)
 const btn = ref(null)
 const navRef = ref(null)
