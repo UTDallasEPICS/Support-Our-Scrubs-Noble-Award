@@ -1,3 +1,4 @@
+import Slug from "~/pages/profile/[slug].vue";
 import { prisma, Status } from "../utils/prismaclient";
 import { getQuery } from 'h3';
 
@@ -58,7 +59,7 @@ export default defineEventHandler(async (event) => {
   const nominees = await prisma.nominee.findMany({
     where:{
       status: "APPROVED",
-    },
+     },
     select: {
       id: true,
       firstName: true,

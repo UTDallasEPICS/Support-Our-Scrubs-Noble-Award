@@ -41,11 +41,13 @@ CREATE TABLE "MagicToken" (
 -- CreateTable
 CREATE TABLE "EmailTemplate" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "type" TEXT NOT NULL,
+    "key" TEXT NOT NULL,
     "subject" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "html" TEXT NOT NULL,
+    "text" TEXT,
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
+    "updatedAt" DATETIME NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -65,7 +67,10 @@ CREATE UNIQUE INDEX "Nominee_slug_key" ON "Nominee"("slug");
 CREATE UNIQUE INDEX "MagicToken_token_key" ON "MagicToken"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "EmailTemplate_type_key" ON "EmailTemplate"("type");
+CREATE UNIQUE INDEX "MagicToken_email_key" ON "MagicToken"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EmailTemplate_key_key" ON "EmailTemplate"("key");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");

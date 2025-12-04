@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+
 const route = useRoute();
 const slug = route.params.slug;
 
@@ -31,6 +32,8 @@ const { data: nominee, error } = await useAsyncData(
   `nominee-${slug}`,
   async () => {
     const response = await $fetch(`/api/nominee?stat=APPROVED&slug=${slug}`);
+    console.log(response.length)
+
     return response;
   }
 );
@@ -45,7 +48,7 @@ if (error.value) {
 }
 
 // Computed properties (these replace your old computed section)
-const title = computed(() => nominee.firstName ? `${nominee.value.firstName} ${nominee.value.lastName}` : '');
+const title = computed(() => nominee.value ? `${nominee.value.firstName} ${nominee.value.lastName}` : '');
 const subtitle = computed(() => nominee.value?.occupation || '');
 const profileDescription = computed(() => nominee.value?.description || '');
 const profileImage = computed(() => nominee.value?.photoURL || '');
