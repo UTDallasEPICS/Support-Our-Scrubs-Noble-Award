@@ -27,7 +27,7 @@
 
        <div class="three-js-container">
 
-         <ThreeJsScene 
+         <!-- <ThreeJsScene 
               v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
               :key="nomineeNames.join(',')"
               scene_type="roster"
@@ -37,7 +37,8 @@
               :description="nomineeInfo"
               :aboutme="nomineeAboutMe"
               :slug="nomineeSlug"
-          />
+          /> -->
+          <UserData/>
         </div>
       </div>
        <Teleport to="body">
@@ -50,6 +51,7 @@
 
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "@/components/MyLogin.vue"
+import UserData from "@/components/UserData.vue"
 
 
 // definePageMeta({
@@ -60,7 +62,8 @@ export default {
   name: 'Roster',
   components: {
     ThreeJsScene,
-    LoginModal
+    LoginModal,
+    UserData,
   },
   data() {
     return {
