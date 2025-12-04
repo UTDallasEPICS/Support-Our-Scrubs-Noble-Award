@@ -198,7 +198,7 @@ button {
   margin-right: 1rem;
   text-decoration: none;
   margin-top: 40px;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
   color: transparent;
 }
 .socials {

@@ -49,6 +49,20 @@
         </div>
         -->
 
+        <!-- Three.js Scene Section -->
+        <div class="three-js-section">
+          <div class="three-js-container">
+            <ThreeJsScene
+                v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
+                scene_type="home"
+                :image="nomineeImage"
+                :recepient="nomineeNames"
+                :occupation="nomineeOccupations"
+                :description="nomineeInfo"
+            />
+          </div>
+        </div>
+
         <div class="info-container section-gap">
           <h1 class="section-header">How It Works:</h1>
 
@@ -128,20 +142,6 @@
 
               
             </div>
-          </div>
-        </div>
-
-        <!-- Three.js Scene Section -->
-        <div class="three-js-section">
-          <div class="three-js-container">
-            <ThreeJsScene
-                v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
-                scene_type="home"
-                :image="nomineeImage"
-                :recepient="nomineeNames"
-                :occupation="nomineeOccupations"
-                :description="nomineeInfo"
-            />
           </div>
         </div>
 
@@ -784,21 +784,7 @@ export default {
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
 
-@media (max-width: 1000px) {
-  .hero-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-}
-
-/* Mobile friendly */
+/*Mobile friendly*/
 
 @media (max-width: 600px) {
 
@@ -808,145 +794,175 @@ export default {
   }
 
   .title-shift {
-    margin-top: -60px; 
+    margin-top: 0 !important;
   }
 
   .welcome {
-    padding: 2rem;
-    height: 85vh;
+    padding-top: 8rem !important;
+    padding-bottom: 4rem !important;
+    padding: 1.4rem;
+    height: auto;
+  }
+
+  .metallic-title {
+    font-size: 2.8rem !important;
+    max-width: 95vw;
+    line-height: 1.1;
+    margin-bottom: 0.8rem !important;
+  }
+
+  .metallic-title2 {
+    font-size: 1.9rem !important;
+    margin-bottom: 0.6rem !important;
   }
 
   .welcome-subtitle {
     font-size: 1rem !important;
-    margin-top: 8px !important;
-    padding: 0 20px;
-    line-height: 1.3;
-  }
-
-  .title-shift {
-    margin-top: -120px !important;
-  }
-
-  .welcome {
-    padding-top: 6rem !important;
-    padding-bottom: 3rem !important;
+    margin-top: 4px !important;
+    padding: 0 18px;
+    line-height: 1.2;
+    margin-bottom: 0.6rem !important;
   }
 
   .top-button-container {
-    bottom: 100px;
+    position: relative !important;
+    margin-top: 0.8rem !important;
+    bottom: auto !important;
+
     display: flex;
     flex-direction: row;    
     justify-content: center;
     align-items: center;
-    gap: 0.8rem;            
+    gap: 0.6rem; 
     flex-wrap: nowrap;   
     width: 100%;
   }
 
   .top-button {
     margin: 0;            
-    padding: 12px 20px;     
-    font-size: 0.9rem;
-    width: auto;            
-    margin-bottom: 132px 
-  }
-
-  .metallic-title {
-    font-size: 2.8rem !important;
-    max-width: 95vw;
-    line-height: 1.15;
-  }
-
-  .metallic-title2 {
-    font-size: 1.9rem !important;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    width: auto;
   }
 
   .subtitle {
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 0 1rem;
   }
 
   .container {
-    margin-top: 120px !important;
+    margin-top: 80px !important; 
     padding: 0.5rem;
   }
 
   .container h1 {
-    font-size: 1.8  rem !important;
+    font-size: 1.6rem !important;
     text-align: center;
-  }
-
-  .step-card h1{
-    font-size: 1.5rem !important;
-  }
-
-  .section-header {
-    font-size: 1.8rem !important;
-    text-align: center;
-  }
-
-  .container h2 {
-    font-size: 1.3rem !important;
-  }
-
-  .info-container p {
-    font-size: 1.05rem;
-    line-height: 1.5;
-    margin-top: -1rem !important;
-    margin-bottom: 1rem !important;
-  }
-
-  .profile-image {
-    max-width: 70%;
   }
 
   .step-card {
     max-width: 100%;
-    min-height: 220px;
-    padding: 1.2rem;
+    min-height: 200px;
+    padding: 1rem;
   }
+
   .step-card h1 {
-    font-size: 1.3rem;
+    font-size: 1.2rem !important;
   }
+
   .step-card p {
+    font-size: 0.95rem;
+  }
+
+  .info-container p {
     font-size: 1rem;
+    line-height: 1.4;
+    margin-top: -0.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  .profile-image {
+    max-width: 68%;
+    display: block;
+    margin: 0 auto;
   }
 
   .hero-grid {
     grid-template-columns: 1fr !important;
-    gap: 2rem !important;
+    gap: 1.6rem !important;
   }
 
   .hero-img {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
   }
+
   .hero-item p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .three-js-container {
-    height: 38vh !important;
+    height: 34vh !important;
   }
 
-  .mb-40 { margin-bottom: 20px; }
-  .mb-60 { margin-bottom: 30px; }
+  .mb-40 { margin-bottom: 16px; }
+  .mb-60 { margin-bottom: 22px; }
+}
+
+@media (max-width: 768px) {
+
+  .metallic-title {
+    font-size: clamp(2rem, 12vw, 6rem);
+    line-height: 1.05;
+    margin-bottom: 1rem !important;
+  }
+
+  .welcome-subtitle {
+    font-size: clamp(0.8rem, 5vw, 1.2rem);
+    letter-spacing: 1px;
+    margin-top: 0.4rem;
+  }
+
+  .top-button-container {
+    gap: 0.8rem;
+  }
+
+  .top-button {
+    padding: 10px 24px;
+    font-size: 0.61rem;
+    margin: 4px;
+  }
+
+  .carousel-container::before {
+    background: rgba(0,0,0,0.65);
+  }
 }
 
 @media (max-width: 900px) {
+
   .metallic-title,
   .metallic-title2 {
     font-size: 4rem;
   }
 
   .container {
-    margin-top: 180px;
+    margin-top: 150px;
   }
 
   .hero-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
+    gap: 2.2rem;
   }
 }
- 
+
+.welcome-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  color: white;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 1rem;
+  font-size: clamp(1rem, 2.2vw, 2.2rem);
+}
+
 </style>

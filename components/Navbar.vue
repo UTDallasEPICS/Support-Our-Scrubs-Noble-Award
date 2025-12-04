@@ -1,7 +1,10 @@
 <template>
   <header class="nav">
-    <!-- Brand -->
-    <nuxt-link class="nav__brand" to="/">SUPPORT OUR SCRUBS</nuxt-link>
+    <!-- Brand with image -->
+    <nuxt-link class="nav__brand" to="/">
+      <img src="/assets/bg-removed-noble-award-plaque.png" alt="Support Our Scrubs Logo" class="nav__brand-logo" />
+      <span>THE NOBLE AWARD</span>
+    </nuxt-link>
 
     <!-- Mobile toggle (moved to right) -->
     <button
@@ -17,7 +20,7 @@
     <nav
       id="mainmenu"
       ref="panel"
-      :class="['nav__panel', { 'is-open': open }]"
+      :class="['nav__panel', { 'is-open': open }] "
       :hidden="!open && isMobile"
     >
       <nuxt-link to="/" class="nav__link" @click="close">Home</nuxt-link>
@@ -30,6 +33,7 @@
     </nav>
   </header>
 </template>
+
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
@@ -144,6 +148,22 @@ watch(() => route.fullPath, close)
   color: gold;
   background: rgba(255,255,255,.12);
 }
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space between image and text */
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-decoration: none;
+  color: #fff;
+}
+
+.nav__brand-logo {
+  height: 36px; /* adjust as needed */
+  width: auto;
+}
+
 
 /* Desktop */
 @media (min-width: 769px){
