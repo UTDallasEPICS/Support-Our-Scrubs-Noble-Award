@@ -1,59 +1,97 @@
 <template>
-  <div class="cards-wrapper">
-    <div v-for="item in items" :key="item.id" class="card">
-      <img v-if="item.photoUrl" :src="item.photoUrl" class="card-img" />
-      <div class="card-content">
-        <h3>{{ item.firstName }} {{ item.lastName }}</h3>
-        <p>{{ item.placeOfWork }}</p>
-        <p>{{ item.email }}</p>
+  <div class="cards-container">
+    <div
+      v-for="nominee in nominees"
+      :key="nominee.id"
+      class="card"
+    >
+
+      <!-- TOP ROW: Circle + Name -->
+      <div class="card-top">
+        <div class="avatar">
+          <img v-if="nominee.photoURL" :src="nominee.photoURL" alt="photo" />
+          <div class ="no-photo"v-else>No Photo</div>
+        </div>
+        <div class="card-content">
+          <h1 class="name">{{ nominee.name }}</h1>
+          <h2 class="name">{{ nominee.occupation }}</h2>
+          <h2 class="name">{{  nominee.placeOfWork }}</h2>
+        </div>
       </div>
+
+      <!-- DESCRIPTION NEAR BOTTOM -->
+      <p class="description">{{ nominee.description }}</p>
     </div>
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue'
-import { useSupabaseClient } from '#imports'
-
-export default {
-  setup() {
-    const supabase = useSupabaseClient()
-    const items = ref([])
-
-    onMounted(async () => {
-      const { data, error } = await supabase.from('nominees').select('*')
-      if (!error) items.value = data
-    })
-
-    return { items }
-  }
-}
+<script setup>
+const { data } = await useFetch('/api/nominee')
+const nominees = data
 </script>
 
-<style scoped>
-.cards-wrapper {
+<style>
+
+/* === GRID LAYOUT === */
+.cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  justify-items: center;
   padding: 20px;
+  width: 100%;
 }
+
+/* === CARD === */
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 16px;
+  width: 350px;
+  height: 200px;
+  border: 3px solid black;
+  padding: 15px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between; /* name top, desc bottom */
+  background: rgb(58, 57, 57);
+}
+
+.card-content{
+  display: block;
+}
+/* === TOP SECTION (CIRCLE + NAME) === */
+.card-top {
+  display: flex;
   align-items: center;
+  gap: 15px;
 }
-.card-img {
+
+/* === CIRCLE AVATAR === */
+.avatar {
+  width: 70px;
+  height: 70px;
+  border: 1px solid black;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar img {
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 12px;
 }
-.card-content {
-  text-align: center;
+
+.no-photo{
+
+}
+/* === NAME === */
+.name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* === DESCRIPTION === */
+.description {
+  font-size: 14px;
 }
 </style>

@@ -25,9 +25,9 @@
                 <div v-if="searchError" class="search-error">{{ searchError }}</div>
               </div>
 
-       <div class="three-js-container">
+       <!-- <div class="three-js-container">
 
-         <!-- <ThreeJsScene 
+         <ThreeJsScene 
               v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
               :key="nomineeNames.join(',')"
               scene_type="roster"
@@ -37,9 +37,10 @@
               :description="nomineeInfo"
               :aboutme="nomineeAboutMe"
               :slug="nomineeSlug"
-          /> -->
-          <UserData/>
-        </div>
+          />
+ 
+        </div> -->
+        <UserData/>
       </div>
        <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
