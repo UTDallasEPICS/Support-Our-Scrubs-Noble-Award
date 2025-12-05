@@ -370,7 +370,6 @@ function toggleStatusDropdown(nominee) {
   nominee.isDropdownOpen = !nominee.isDropdownOpen;
 }
 
-<<<<<<< HEAD
 // Toggle the visibility of the dropdown
 function toggleDropdown() {
   dropdownOpen.value = !dropdownOpen.value;
@@ -434,57 +433,3 @@ async function getNominees() {
 // Fetch the nominees when the page loads
 getNominees();
 </script>
-=======
-  // Toggle the visibility of the dropdown
-  function toggleDropdown() {
-    dropdownOpen.value = !dropdownOpen.value;
-  }
-  
-  // Fetch nominees based on different statuses
-  async function nomineesCreated() {
-    const nomineeList = await $fetch('/api/nominee?stat=CREATED', { method: 'GET' });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-  }
-  
-  async function nomineesConfirmed() {
-    const nomineeList = await $fetch('/api/nominee?stat=CONFIRMED', { method: 'GET' });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-  }
-  
-  async function nomineesVerified() {
-    const nomineeList = await $fetch('/api/nominee?stat=VERIFIED', { method: 'GET' });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-  }
-  
-  async function nomineesApproved() {
-    const nomineeList = await $fetch('/api/nominee?stat=APPROVED', { method: 'GET' });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-  }
-  
-  async function nomineesDenied() {
-    const nomineeList = await $fetch('/api/nominee?stat=DENIED', { method: 'GET' });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-  }
-  
-  async function nomineesSent() {
-    const nomineeList = await $fetch('/api/nominee?stat=SENT', { method: 'GET' });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-  }
-  
-  // Initial data fetch on page load
-  async function getNominees() {
-    const nomineeList = await $fetch('/api/nominee', { method: 'GET' });
-    nominees.value = nomineeList;
-  }
-  
-  // Fetch the nominees when the page loads
-  getNominees();
-  </script>
-  
->>>>>>> Regal/MobileFriendly
