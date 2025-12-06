@@ -28,7 +28,6 @@ export default defineEventHandler(async (event) => {
   })
   }
 
-  let photoURL: { filename: string, data: Buffer, type: string } | null = null
   const data: Record<string, string> = {}
 
   for (const field of body) {
@@ -48,7 +47,7 @@ export default defineEventHandler(async (event) => {
     nominatorName,
     nominatorEmail,
     nominatorId,
-    
+    photoURL,
     adminId,
   } = data
 
@@ -60,7 +59,6 @@ export default defineEventHandler(async (event) => {
     if (!nominator) {
       nominator = await prisma.nominator.create({
         data: {
-          id: nominatorId ?? uuidv4(),
           firstName: nominatorName,
           lastName: nominatorName,
           email: nominatorEmail,
@@ -80,7 +78,6 @@ export default defineEventHandler(async (event) => {
     const newNominee = await prisma.nominee.create({
       data: {
         nominator: { connect: { id: nominator.id } },
-        id: nomineeId,
         firstName, lastName, phoneNumber, address,
         placeOfWork, occupation, email, description,
         photoURL: photoURL ?? '',         // if your schema requires String

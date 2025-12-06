@@ -56,12 +56,20 @@ export default defineEventHandler(async (event) => {
   //   });
   // }
 
-  const nominees = await prisma.nominee.findMany({
+  // const query = getQuery(event)
+  // const slug = query.slug as string | undefined
+
+  // if (!slug) {
+  //   return null
+  // }
+
+  const nominee = await prisma.nominee.findMany({
     where:{
       status: "APPROVED",
      },
     select: {
       id: true,
+      slug: true,
       firstName: true,
       lastName: true,
       description: true,
@@ -71,7 +79,10 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  return nominees.map((n) => ({
+  if (!nominee) return null
+
+  return nominee.map((n) => ({
+    slug: n.slug,
     id: n.id,
     name: `${n.firstName} ${n.lastName}`,
     occupation: n.occupation,

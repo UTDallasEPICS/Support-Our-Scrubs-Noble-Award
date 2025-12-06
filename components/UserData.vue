@@ -4,7 +4,8 @@
       v-for="nominee in nominees"
       :key="nominee.id"
       class="card"
-    >
+      @click="navigateTo(`/profile/${nominee.slug}`)" 
+      >
 
       <!-- TOP ROW: Circle + Name -->
       <div class="card-top">
@@ -15,7 +16,7 @@
         <div class="card-content">
           <h1 class="name">{{ nominee.name }}</h1>
           <h2 class="name">{{ nominee.occupation }}</h2>
-          <h2 class="name">{{ nominee.placeOfWork }}</h2>
+          <h2 class="name">{{ nominee.place }}</h2>
         </div>
       </div>
 

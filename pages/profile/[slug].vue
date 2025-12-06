@@ -7,7 +7,7 @@
     <div class="profile-container">
       <img :src="profileImage" :alt="`${title} - ${subtitle}`" class="profile-image" /> 
       <div class="profile-text">
-        <h1 class="metallic-title">{{ title }}</h1>
+        <h1 class="metallic-title">{{ nominee.name }}</h1>
         <p class="metallic-heading">{{ subtitle }}</p>
         <p class="profile-description">{{ profileDescription }}</p>
       </div>
@@ -23,23 +23,23 @@
 </template>
 
 <script setup>
+import { computed, onMounted, onUnmounted } from 'vue'
+import Navbar from '@/components/Navbar.vue'
 
 const route = useRoute();
 const slug = route.params.slug;
 
 // Server-side data fetching for SEO
-const { data: nominee, error } = await useAsyncData(
-  `nominee-${slug}`,
-  async () => {
-    const response = await $fetch(`/api/nominee?stat=APPROVED&slug=${slug}`);
-    console.log(response.length)
+const { data, pending, error } = await useFetch('/api/nominee', {
+  query: {slug},
+})
+const nomiee = computed(() => data.value ?? [])
 
-    return response;
-  }
-);
-
+const nominee = computed(() =>
+  nomiee.value.find(n => n.slug === slug)
+)
 // Handle errors
-if (error.value) {
+if (error.value || !nominee.value) {
   console.error('Error fetching nominee:', error.value);
   throw createError({
     statusCode: 404,
@@ -47,12 +47,12 @@ if (error.value) {
   });
 }
 
-// Computed properties (these replace your old computed section)
-const title = computed(() => nominee.value ? `${nominee.value.firstName} ${nominee.value.lastName}` : '');
-const subtitle = computed(() => nominee.value?.occupation || '');
-const profileDescription = computed(() => nominee.value?.description || '');
-const profileImage = computed(() => nominee.value?.photoURL || '');
-const profileAboutme = computed(() => nominee.value?.aboutme || '');
+ // Computed properties (these replace your old computed section)
+ const title = computed(() => nominee.value?.name || '');
+ const subtitle = computed(() => nominee.value?.occupation || '');
+ const profileDescription = computed(() => nominee.value?.description || '');
+ const profileImage = computed(() => nominee.value?.photoURL || '');
+ const profileAboutme = computed(() => nominee.value?.aboutme || '');
 
 // SEO Meta Tags - UPDATE YOUR DOMAIN HERE!
 useHead({

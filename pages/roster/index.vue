@@ -4,8 +4,6 @@
         <div>
             <h1 class="metallic-title">Noble Award Recipients</h1>
         </div>
-              
-
               <!-- Search Section -->
               <div class="search-section" @click.stop>
                 <div class="search-input-container">
@@ -38,7 +36,6 @@
               :aboutme="nomineeAboutMe"
               :slug="nomineeSlug"
           />
- 
         </div> -->
         <UserData/>
       </div>
@@ -49,7 +46,6 @@
 
 
 <script>
-
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "@/components/MyLogin.vue"
 import UserData from "@/components/UserData.vue"

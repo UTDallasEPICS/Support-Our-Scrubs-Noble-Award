@@ -16,9 +16,8 @@
         <!-- NEW SUBTITLE HERE -->
         <h2 class="welcome-subtitle fade-in">Honoring the heroes among us</h2>
 
-
         <div class="top-button-container fade-in">
-          <nuxt-link to="/nominator" class="top-button">NOMINATE A HERO</nuxt-link>
+          <nuxt-link to="/nominator/form" class="top-button">NOMINATE A HERO</nuxt-link>
           <nuxt-link to="/donate" class="top-button">DONATE</nuxt-link>
         </div>
 

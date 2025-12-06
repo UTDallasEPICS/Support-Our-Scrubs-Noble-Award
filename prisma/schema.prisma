@@ -29,7 +29,7 @@ model Nominee {
   email       String
   description String
   aboutme     String?
-  photoURL    String
+  photoURL    String?
   slug        String    @unique
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String

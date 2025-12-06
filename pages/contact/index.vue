@@ -1,7 +1,7 @@
 <template>
   <Navbar @open-login="showLogin = true"/>
-  <div class="contact-wrapper">
-    
+  <div class="contact-wrapper page-background">
+
     <section>
       <h1 class="metallic-title">CONTACT US</h1>
     </section>
@@ -36,7 +36,7 @@
           </form>
     </section>
 </div>
-<Teleport to="body">
+  <Teleport to="body">
     <LoginModal v-if="showLogin" @close="showLogin = false" />
   </Teleport>
 </template>
@@ -44,7 +44,6 @@
 <script setup lang="ts">
 import { reactive, onMounted, nextTick } from 'vue';
 import Navbar from '@/components/Navbar.vue';
-import nobleImage from '@/assets/nobleaward.png';
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import LoginModal from '@/components/MyLogin.vue'
@@ -149,6 +148,12 @@ header img {
   transition: transform 0.3s ease;
 }
 
+.page-background {
+  background:
+  radial-gradient(circle at top, rgb(0, 0, 0), rgb(33, 33, 33) 300%);
+  font-family: 'Libre Caslon Display', serif;
+  min-height: 100vh;
+}
 /* (old generic header styles removed so they don't affect <Navbar />)
 header { ... }
 header h1 { ... }

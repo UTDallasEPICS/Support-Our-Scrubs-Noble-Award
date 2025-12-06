@@ -156,7 +156,7 @@
               id="photo"
               ref="fileInput"
               type="file"
-              accept="image/*"
+              accept="image/**"
               class="sr-only"
               @change="handlePhotoUpload"
             />
@@ -194,6 +194,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import LoginModal from "@/components/MyLogin.vue";
+import Navbar from '~/components/Navbar.vue';
 
 // Title refs
 const nobleTitle = ref<HTMLElement | null>(null)
@@ -216,16 +217,21 @@ const description = ref('')
 // File upload state
 const selectedFile = ref<File | null>(null)
 const selectedFileName = ref('')
+const photoURL = ref('')
 
 // Refs to elements
 const fileInput = ref<HTMLInputElement | null>(null)
 const uploadButton = ref<HTMLElement | null>(null)
 
-function handlePhotoUpload(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0] ?? null
+const handlePhotoUpload = async (event: Event) => {
+  const target = event.target as HTMLInputElement | null
+  if (!target?.files || target.files.length === 0) return
+
+  const file = target.files[0]
   selectedFile.value = file
-  selectedFileName.value = file ? file.name : ''
+  selectedFileName.value = file.name  // <-- filename shows up now
+
+  console.log("Selected file:", file.name)
 }
 
 // Reset form after submit
@@ -242,12 +248,34 @@ function resetForm() {
   description.value = ''
   selectedFile.value = null
   selectedFileName.value = ''
+  photoURL.value = ''
 }
 
 // Submit form → multipart upload
 async function submitForm() {
   try {
     const formData = new FormData()
+
+    let photoURLValue = ""
+
+    // === Upload file to Cloudinary ONLY IF a file was selected ===
+    if (selectedFile.value) {
+      const uploadForm = new FormData()
+      uploadForm.append("file", selectedFile.value)
+      uploadForm.append("upload_preset", "unsigned_uploads")
+
+      const service = import.meta.env.VITE_IMAGE_SERVICE
+
+      const res = await fetch(service, { method: "POST", body: uploadForm })
+      if (!res.ok) {
+        throw new Error(`Image upload failed with status ${res.status}`)
+      }
+
+      const data = await res.json()
+      photoURLValue = data.secure_url
+      console.log("Uploaded photo URL:", photoURLValue)
+
+    }
 
     // nominee info
     formData.append('firstName', firstName.value)
@@ -263,10 +291,6 @@ async function submitForm() {
     formData.append('nominatorName', nominatorName.value)
     formData.append('nominatorEmail', nominatorEmail.value)
 
-    // required but optional for logic
-    formData.append('nominatorId', '')
-    formData.append('adminId', '')
-
     // slug
     const slug = `${firstName.value}-${lastName.value}-${Date.now()}`
       .toLowerCase()
@@ -276,6 +300,10 @@ async function submitForm() {
     // file
     if (selectedFile.value) {
       formData.append('photo', selectedFile.value)
+    }
+
+    if (photoURLValue) {
+      formData.append("photoURL", photoURLValue)
     }
 
     await $fetch('/api/nominee', {
