@@ -58,6 +58,8 @@ const nominees = data
 
 .card-content{
   display: block;
+    max-width: 230px;
+  overflow: hidden;
 }
 /* === TOP SECTION (CIRCLE + NAME) === */
 .card-top {
@@ -89,10 +91,21 @@ const nominees = data
 .name {
   font-size: 18px;
   font-weight: bold;
+  max-width: 220px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* === DESCRIPTION === */
 .description {
   font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;   /* number of lines allowed */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  line-height: 1.4em;
+  max-height: calc(1.4em * 2);
 }
 </style>
