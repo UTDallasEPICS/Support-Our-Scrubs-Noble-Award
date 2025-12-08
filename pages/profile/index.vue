@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar @open-login="showLogin = true"/>
   <div class="page-background">
   <div>
     </div>

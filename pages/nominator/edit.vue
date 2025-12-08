@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-black text-amber-300">
-    <Navbar />
+     <Navbar  @open-login="showLogin = true"/>
 
     <main class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
       <!-- Title -->

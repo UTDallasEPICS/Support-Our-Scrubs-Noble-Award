@@ -2,7 +2,7 @@
 <template>
   <div class="page-background">
   <div>
-    <Navbar />
+    <Navbar  @open-login="showLogin = true"/>
     </div>
     <div class="profile-container">
       <img :src="profileImage" :alt="`${title} - ${subtitle}`" class="profile-image" /> 

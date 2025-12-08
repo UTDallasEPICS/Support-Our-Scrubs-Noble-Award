@@ -39,9 +39,9 @@
         </div> -->
         <UserData/>
       </div>
-       <Teleport to="body">
-    <LoginModal v-if="showLogin" @close="showLogin = false" />
-  </Teleport>
+      <Teleport to="body">
+        <LoginModal v-if="showLogin" @close="showLogin = false" />
+      </Teleport>
 </template>
 
 

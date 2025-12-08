@@ -49,7 +49,7 @@
         -->
 
         <!-- Three.js Scene Section -->
-        <div class="three-js-section">
+        <!-- <div class="three-js-section">
           <div class="three-js-container">
             <ThreeJsScene
                 v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
@@ -60,8 +60,8 @@
                 :description="nomineeInfo"
             />
           </div>
-        </div>
-
+        </div> -->
+        <UserData/>
         <div class="info-container section-gap">
           <h1 class="section-header">How It Works:</h1>
 
@@ -147,6 +147,9 @@
       </div>
     </div>
   </div>
+    <Teleport to="body">
+      <LoginModal v-if="showLogin" @close="showLogin = false" />
+    </Teleport>
 </template>
 
 
@@ -157,10 +160,10 @@
 import CarouselMain from '../components/CarouselMain.vue';
 import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
-import caesarImage from '../assets/caeser_bust.png';
-import axios from 'axios'
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
+import UserData from '@/components/UserData.vue';
+import LoginModal from '@/components/MyLogin.vue'
 
 
 export default {
@@ -168,7 +171,9 @@ export default {
   components: {
     Navbar,
     CarouselMain,
-    ThreeJsScene
+    ThreeJsScene,
+    UserData,
+    LoginModal,
   },
   data() {
     return {
@@ -187,7 +192,8 @@ export default {
       nomineeOccupations: [],
       nomineeEmails: [],
       nominees: [],
-      nomineeImage: []
+      nomineeImage: [],
+      showLogin: false,
       // Rest of your data properties...
     };
   },
