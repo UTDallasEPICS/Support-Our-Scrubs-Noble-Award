@@ -54,12 +54,10 @@ export default defineEventHandler(async (event) => {
   `
 
   try {
-    console.log('[contact] sending email to admin:', adminTo)
 
     // ⬇️ IMPORTANT: htmlBody then subjectLine
     await sendEmail(adminTo, subjectLine, htmlBody)
 
-    console.log('[contact] email successfully sent (or attempted)')
     return { success: true }
   } catch (err: any) {
     console.error('[contact] email failed:', err)

@@ -192,7 +192,7 @@
         </form>
 
         <!-- Back button -->
-        <nuxt-link to="/nominator">
+        <nuxt-link to="/nominator/form">
           <button
             class="mt-6 w-full px-4 py-2 bg-zinc-800 text-amber-300 rounded-lg border border-zinc-700 hover:bg-zinc-700"
           >

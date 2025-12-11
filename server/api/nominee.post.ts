@@ -89,7 +89,6 @@ export default defineEventHandler(async (event) => {
     // Send emails but do NOT fail the request if SMTP errors
     ;(async () => {
       try {
-        console.log('[email] sending to nominator:', nominatorEmail)
         await sendEmail(
         routeRecipient(nominatorEmail),
           `We received your nomination for ${firstName} ${lastName}`,
@@ -126,12 +125,10 @@ export default defineEventHandler(async (event) => {
           </div>
           `
       )
-      console.log('[email] nominator email sent (or at least attempted)')
       } catch (e) {
         console.error('[email] nominator failed:', e)
       }
       try {
-        console.log('[email] sending to nominator:', email)
         await sendEmail(
         routeRecipient(nominatorEmail),
           `We received your nomination for ${firstName} ${lastName}`,
@@ -168,14 +165,12 @@ export default defineEventHandler(async (event) => {
           </div>
           `
       )
-      console.log('[email] nominator email sent (or at least attempted)')
       } catch (e) {
         console.error('[email] nominator failed:', e)
       }
 
       if (process.env.ADMIN_TO) {
         try {
-          console.log('[email] sending to admin:', process.env.ADMIN_TO)
           await sendEmail(
             routeRecipient(process.env.ADMIN_TO),
             `New Nomination: ${firstName} ${lastName}`,
@@ -219,7 +214,6 @@ export default defineEventHandler(async (event) => {
             </div>
   `
           )
-          console.log('[email] admin email sent (or at least attempted)') 
         } catch (e) {
           console.error('[email] admin failed:', e)
         }

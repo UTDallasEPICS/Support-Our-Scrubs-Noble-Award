@@ -25,7 +25,7 @@ export default defineNuxtConfig({
           // we are NOT using a /login route
           login: '/',                      // unused now, but required by your plugin’s shape
           callback: '/auth/callback',
-          include: ['/nominator', '/admin/**'],  // only guard these
+          include: ['/admin/**'],  // only guard these
           exclude: ['/', '/roster', '/donate', '/contact', '/auth/callback'],
           cookieRedirect: false,
           saveRedirectToCookie: false

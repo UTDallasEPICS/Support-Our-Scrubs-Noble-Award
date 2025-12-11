@@ -122,7 +122,6 @@ export default {
         this.nomineeAboutMe = response.map(n => n.aboutme)
         this.nomineeSlug = response.map(n => n.slug)
 
-        console.log("sorry man "+this.slug)
       } catch (error) {
         console.error('Error fetching nominees:', error);
       }
@@ -131,12 +130,10 @@ export default {
   mounted() {
     // Fetch data when the component is mounted
     this.fetchNominees();
-    console.log("mounted"+ this.nomineeNames);
    
     
       if (this.$route.query.form) {
         const decodedData = JSON.parse(decodeURIComponent(this.$route.query.form));
-        console.log("datos "+decodedData.occupation); // { name: "John Doe", ... }
       }
   },
 };

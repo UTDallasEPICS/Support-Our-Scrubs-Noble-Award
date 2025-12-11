@@ -29,8 +29,6 @@ export default defineEventHandler(async (event) => {
   })
 
 
-  console.log("👤 NOMINATOR RECORD:", nominator)
-  console.log("🧾 NOMINATOR.Nominees:", nominator?.Nominees)
 
   if (!nominator) {
     // No nominator record yet: return empty list

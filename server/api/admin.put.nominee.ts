@@ -52,7 +52,6 @@ export default defineEventHandler(async (event) => {
             },
         });
     } catch (error) {
-        console.log(error);
         throw createError({
             statusCode: 500,
             statusMessage: "Error updating nominee",

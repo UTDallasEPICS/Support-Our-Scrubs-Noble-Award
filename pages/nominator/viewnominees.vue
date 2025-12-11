@@ -13,7 +13,7 @@
       </button>
     </div>
 
-    <nuxt-link to="/nominator">
+    <nuxt-link to="/nominator/form">
       <button class="bg-yellow-500 text-black px-4 py-2 rounded-full font-bold">
         Go To Nomination Page
       </button>
@@ -276,11 +276,11 @@ const token = useCookie("token") || "";
 
 // Login function
 async function login() {
-  window.location.href = "/api/auth0/login";
+  window.location.href = "/";
 }
 // Logout function
 async function logout() {
-  window.location.href = "/api/auth0/logout";
+  window.location.href = "/";
 }
 
 // The state for nominees data and dropdown visibility
