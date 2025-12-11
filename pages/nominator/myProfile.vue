@@ -53,6 +53,7 @@
 import Navbar from '~/components/Navbar.vue'
 const user = useSupabaseUser()
 const router = useRouter()
+const showLogin = ref(false)
 
 // If no user, send them to page with login modal
 if (!user.value) {

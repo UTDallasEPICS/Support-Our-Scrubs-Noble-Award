@@ -23,27 +23,7 @@
                 <div v-if="searchError" class="search-error">{{ searchError }}</div>
               </div>
 
-              <!-- No Results Message -->
-      <div v-if="hasSearched && !searchLoading && nominees.length === 0" class="no-results">
-        <p>No nominees found matching: "{{ searchQuery }}"</p>
-        <p class="suggestion">Try searching by a different name, occupation, or workplace</p>
-      </div>
-
-       <!-- <div class="three-js-container">
-
-         <ThreeJsScene 
-              v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
-              :key="nomineeNames.join(',')"
-              scene_type="roster"
-              :image="nomineeImage"
-              :recepient="nomineeNames"
-              :occupation="nomineeOccupations"
-              :description="nomineeInfo"
-              :aboutme="nomineeAboutMe"
-              :slug="nomineeSlug"
-          />
-        </div> -->
-        <UserData :nominees="nominees" :loading="searchLoading" />
+        <UserData/>
       </div>
       <Teleport to="body">
         <LoginModal v-if="showLogin" @close="showLogin = false" />

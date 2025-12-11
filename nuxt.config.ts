@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   imports: { autoImport: true },
+  modules: ['@nuxtjs/supabase'],
 
   postcss: {
     plugins: {
@@ -43,6 +44,4 @@ export default defineNuxtConfig({
      ]
    }
  },
-
-  modules: ['@nuxtjs/supabase'],
 });
