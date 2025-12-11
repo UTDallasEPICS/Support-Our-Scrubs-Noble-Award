@@ -272,10 +272,6 @@
 <script setup>
 import { ref } from "vue";
 
-definePageMeta({
-  middleware: ['admin']
-})
-
 const token = useCookie("token") || "";
 
 // Login function

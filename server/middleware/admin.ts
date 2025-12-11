@@ -1,5 +1,5 @@
 import { defineEventHandler, sendError, createError } from 'h3'
-import { prisma } from '../utils/prismaclient'
+import { prisma } from '@/server/utils/prismaclient'
 import { serverSupabaseUser } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
