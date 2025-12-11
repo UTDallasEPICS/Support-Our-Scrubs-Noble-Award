@@ -5,7 +5,7 @@
     <div class="content-wrapper">
       <h1 class="metallic-title">My Nominees</h1>
       <p class="metallic-heading subtitle">
-        Here are all the people you have nominated (accepted or pending).
+        Here are all the people you have nominated (accepted, pending or decline).
       </p>
 
       <div v-if="pending" class="loading">Loading your nominees...</div>
@@ -46,11 +46,12 @@
             <span
               class="status-pill"
               :class="{
-                accepted: nominee.status === 'ACCEPTED',
-                pending: nominee.status === 'PENDING'
+                accepted: nominee.status === 'APPROVED',
+                pending: nominee.status === 'PENDING',
+                declined: nominee.status === 'DENIED',
               }"
             >
-              {{ nominee.status === 'ACCEPTED' ? 'Accepted' : 'Pending' }}
+              {{ nominee.status === 'APPROVED' ? 'Accepted' : nominee.status === 'DENIED' ? 'Denied' : nominee.status === 'PENDING' ? "Pending" : ''}}
             </span>
           </div>
 
@@ -171,11 +172,15 @@ const goToProfile = (slug: string) => {
 }
 
 .status-pill.accepted {
-  border: 1px solid rgba(0, 255, 0, 0.5);
+  border: 1px solid rgba(0, 156, 0, 0.5);
 }
 
 .status-pill.pending {
   border: 1px solid rgba(255, 215, 0, 0.7);
+}
+
+.status-pill.declined {
+  border: 1px solid #ff4d4d;
 }
 
 .loading,
