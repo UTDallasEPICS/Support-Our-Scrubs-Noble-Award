@@ -1,7 +1,7 @@
 <!-- /pages/profile/edit-about.vue -->
 <template>
   <div class="page-background">
-    <Navbar />
+    <Navbar @open-login="showLogin = true"/>
 
     <div class="content-wrapper">
       <h1 class="metallic-title">Edit About Me</h1>
