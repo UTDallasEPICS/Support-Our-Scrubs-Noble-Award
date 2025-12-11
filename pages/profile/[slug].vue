@@ -25,6 +25,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue'
 import Navbar from '@/components/Navbar.vue'
+import defaultAvatar from '@/assets/avatar.png';
 
 const route = useRoute();
 const slug = route.params.slug;

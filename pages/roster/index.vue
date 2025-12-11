@@ -10,7 +10,7 @@
                   <input
                     v-model="searchQuery"
                     type="text"
-                    placeholder="Search by name, occupation, workplace..."
+                    placeholder="Search by name, occupation, or workplace"
                     @keyup.enter="performSearch"
                     class="search-input"
                   />
@@ -22,6 +22,12 @@
                 </div>
                 <div v-if="searchError" class="search-error">{{ searchError }}</div>
               </div>
+
+              <!-- No Results Message -->
+      <div v-if="hasSearched && !searchLoading && nominees.length === 0" class="no-results">
+        <p>No nominees found matching: "{{ searchQuery }}"</p>
+        <p class="suggestion">Try searching by a different name, occupation, or workplace</p>
+      </div>
 
        <!-- <div class="three-js-container">
 
@@ -37,7 +43,7 @@
               :slug="nomineeSlug"
           />
         </div> -->
-        <UserData/>
+        <UserData :nominees="nominees" :loading="searchLoading" />
       </div>
       <Teleport to="body">
         <LoginModal v-if="showLogin" @close="showLogin = false" />
@@ -86,7 +92,10 @@ export default {
   },
   methods: {
     async performSearch() {
-      if (!this.searchQuery.trim()) return;
+      if (!this.searchQuery.trim()) {
+        this.clearSearch();
+        return;
+      }
       
       this.searchLoading = true;
       this.searchError = '';
@@ -96,17 +105,22 @@ export default {
         const response = await $fetch(`/api/search?searchTerm=${encodeURIComponent(this.searchQuery)}`);
     
         // Filter to only show approved nominees
-        const results = response.results.filter(n => n.status === 'APPROVED');
+        const results = response.results.
+        filter(n => n.status === 'APPROVED').
+        map(n => ({
+          ...n,
+          name: `${n.firstName} ${n.lastName}` 
+        }));
 
         // Update the nominee arrays with search results
         this.nominees = results;
-        this.nomineeNames = results.map(n => `${n.firstName} ${n.lastName}`);
+        /*this.nomineeNames = results.map(n => `${n.firstName} ${n.lastName}`);
         this.nomineeEmails = results.map(n => n.email);
         this.nomineeOccupations = results.map(n => n.occupation);
         this.nomineeInfo = results.map(n => n.description || '');
         this.nomineeImage = results.map(n => n.photoURL);
         this.nomineeAboutMe = results.map(n => n.aboutme || '');
-        this.nomineeSlug = results.map(n => n.slug);
+        this.nomineeSlug = results.map(n => n.slug);*/
       } catch (e) {
         this.searchError = 'Failed to search nominees. Please try again.';
         console.error(e);
@@ -165,6 +179,21 @@ export default {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: white;
+}
+.no-results p:first-child {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: white;
+}
+.suggestion {
+  font-size: 1.2rem;
+  color: white
 }
 
 .blurred {

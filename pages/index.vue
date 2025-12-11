@@ -61,9 +61,16 @@
             />
           </div>
         </div> -->
-        <UserData/>
+
+        <!-- Featured Recipients Section -->
+        <div class="featured-section">
+          <h1 class="featured-title">Featured Award Recipients</h1>
+        </div>
+
+        <UserData :limit="3" :rotate="true" :rotateInterval="5000"/>
+
         <div class="info-container section-gap">
-          <h1 class="section-header">How It Works:</h1>
+          <h1 class="section-header">How It Works</h1>
 
           <div class="flex flex-col md:flex-row justify-center items-stretch gap-10 mt-8 mb-10">
 
@@ -211,6 +218,7 @@ export default {
         this.nomineeOccupations = response.map(n => n.occupation)
         this.nomineeInfo = response.map(n => n.description)
         this.nomineeImage = response.map(n => n.photoURL)
+        this.nomineeSlug = response.map(n => n.slug)
 
         console.log("sorry man "+this.nomineeImage)
       } catch (error) {
@@ -401,7 +409,7 @@ export default {
 
   .top-button-container{
     position: absolute;
-    bottom: 237px;
+    bottom: 200px;
     gap: 2rem;
     flex-wrap: wrap;
     justify-content: center;
@@ -659,8 +667,37 @@ export default {
   text-transform: uppercase;
   letter-spacing: 2px;
   margin: 4rem 0 2rem;
-
 }
+
+/* Featured Recipients Section */
+.featured-section {
+  text-align: center;
+  margin-bottom: 6rem;
+  padding: 2rem 1rem;
+  margin-top: -15rem;
+}
+
+.featured-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem) !important;
+  color: #d4af37;
+  background: linear-gradient(
+    120deg,
+    #fff4b0 0%,
+    #f0c75e 20%,
+    #d4af37 40%,
+    #f8e27d 60%,
+    #d4af37 80%,
+    #fff4b0 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+}
+
 
 .section-header::before,
 .section-header::after {
@@ -798,6 +835,16 @@ export default {
     letter-spacing: 3px;
   }
 
+  .featured-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem 0.5rem;
+  }
+
+  .featured-title {
+    font-size: 1.8rem !important;
+    letter-spacing: 2px;
+  }
+
   .title-shift {
     margin-top: 0 !important;
   }
@@ -922,6 +969,16 @@ export default {
     margin-bottom: 1rem !important;
   }
 
+  .featured-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem 0.5rem;
+  }
+
+  .featured-title {
+    font-size: 1.8rem !important;
+    letter-spacing: 2px;
+  }
+
   .welcome-subtitle {
     font-size: clamp(0.8rem, 5vw, 1.2rem);
     letter-spacing: 1px;
@@ -948,6 +1005,16 @@ export default {
   .metallic-title,
   .metallic-title2 {
     font-size: 4rem;
+  }
+
+  .featured-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem 0.5rem;
+  }
+
+  .featured-title {
+    font-size: 1.8rem !important;
+    letter-spacing: 2px;
   }
 
   .container {

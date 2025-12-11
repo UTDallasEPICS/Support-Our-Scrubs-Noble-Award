@@ -1,7 +1,7 @@
 <template>
   <div class="cards-container">
     <div
-      v-for="nominee in nominees"
+      v-for="nominee in displayNominees"
       :key="nominee.id"
       class="card"
       @click="navigateTo(`/profile/${nominee.slug}`)" 
@@ -10,13 +10,12 @@
       <!-- TOP ROW: Circle + Name -->
       <div class="card-top">
         <div class="avatar">
-          <img v-if="nominee.photoURL" :src="nominee.photoURL" alt="photo" />
-          <div class ="no-photo"v-else>No Photo</div>
+          <img :src="nominee.photoURL || defaultAvatar" alt="photo" />
         </div>
         <div class="card-content">
-          <h1 class="name">{{ nominee.name }}</h1>
-          <h2 class="name">{{ nominee.occupation }}</h2>
-          <h2 class="name">{{ nominee.place }}</h2>
+          <h1 class="name">{{ nominee.name  || `${nominee.firstName} ${nominee.lastName}`}}</h1>
+          <h2 class="role">{{ nominee.occupation }}</h2>
+          <h2 class="role">{{ nominee.place }}</h2>
         </div>
       </div>
 
@@ -27,8 +26,93 @@
 </template>
 
 <script setup>
-const { data } = await useFetch('/api/nominee')
-const nominees = data
+import defaultAvatar from '@/assets/avatar.png';
+
+// Accept nominees as a prop from parent
+const props = defineProps({
+  nominees: {
+    type: Array,
+    default: null
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  limit: {
+    type: Number,
+    default: null
+  },
+  rotate: {
+    type: Boolean,
+    default: false
+  },
+  rotateInterval: {
+    type: Number,
+    default: 5000 // 5 seconds by default
+  }
+});
+
+// If no nominees prop provided, fetch all approved nominees
+const { data: fetchedNominees } = await useFetch('/api/nominee?stat=APPROVED');
+
+// Current rotation index
+const currentIndex = ref(0);
+
+
+// Get all nominees (either from props or fetched)
+const allNominees = computed(() => {
+  let nominees = [];
+  
+  if (props.nominees !== null) {
+    nominees = props.nominees;
+  } else {
+    nominees = fetchedNominees.value || [];
+  }
+  
+  // Always ensure name and place properties exist
+  return nominees.map(n => ({
+    ...n,
+    name: n.name || `${n.firstName} ${n.lastName}`,
+    place: n.place || n.placeOfWork
+  }));
+});
+
+// Display nominees with rotation
+const displayNominees = computed(() => {
+  const nominees = allNominees.value;
+  
+  if (!props.limit) {
+    return nominees;
+  }
+  
+  if (!props.rotate || nominees.length <= props.limit) {
+    return nominees.slice(0, props.limit);
+  }
+  
+  // Rotate through nominees
+  const startIndex = currentIndex.value;
+  const endIndex = startIndex + props.limit;
+  
+  // Handle wrap-around
+  if (endIndex <= nominees.length) {
+    return nominees.slice(startIndex, endIndex);
+  } else {
+    return [
+      ...nominees.slice(startIndex),
+      ...nominees.slice(0, endIndex - nominees.length)
+    ];
+  }
+});
+
+// Set up rotation interval
+onMounted(() => {
+  if (props.rotate && props.limit) {
+    setInterval(() => {
+      const maxIndex = allNominees.value.length;
+      currentIndex.value = (currentIndex.value + 1) % maxIndex;
+    }, props.rotateInterval);
+  }
+});
 </script>
 
 <style>
@@ -41,6 +125,8 @@ const nominees = data
   justify-items: center;
   padding: 20px;
   width: 100%;
+  margin-top: -50px;
+  margin-bottom: -25px;
 }
 
 /* === CARD === */
@@ -52,8 +138,9 @@ const nominees = data
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* name top, desc bottom */
-  background: rgb(58, 57, 57);
+  justify-content: flex-start;
+  gap: 20px; /* Controls spacing between card-top and description */
+  background: rgb(58, 57, 57, 0.5);
 }
 
 .card-content{
@@ -70,8 +157,8 @@ const nominees = data
 
 /* === CIRCLE AVATAR === */
 .avatar {
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   border: 1px solid black;
   border-radius: 50%;
   overflow: hidden;
@@ -84,13 +171,19 @@ const nominees = data
   object-fit: cover;
 }
 
-.no-photo{
-
-}
 /* === NAME === */
 .name {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: bold;
+  max-width: 220px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role {
+  font-size: 16px;
+  font-weight: 500;
   max-width: 220px; 
   white-space: nowrap;
   overflow: hidden;
@@ -107,5 +200,6 @@ const nominees = data
 
   line-height: 1.4em;
   max-height: calc(1.4em * 2);
+  color: #ffffff;
 }
 </style>
