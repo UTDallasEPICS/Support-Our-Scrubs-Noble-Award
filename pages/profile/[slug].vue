@@ -25,6 +25,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue'
 import Navbar from '@/components/Navbar.vue'
+import defaultAvatar from '@/assets/avatar.png';
 
 const route = useRoute();
 const slug = route.params.slug;
@@ -51,7 +52,7 @@ if (error.value || !nominee.value) {
  const title = computed(() => nominee.value?.name || '');
  const subtitle = computed(() => nominee.value?.occupation || '');
  const profileDescription = computed(() => nominee.value?.description || '');
- const profileImage = computed(() => nominee.value?.photoURL || '');
+ const profileImage = computed(() => nominee.value?.photoURL || defaultAvatar);
  const profileAboutme = computed(() => nominee.value?.aboutme || '');
 
 // SEO Meta Tags - UPDATE YOUR DOMAIN HERE!
