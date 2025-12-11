@@ -47,13 +47,12 @@ const nominees = data
 .card {
   width: 350px;
   height: 200px;
-  border: 3px solid black;
   padding: 15px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* name top, desc bottom */
-  background: rgb(58, 57, 57);
+  background: #222;
 }
 
 .card-content{
