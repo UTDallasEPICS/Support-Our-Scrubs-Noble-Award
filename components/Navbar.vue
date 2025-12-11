@@ -69,8 +69,15 @@
                 <button class="dropdown-item" @click="goToAdmin">Admin Panel</button>
               </li>
               <li>
+                <button class="dropdown-item" @click="redirectToEditMyProfile">Edit My Profile</button>
+              </li>
+              <li>
                 <button class="dropdown-item" @click="redirectToViewNominees">View My Nominees</button>
               </li>
+              <li>
+                <button class="dropdown-item" @click="redirectToEditMyNominees">Edit Nominees</button>
+              </li>
+              
               <li>
                 <button class="dropdown-item" @click="logoutAndReset">Log out</button>
               </li>
@@ -154,7 +161,14 @@ function goToAdmin() {
 
 /* --- VIEW MY NOMINEES --- */
 function redirectToViewNominees() {
+  navigateTo('/nominator/myNominees')
+}
+function redirectToEditMyNominees() {
   navigateTo('/nominator/edit')
+}
+
+function redirectToEditMyProfile(){
+  navigateTo('/nominator/myProfile')
 }
 
 /* --- LOGOUT --- */

@@ -76,6 +76,7 @@ export default defineEventHandler(async (event) => {
       occupation: true,
       placeOfWork: true,
       photoURL: true,
+      aboutme: true,
     },
   })
 
@@ -89,6 +90,7 @@ export default defineEventHandler(async (event) => {
     description: n.description,
     placeOfWork : n.placeOfWork,
     photoURL: n.photoURL,
+    aboutme: n.aboutme,
   }))
 
 });

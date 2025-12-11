@@ -316,25 +316,6 @@ const form = reactive({
 
 const showLogin = ref(false);
 
-const handleSubmit = async () => {
-  try {
-    const res = await fetch('/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    });
-
-    const result = await res.json();
-    if (result.success) {
-      alert('Inquiry submitted and saved to file.');
-    } else {
-      alert('Failed to save inquiry: ' + result.error);
-    }
-  } catch (error) {
-    console.error('Submit error:', error);
-    alert('Submission failed due to network/server issue.');
-  }
-};
 
 onMounted(async () => {
   await nextTick();

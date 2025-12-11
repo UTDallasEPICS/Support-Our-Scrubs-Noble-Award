@@ -15,7 +15,7 @@ model Nominator {
   email     String    @unique
   firstName String
   lastName  String
-  Nominee   Nominee[]
+  Nominees   Nominee[]
 }
 
 model Nominee {
@@ -26,7 +26,7 @@ model Nominee {
   address     String
   placeOfWork String
   occupation  String
-  email       String
+  email       String    @unique
   description String
   aboutme     String?
   photoURL    String?

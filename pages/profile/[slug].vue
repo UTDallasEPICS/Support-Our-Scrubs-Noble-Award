@@ -28,6 +28,7 @@ import Navbar from '@/components/Navbar.vue'
 
 const route = useRoute();
 const slug = route.params.slug;
+const showLogin = ref(false)
 
 // Server-side data fetching for SEO
 const { data, pending, error } = await useFetch('/api/nominee', {
@@ -52,7 +53,7 @@ if (error.value || !nominee.value) {
  const subtitle = computed(() => nominee.value?.occupation || '');
  const profileDescription = computed(() => nominee.value?.description || '');
  const profileImage = computed(() => nominee.value?.photoURL || '');
- const profileAboutme = computed(() => nominee.value?.aboutme || '');
+ const profileAboutme = computed(() => nominee.value?.aboutme || 'This nominee has not added an "About Me" yet.');
 
 // SEO Meta Tags - UPDATE YOUR DOMAIN HERE!
 useHead({

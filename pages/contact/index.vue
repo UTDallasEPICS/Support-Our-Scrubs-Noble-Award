@@ -63,7 +63,7 @@ const form = reactive({
 
 const handleSubmit = async () => {
   try {
-    const res = await fetch('/api/submit', {
+    const res = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
@@ -71,9 +71,13 @@ const handleSubmit = async () => {
 
     const result = await res.json();
     if (result.success) {
-      alert('Inquiry submitted and saved to file.');
+      alert('Email sent!');
+      form.name = '';
+      form.email = '';
+      form.subject = '';
+      form.message = '';
     } else {
-      alert('Failed to save inquiry: ' + result.error);
+      alert('Failed to save inquiry: ' + ( result.error || 'Uknown error'));
     }
   } catch (error) {
     console.error('Submit error:', error);

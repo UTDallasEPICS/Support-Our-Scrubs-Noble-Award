@@ -58,7 +58,7 @@ const nominees = data
 
 .card-content{
   display: block;
-    max-width: 230px;
+  max-width: 230px;
   overflow: hidden;
 }
 /* === TOP SECTION (CIRCLE + NAME) === */
