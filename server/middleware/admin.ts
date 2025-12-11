@@ -1,11 +1,11 @@
 import { defineEventHandler, sendError, createError } from 'h3'
-import { prisma } from '../server/utils/prismaclient' // adjust path
+import { prisma } from '../utils/prismaclient'
+import { serverSupabaseUser } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-  // Get user from your session (however you're storing the OTP result)
-  const user = event.context.user
+  const user = await serverSupabaseUser(event)
 
-  if (!user?.email) {
+  if (!user) {
     return sendError(
       event,
       createError({ statusCode: 401, statusMessage: 'Unauthorized' })

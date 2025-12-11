@@ -23,20 +23,6 @@
                 <div v-if="searchError" class="search-error">{{ searchError }}</div>
               </div>
 
-       <!-- <div class="three-js-container">
-
-         <ThreeJsScene 
-              v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
-              :key="nomineeNames.join(',')"
-              scene_type="roster"
-              :image="nomineeImage"
-              :recepient="nomineeNames"
-              :occupation="nomineeOccupations"
-              :description="nomineeInfo"
-              :aboutme="nomineeAboutMe"
-              :slug="nomineeSlug"
-          />
-        </div> -->
         <UserData/>
       </div>
       <Teleport to="body">
