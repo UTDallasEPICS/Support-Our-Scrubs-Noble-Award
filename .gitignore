@@ -25,9 +25,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Prisma DB migrations
-/prisma/migrations
-/prisma/dev.db
+# sqlite file
+prisma/dev.db
 
 # docs
 docs
+
