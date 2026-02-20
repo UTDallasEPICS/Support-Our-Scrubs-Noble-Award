@@ -13,22 +13,22 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-      SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-      AUTH0_DOMAIN: "",
-      AUTH0_CLIENT_ID: "",
-      AUTH0_SECRET: "",
-      SERVER_BASE_URL: "",
+      DATABASE_URL: "file:./dev.db",
+	  supabase: {
+		  serviceKey: process.env.NUXT_SUPABASE_SERVICE_ROLE_KEY!,
+	  },
       public:{
         supabase: {
-        redirectOptions: {
-          // we are NOT using a /login route
-          login: '/',                      // unused now, but required by your plugin’s shape
-          callback: '/auth/callback',
-          include: ['/admin/**'],  // only guard these
-          exclude: ['/', '/roster', '/donate', '/contact', '/auth/callback'],
-          cookieRedirect: false,
-          saveRedirectToCookie: false
+          url: process.env.NUXT_PUBLIC_SUPABASE_URL!,
+          key: process.env.NUXT_PUBLIC_SUPABASE_ADON_KEY!,
+          redirectOptions: {
+            // we are NOT using a /login route
+            login: '/',                      // unused now, but required by your plugin’s shape
+            callback: '/auth/callback',
+            include: ['/admin/**'],  // only guard these
+            exclude: ['/', '/roster', '/donate', '/contact', '/auth/callback'],
+            cookieRedirect: false,
+            saveRedirectToCookie: false
         }
       }
     }
