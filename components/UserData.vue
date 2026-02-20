@@ -137,14 +137,8 @@ onMounted(() => {
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
-  justify-content: flex-start;
-  gap: 20px; /* Controls spacing between card-top and description */
-  background: rgb(58, 57, 57, 0.5);
-=======
   justify-content: space-between; /* name top, desc bottom */
   background: #222;
->>>>>>> 6901c21d3f47acb024128dd1674c7a5da37770a0
 }
 
 .card-content{
