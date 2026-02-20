@@ -15,13 +15,13 @@ export default defineEventHandler(async (event) => {
         OR: [
             { firstName: { contains: searchTerm,},},
             { lastName: { contains: searchTerm } },
-            { email: { contains: searchTerm,},},
+            //{ email: { contains: searchTerm,},},
             { occupation: { contains: searchTerm } },
             { placeOfWork: { contains: searchTerm,},},
-            { description: { contains: searchTerm } },
-            { aboutme: { contains: searchTerm, },},
-            { phoneNumber: { contains: searchTerm,},},
-            { address: { contains: searchTerm } },
+            //{ description: { contains: searchTerm } },
+            //{ aboutme: { contains: searchTerm, },},
+            //{ phoneNumber: { contains: searchTerm,},},
+            //{ address: { contains: searchTerm } },
           ],
       },
     });

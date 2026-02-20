@@ -29,7 +29,6 @@ export default defineEventHandler(async (event) => {
             data: { deleted: true }
         });
     } catch (error) {
-        console.log("Error soft deleting nominee:", error);
         throw createError({
             statusCode: 500,
             statusMessage: "Error soft deleting nominee",

@@ -15,7 +15,7 @@ model Nominator {
   email     String    @unique
   firstName String
   lastName  String
-  Nominee   Nominee[]
+  Nominees   Nominee[]
 }
 
 model Nominee {
@@ -26,35 +26,46 @@ model Nominee {
   address     String
   placeOfWork String
   occupation  String
-  email       String
+  email       String    @unique
   description String
   aboutme     String?
-  photoURL    String
+  photoURL    String?
   slug        String    @unique
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String
   admin       Admin?    @relation(fields: [adminId], references: [id])
   adminId     String?
-  status      String    @default("DENIED")
+  status      String    @default("PENDING")
   deleted     Boolean   @default(false)
 }
 
 model MagicToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
-  email     String
+  email     String    @unique
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
+// model EmailTemplate {
+//   id        String            @id @default(uuid())
+//   type      String            @unique
+//   subject   String
+//   content   String
+//   createdAt DateTime          @default(now())
+//   updatedAt DateTime          @updatedAt
+// }
+
 model EmailTemplate {
-  id        String            @id @default(uuid())
-  type      String            @unique
+  id        String   @id @default(uuid())
+  key       String   @unique  // e.g. "NOMINATION_RECEIVED", "ADMIN_ALERT"
   subject   String
-  content   String
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  html      String   // handlebars style: "Hi {{name}} ..."
+  text      String?  // optional plaintext
+  enabled   Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Admin {
@@ -63,4 +74,3 @@ model Admin {
   Position String
   Nominee  Nominee[]
 }
-

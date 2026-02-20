@@ -1,22 +1,14 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from '@prisma/client'
 
-class prismacl {
-  public prismacl: PrismaClient
-  private static instance: prismacl
-  private constructor() {
-    this.prismacl = new PrismaClient()
-  }
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
-  public static getInstance = () => {
-    if (!prismacl.instance) {
-      prismacl.instance = new prismacl()
-    }
-    return prismacl.instance
-  }
-}
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['warn', 'error'],
+  })
 
-export const prisma = prismacl.getInstance().prismacl;
-
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export const Status = {
   CREATED: "CREATED",
@@ -25,16 +17,16 @@ export const Status = {
   APPROVED: "APPROVED",
   DENIED: "DENIED",
   SENT: "SENT"
-} as const;
+} as const
 
-export type Status = typeof Status[keyof typeof Status];
+export type Status = typeof Status[keyof typeof Status]
 
 export const EmailTemplateType = {
   SIGNUP: "SIGNUP",
   NOMINATION: "NOMINATION",
   ACCEPTED: "ACCEPTED",
   REJECTED: "REJECTED"
-} as const;
+} as const
 
 export type EmailTemplateType =
-  typeof EmailTemplateType[keyof typeof EmailTemplateType];
+  typeof EmailTemplateType[keyof typeof EmailTemplateType]

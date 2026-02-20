@@ -33,7 +33,7 @@ export default {
     return {
       currentSlideIndex: 0, 
       autoScroll: null, 
-      intervalTime: 5000,
+      intervalTime: 10000,
     };
   },
   methods: {
@@ -87,10 +87,25 @@ export default {
   justify-content: center;
 }
 
+.slide-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 25%; /* adjust how tall the fade is */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+  pointer-events: none; /* so buttons still clickable */
+  z-index: 5; /* make sure it’s above the image but below buttons */
+}
+
+
 .slide-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(1.2) contrast(1.1) saturate(1.1) drop-shadow(0 0 25px rgba(255, 215, 0, 0.25));
+  transition: all 0.8s ease;
 }
 
 button {
