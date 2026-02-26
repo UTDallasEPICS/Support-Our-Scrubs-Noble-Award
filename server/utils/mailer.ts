@@ -21,7 +21,6 @@ export const mailer = nodemailer.createTransport({
     clientId: config.clientID,
     clientSecret: config.clientSecret,
     refreshToken: config.refreshToken
-
   }
 })
 
