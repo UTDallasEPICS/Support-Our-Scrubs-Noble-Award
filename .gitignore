@@ -28,3 +28,4 @@ docs/Final Report F25.docx
 prisma/dev.db
 prisma/migrations/migration_lock.toml
 .gitignore
+package-lock.json
