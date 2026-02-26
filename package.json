@@ -29,12 +29,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.758.0",
-    "@nuxtjs/security": "^0.0.0",
     "@nuxtjs/supabase": "^2.0.3",
     "@prisma/client": "^5.20.0",
     "@tresjs/core": "^4.3.3",
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
+    "better-auth": "^1.4.19",
     "cors": "^2.8.6",
     "googleapis": "^171.4.0",
     "gsap": "^3.13.0",
