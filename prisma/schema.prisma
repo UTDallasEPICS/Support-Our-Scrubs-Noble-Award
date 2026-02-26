@@ -11,24 +11,18 @@ datasource db {
 }
 
 model Nominator {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  firstName String
-  lastName  String
-  Nominees  Nominee[]
-  user      User      @relation(fields: [userId], references: [id])
-  userId    String    @unique
+  id       String    @id @default(uuid())
+  Nominees Nominee[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @unique
 }
 
 model Nominee {
   id          String  @id @default(uuid())
-  firstName   String
-  lastName    String
   phoneNumber String
   address     String
   placeOfWork String
   occupation  String
-  email       String  @unique
   description String
   aboutme     String?
   photoURL    String?
@@ -68,8 +62,8 @@ model Admin {
 
 model User {
   id            String    @id @default(uuid())
-  firstName     String
-  secondName    String
+  firstName     String?
+  lastName      String?
   email         String
   emailVerified Boolean   @default(false)
   image         String?
