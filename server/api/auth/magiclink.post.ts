@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 
 
 export default defineEventHandler(async (event) => {
+    const config = useRuntimeConfig(event)
+
     const body = await readBody(event);
     const email = body.email?.toLowerCase().trim() as string;
 
@@ -17,7 +19,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, message: 'Requested email does not exist' });
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET as string, { expiresIn: '15m' });
+    const token = jwt.sign({ email }, config.jwtSecret as string, { expiresIn: '15m' });
 
     await prisma.magicToken.create({
         data: {
