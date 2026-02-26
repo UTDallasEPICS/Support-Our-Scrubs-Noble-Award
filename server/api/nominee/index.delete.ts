@@ -1,4 +1,4 @@
-import { prisma } from "../utils/prismaclient";
+import { prisma } from "../../utils/prismaclient";
 
 export default defineEventHandler(async (event) => {
     const { nomineeId } = getQuery(event);

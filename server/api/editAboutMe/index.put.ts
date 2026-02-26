@@ -1,4 +1,3 @@
-// /server/api/profile/about-me.put.ts
 import { prisma } from '~/server/utils/prismaclient'
 import { serverSupabaseUser } from '#supabase/server'
 

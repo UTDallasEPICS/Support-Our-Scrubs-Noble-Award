@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
     });
 
     const magicLink = `${process.env.FRONTEND_URL}/verify?token=${token}`;
+    // Attention Required: use the new node mailer function
     await sendTemplateEmail(email, "SIGNUP", {
         name: dbEmail.firstName,
         link: magicLink
