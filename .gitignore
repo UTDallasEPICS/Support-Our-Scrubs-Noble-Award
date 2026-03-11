@@ -29,3 +29,4 @@ prisma/dev.db
 prisma/migrations/migration_lock.toml
 .gitignore
 package-lock.json
+.vscode/settings.json
