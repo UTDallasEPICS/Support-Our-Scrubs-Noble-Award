@@ -9,8 +9,6 @@ export default defineEventHandler(async (event) => {
     select: {
       id: true,
       slug: true,
-      firstName: true,
-      lastName: true,
       description: true,
       occupation: true,
       placeOfWork: true,
@@ -23,7 +21,6 @@ export default defineEventHandler(async (event) => {
   return nominee.map((n) => ({
     slug: n.slug,
     id: n.id,
-    name: `${n.firstName} ${n.lastName}`,
     occupation: n.occupation,
     description: n.description,
     placeOfWork : n.placeOfWork,
