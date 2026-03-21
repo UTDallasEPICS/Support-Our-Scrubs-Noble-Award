@@ -1,26 +1,19 @@
 // /server/api/profile/about-me.get.ts
 import { prisma } from '~/server/utils/prismaclient'
-import { serverSupabaseUser } from '#supabase/server'
+import { auth } from '~/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const supaUser = await serverSupabaseUser(event)
-
-  if (!supaUser) {
+  const session = await auth.api.getSession({headers: event.headers})
+  if (!session) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Not authenticated',
     })
   }
 
+  
   // Adjust this to your schema: Nominee / Nominator table, etc.
-  const profile = await prisma.nominee.findUnique({
-    where: {
-      email: supaUser.email!, // or use supaUser.id if you store it
-    },
-    select: {
-      aboutme: true,
-    },
-  })
+  const profile = await prisma.nominee.findUnique({ where: { userId: session.session.userId } })
 
   return {
     aboutMe: profile?.aboutme ?? '',

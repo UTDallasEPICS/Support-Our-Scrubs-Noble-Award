@@ -1,15 +1,15 @@
 import { prisma } from '~/server/utils/prismaclient'
-import { serverSupabaseUser } from '#supabase/server'
+import { auth } from '~/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const supaUser = await serverSupabaseUser(event)
-
-  if (!supaUser) {
+  const session = await auth.api.getSession({headers: event.headers})
+  if (!session) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Not authenticated',
     })
   }
+
 
   const body = await readBody<{ aboutMe?: string }>(event)
   const aboutMe = body.aboutMe ?? ''
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   // Again: adjust model + unique key to match your DB
   const updated = await prisma.nominee.update({
     where: {
-      email: supaUser.email!,
+      userId: session.session.userId
     },
     data: {
       aboutme: trimmed,
