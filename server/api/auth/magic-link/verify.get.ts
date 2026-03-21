@@ -14,18 +14,38 @@ export default defineEventHandler(async (event) => {
         throw createError({
             status: 400,
             statusMessage: "Bad Request",
-            message: query.error.issues.toString()
+            message: query.error.issues.map(issue => issue.message).join(', ')
     })
 
-    const data = await auth.api.magicLinkVerify({
-        query: {
-            token: query.data.token,
-            callbackURL: query.data.callbackURL
-        },
-        headers: event.headers
-    })
-    
-    return data
-    
+    try {
+        const response = await auth.api.magicLinkVerify({
+            query: {
+                token: query.data.token,
+                callbackURL: query.data.callbackURL
+            },
+            headers: event.headers,
+            asResponse: true
+        })
+
+        if (response.status === 302) {
+            const location = response.headers.get("location")
+            if (location) {
+                for (const [key, value] of response.headers.entries()) {
+                    if (key.toLowerCase() === "location") continue
+                    appendResponseHeader(event, key, value)
+                }
+                return sendRedirect(event, location, 302)
+            }
+        }
+
+        return response
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Magic link verification failed"
+        throw createError({
+            status: 401,
+            statusMessage: "Unauthorized",
+            message
+        })
+    }
 
 })
