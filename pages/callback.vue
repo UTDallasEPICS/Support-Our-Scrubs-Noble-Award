@@ -6,15 +6,18 @@
 
 
 <script setup>
-const client = useSupabaseClient()
+
 const route = useRoute()
 
 onMounted(async () => {
-  await client.auth.getUser()
-
-  await client.auth.getUser()
+  await useFetch('api/auth/magic-link/verify', {
+    query: {
+      token: route.query.token,
+      callbackURL: route.query.callbackURL
+    }
+  })
   
-  navigateTo((Array.isArray(route.query.next) ? route.query.next[0] : route.query.next) || '/')
+  // navigateTo((Array.isArray(route.query.next) ? route.query.next[0] : route.query.next) || '/')
 })  
 </script>
 

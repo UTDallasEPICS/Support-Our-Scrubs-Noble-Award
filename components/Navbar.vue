@@ -64,7 +64,6 @@
                 {{ user.email }}
               </div>
             </li>
-              <li class="dropdown-header">Signed in as ...</li>
               <li v-if="isAdmin">
                 <button class="dropdown-item" @click="goToAdmin">Admin Panel</button>
               </li>
@@ -92,6 +91,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useRoute, navigateTo } from '#imports'
+import { authClient } from '~/utils/auth-client'
 
 const emit = defineEmits(['open-login'])
 
@@ -108,9 +108,8 @@ const navRef = ref(null)
 
 const route = useRoute()
 
-/* Supabase */
-const user = useSupabaseUser()
-const supabase = useSupabaseClient()
+const { data: session } = await authClient.useSession(useFetch)
+const user = computed(() => session.value?.user)
 
 /* ROLE / ADMIN */
 const role = useState('role', () => null)
