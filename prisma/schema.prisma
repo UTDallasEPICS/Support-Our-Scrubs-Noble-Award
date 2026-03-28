@@ -28,8 +28,8 @@ model Nominee {
   photoURL    String?
   slug        String  @unique
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @unique
 
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String
