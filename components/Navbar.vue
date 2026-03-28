@@ -175,7 +175,7 @@ async function logoutAndReset() {
   dropdownOpen.value = false
 
   try {
-    await supabase.auth.signOut()
+    await authClient.signOut()
   } catch (e) {
     console.error('Error signing out:', e)
   }
