@@ -29,39 +29,6 @@
       <!-- Info Section -->
       <div class="container fade-in scroll-fade">
 
-       <!-- 
-        <h1 class="metallic-title mb-40">The Noble Award:</h1>
-        <h2 class="subtitle mb-60">Honoring Those Who Serve with Excellence, Dedication, and Heart</h2>
-
-        <div class="mb-20 flex justify-center">
-          <img src="assets/bg-removed-noble-award-plaque.png" class="profile-image" alt="Noble Award Plaque" />
-        </div>
-
-        <div class="info-container">
-          <h1 class="metallic-title2">Recognizing Extraordinary Service & Sacrifice</h1>
-          <p>Founded by Support Our Scrubs, the Noble Award is more than just a recognition program—it is a movement to
-            honor those who dedicate their lives to serving others. With the support of our community, businesses, and donors,
-            we uplift the unsung heroes who go above and beyond.</p>
-          <p>Thanks to the exceptional work of the EPICS UTD team, this vision has been brought to life. Over multiple semesters,
-            a talented group of students and professors at the University of Texas at Dallas have contributed their time, creativity,
-            and expertise to develop this platform, ensuring that every nominee is celebrated with the honor they deserve.</p>
-        </div>
-        -->
-
-        <!-- Three.js Scene Section -->
-        <!-- <div class="three-js-section">
-          <div class="three-js-container">
-            <ThreeJsScene
-                v-if="nomineeNames.length > 0 && nomineeImage.length > 0 && nomineeInfo.length > 0 && nomineeOccupations.length > 0"
-                scene_type="home"
-                :image="nomineeImage"
-                :recepient="nomineeNames"
-                :occupation="nomineeOccupations"
-                :description="nomineeInfo"
-            />
-          </div>
-        </div> -->
-
         <!-- Featured Recipients Section -->
         <div class="featured-section">
           <h1 class="featured-title">Featured Award Recipients</h1>

@@ -17,7 +17,7 @@ onMounted(async () => {
     }
   })
   
-  // navigateTo((Array.isArray(route.query.next) ? route.query.next[0] : route.query.next) || '/')
+  
 })  
 </script>
 
