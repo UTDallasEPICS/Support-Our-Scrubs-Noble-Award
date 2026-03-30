@@ -8,40 +8,46 @@ export default defineEventHandler(async (event) => {
     email, description, status,
   } = await readValidatedBody(event, b => adminUpdateNomineeSchema.parse(b));
 
-    try {
-        const admin = await prisma.admin.findUnique({
-            where: { id: adminId }
-        });
+  try {
+    const admin = await prisma.admin.findUnique({
+      where: { id: adminId }
+    });
 
-        if (!admin) {
-            throw createError({ statusCode: 403, statusMessage: "Unauthorized: Admin not found" });
-        }
+    if (!admin) {
+      throw createError({ statusCode: 403, statusMessage: "Unauthorized: Admin not found" });
+    }
 
     const updatedNominee = await prisma.nominee.update({
       where: { id: nomineeId },
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-                address: address,
-                placeOfWork: placeOfWork,
-                occupation: occupation,
-                email: email,
-                description: description,
-                admin: {
-                    connect: {
-                        id: adminId
-                    }
+      data: {
+        phoneNumber,
+        address,
+        placeOfWork,
+        occupation,
+        description,
+        status,
+        admin: { connect: { id: adminId } },
+        ...(firstName || lastName || email
+          ? {
+              user: {
+                update: {
+                  ...(firstName !== undefined ? { firstName } : {}),
+                  ...(lastName !== undefined ? { lastName } : {}),
+                  ...(email !== undefined ? { email } : {}),
                 },
-                status: status,  
-            },
-        });
-    } catch (error) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: "Error updating nominee",
-        });
-    }
+              },
+            }
+          : {}),
+      },
+      include: { user: true },
+    });
 
-    return updatedNominee;
+    return updatedNominee
+  } catch (error) {
+    if ((error as any)?.statusCode) throw error;
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Error updating nominee",
+    });
+  }
 });
