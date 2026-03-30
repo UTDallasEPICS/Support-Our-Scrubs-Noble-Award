@@ -1,45 +1,7 @@
-<template>
-<Navbar @open-login="showLogin = true"/>
-      <div class="page-background">
-        <div>
-            <h1 class="metallic-title">Noble Award Recipients</h1>
-        </div>
-              <!-- Search Section -->
-              <div class="search-section" @click.stop>
-                <div class="search-input-container">
-                  <input
-                    v-model="searchQuery"
-                    type="text"
-                    placeholder="Search by name, occupation, or workplace"
-                    @keyup.enter="performSearch"
-                    class="search-input"
-                  />
-                  <button @click.stop.prevents="performSearch" :disabled="searchLoading" class="search-button">
-                    <span v-if="searchLoading">Searching...</span>
-                    <span v-else>Search</span>
-                  </button>
-                  <button v-if="hasSearched" @click.stop.prevent="clearSearch" class="clear-button">Clear</button>
-                </div>
-                <div v-if="searchError" class="search-error">{{ searchError }}</div>
-              </div>
-
-        <UserData/>
-      </div>
-      <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-      </Teleport>
-</template>
-
-
 <script>
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import LoginModal from "@/components/MyLogin.vue"
 import UserData from "@/components/UserData.vue"
-
-
-// definePageMeta({
-//   middleware: ['auth'] // this runs middleware/auth.ts
-// })
 
 export default {
   name: 'Roster',
@@ -146,9 +108,41 @@ export default {
   },
 };
 
-
-
 </script>
+
+<template>
+<Navbar @open-login="showLogin = true"/>
+      <div class="page-background">
+        <div>
+            <h1 class="metallic-title">Noble Award Recipients</h1>
+        </div>
+              <!-- Search Section -->
+              <div class="search-section" @click.stop>
+                <div class="search-input-container">
+                  <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Search by name, occupation, or workplace"
+                    @keyup.enter="performSearch"
+                    class="search-input"
+                  />
+                  <button @click.stop.prevents="performSearch" :disabled="searchLoading" class="search-button">
+                    <span v-if="searchLoading">Searching...</span>
+                    <span v-else>Search</span>
+                  </button>
+                  <button v-if="hasSearched" @click.stop.prevent="clearSearch" class="clear-button">Clear</button>
+                </div>
+                <div v-if="searchError" class="search-error">{{ searchError }}</div>
+              </div>
+
+        <UserData/>
+      </div>
+      <Teleport to="body">
+        <LoginModal v-if="showLogin" @close="showLogin = false" />
+      </Teleport>
+</template>
+
+
 
 <style scoped>
 /* General Styles */
