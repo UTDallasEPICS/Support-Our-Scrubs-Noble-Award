@@ -1,26 +1,14 @@
 import { prisma } from "~/server/utils/prismaclient";
-
+import { adminUpdateNomineeSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
-
-    const adminId = body.adminId;   
-    const nomineeId = body.nomineeId; 
-
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const phoneNumber = body.phoneNumber;
-    const address = body.address;
-    const placeOfWork = body.placeOfWork;
-    const occupation = body.occupation;
-    const email = body.email;
-    const description = body.description;
-    const status = body.status; 
-
-    let updatedNominee = null;
+  const {
+    adminId, nomineeId, firstName, lastName,
+    phoneNumber, address, placeOfWork, occupation,
+    email, description, status,
+  } = await readValidatedBody(event, b => adminUpdateNomineeSchema.parse(b));
 
     try {
-       
         const admin = await prisma.admin.findUnique({
             where: { id: adminId }
         });
@@ -29,11 +17,8 @@ export default defineEventHandler(async (event) => {
             throw createError({ statusCode: 403, statusMessage: "Unauthorized: Admin not found" });
         }
 
-
-        updatedNominee = await prisma.nominee.update({
-            where: {
-                id: nomineeId,
-            },
+    const updatedNominee = await prisma.nominee.update({
+      where: { id: nomineeId },
             data: {
                 firstName: firstName,
                 lastName: lastName,

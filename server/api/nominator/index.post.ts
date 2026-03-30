@@ -1,16 +1,12 @@
 import { prisma } from "~/server/utils/prismaclient";
-
+import { nominatorCreateSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
+    const { firstName, lastName, email } = await readValidatedBody(event, b => nominatorCreateSchema.parse(b));
 
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const email = body.email;
-    let newNominator = null;
-
-    try {
-        const existingNominator = await prisma.nominator.findUnique({
+  try {
+    // Check if a user with this email already has a nominator record
+    const existingUser = await prisma.user.findUnique({
             where: { email: email }
         });
 

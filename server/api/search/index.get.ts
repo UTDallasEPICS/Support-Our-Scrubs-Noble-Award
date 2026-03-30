@@ -1,11 +1,11 @@
 import { prisma } from "../../utils/prismaclient";
-
+import { searchQuerySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const query = getQuery(event);
-    const searchTerm = typeof query.searchTerm === 'string' ? query.searchTerm : undefined;
+  const { searchTerm } = await getValidatedQuery(event, q => searchQuerySchema.parse(q));
+
   if (!searchTerm) {
-    return {results: []};  
+    return { results: [] };
   }
 
   try {

@@ -1,29 +1,19 @@
 import { prisma } from '~/server/utils/prismaclient'
-import { auth } from '~/utils/auth'
+import { auth } from '~/server/utils/auth'
+import { aboutMeSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-  const session = await auth.api.getSession({headers: event.headers})
+  const session = await auth.api.getSession({ headers: event.headers })
   if (!session) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Not authenticated',
-    })
+    throw createError({ statusCode: 401, statusMessage: 'Not authenticated' })
   }
 
+  const { aboutMe } = await readValidatedBody(event, b => aboutMeSchema.parse(b))
 
-  const body = await readBody<{ aboutMe?: string }>(event)
-  const aboutMe = body.aboutMe ?? ''
-
-  // Optional: clamp length so users can’t paste a novel
-  const trimmed = aboutMe.slice(0, 300)
-
-  // Again: adjust model + unique key to match your DB
   const updated = await prisma.nominee.update({
-    where: {
-      userId: session.session.userId
-    },
+    where: { userId: session.session.userId },
     data: {
-      aboutme: trimmed,
+      aboutme: aboutMe,
       status: 'PENDING',
     },
     select: {

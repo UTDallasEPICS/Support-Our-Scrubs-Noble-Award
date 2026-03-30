@@ -1,27 +1,12 @@
 import { prisma } from "../../utils/prismaclient";
-
+import { nomineeUpdateSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-
-    const body = await readBody(event);
-
-
-    const id = body.id;
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const phoneNumber = body.phoneNumber;
-    const address = body.address;
-    const placeOfWork  = body.placeOfWork;
-    const occupation = body.occupation;
-    const email = body.email;
-    const description = body.description;
-    const aboutme = body.aboutme;
-    const photoURL = body.photoURL;
-    const nominatorId = body.nominatorId;
-    const adminId = body.adminId;
-    const status = body.status;
-
-    let updatedNominee = null;
+  const {
+    id, firstName, lastName, phoneNumber, address,
+    placeOfWork, occupation, email, description,
+    aboutme, photoURL, nominatorId, adminId, status,
+  } = await readValidatedBody(event, b => nomineeUpdateSchema.parse(b));
 
     try {
         updatedNominee = await prisma.nominee.update({

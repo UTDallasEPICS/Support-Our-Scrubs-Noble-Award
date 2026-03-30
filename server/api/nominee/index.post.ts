@@ -1,13 +1,13 @@
 import { prisma } from '~/server/utils/prismaclient'
 import { sendEmail, routeRecipient } from '~/server/utils/mailer'
-import { v4 as uuidv4 } from 'uuid'
+import { auth } from '~/server/utils/auth'
+import { nomineeCreateSchema } from '~/shared/types'
 
 function toSlug(a: string, b: string) {
   return (a + '-' + b).toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
 }
-
 
 export default defineEventHandler(async (event) => {
   // Handle CORS + preflight
@@ -20,49 +20,41 @@ export default defineEventHandler(async (event) => {
     return new Response(null, { status: 204 })
   }
 
-  const body = await readMultipartFormData(event)
-  if (!body) {
-  throw createError({
-    statusCode: 400,
-    message: 'Expected multipart/form-data'
-  })
+  // Require authentication
+  const session = await auth.api.getSession({ headers: event.headers })
+  if (!session) {
+    throw createError({ statusCode: 401, statusMessage: 'Not authenticated' })
   }
 
-  const data: Record<string, string> = {}
+  const userId = session.session.userId
+  
+  const raw = await readMultipartFormData(event)
+  if (!raw) {
+    throw createError({ statusCode: 400, message: 'Expected multipart/form-data' })
+  }
 
-  for (const field of body) {
+  const fields: Record<string, string> = {}
+  for (const field of raw) {
     if (!field.name) continue
-    data[field.name] = field.data.toString()
+    fields[field.name] = field.data.toString()
   }
 
   const {
-    firstName,
-    lastName,
-    phoneNumber,
-    address,
-    placeOfWork,
-    occupation,
-    email,
-    description,
-    nominatorName,
-    nominatorEmail,
-    nominatorId,
-    photoURL,
-    adminId,
-  } = data
-
-  const nomineeId = uuidv4()
+    firstName, lastName, phoneNumber, address,
+    placeOfWork, occupation, email, description, photoURL,
+  } = nomineeCreateSchema.parse(fields)
 
   try {
-    // Find or create nominator (let Prisma default id when not provided)
-    let nominator = await prisma.nominator.findUnique({ where: { email: nominatorEmail } })
+    // The logged-in user is the nominator — ensure they have a Nominator record
+    const nominatorUser = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      include: { nominator: true },
+    })
+
+    let nominator = nominatorUser.nominator
     if (!nominator) {
       nominator = await prisma.nominator.create({
-        data: {
-          firstName: nominatorName,
-          lastName: nominatorName,
-          email: nominatorEmail,
-        }
+        data: { user: { connect: { id: userId } } },
       })
     }
 
@@ -75,18 +67,37 @@ export default defineEventHandler(async (event) => {
       slug = `${base}-${i}`
     }
 
+    // Find or create a User for the nominee if an email was provided
+    let nomineeUserId: string | undefined
+    if (email) {
+      let nomineeUser = await prisma.user.findUnique({ where: { email } })
+      if (!nomineeUser) {
+        nomineeUser = await prisma.user.create({
+          data: { email: email, firstName: firstName, lastName: lastName },
+        })
+      }
+      nomineeUserId = nomineeUser.id
+    }
+
     const newNominee = await prisma.nominee.create({
       data: {
         nominator: { connect: { id: nominator.id } },
-        firstName, lastName, phoneNumber, address,
-        placeOfWork, occupation, email, description,
-        photoURL: photoURL ?? '',         // if your schema requires String
+        phoneNumber: phoneNumber,
+        address: address,  
+        placeOfWork: placeOfWork,
+        occupation: occupation,
+        description: description,
+        photoURL: photoURL ?? '',
         slug,
-        // adminId: adminId ?? null,      // only if your model allows nullable
-      }
+        ...(nomineeUserId ? { user: { connect: { id: nomineeUserId } } } : {}),
+      },
+      include: { user: true },
     })
 
-    // Send emails but do NOT fail the request if SMTP errors
+    const nominatorName = [nominatorUser.firstName, nominatorUser.lastName].filter(Boolean).join(' ') || nominatorUser.email
+    const nominatorEmail = nominatorUser.email
+
+    // Fire-and-forget emails
     ;(async () => {
       try {
         await sendEmail(
@@ -94,17 +105,14 @@ export default defineEventHandler(async (event) => {
           `We received your nomination for ${firstName} ${lastName}`,
           `
           <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
-
             <h2 style="color: #2c3e50; margin-bottom: 10px;">
               Thank you, ${nominatorName}!
             </h2>
-
             <p style="font-size: 15px; line-height: 1.5; margin-bottom: 12px;">
               Your nomination for <b>${firstName} ${lastName}</b> has been received.
             </p>
-
             <p style="font-size: 15px; line-height: 1.5; margin-bottom: 20px;">
-              We’ll review it and get back to you soon.
+              We'll review it and get back to you soon.
             </p>
 
             <div
@@ -121,47 +129,6 @@ export default defineEventHandler(async (event) => {
               If you have any additional information you'd like to share, feel free to reply
               directly to this email.
             </div>
-
-          </div>
-          `
-      )
-      } catch (e) {
-        console.error('[email] nominator failed:', e)
-      }
-      try {
-        await sendEmail(
-        routeRecipient(nominatorEmail),
-          `We received your nomination for ${firstName} ${lastName}`,
-          `
-          <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
-
-            <h2 style="color: #2c3e50; margin-bottom: 10px;">
-              Thank you, ${nominatorName}!
-            </h2>
-
-            <p style="font-size: 15px; line-height: 1.5; margin-bottom: 12px;">
-              Your nomination for <b>${firstName} ${lastName}</b> has been received.
-            </p>
-
-            <p style="font-size: 15px; line-height: 1.5; margin-bottom: 20px;">
-              We’ll review it and get back to you soon.
-            </p>
-
-            <div
-              style="
-                margin-top: 25px;
-                padding: 14px 18px;
-                background: #f3f6fa;
-                border-left: 4px solid #2c3e50;
-                border-radius: 6px;
-                font-size: 14px;
-                line-height: 1.5;
-              "
-            >
-              If you have any additional information you'd like to share, feel free to reply
-              directly to this email.
-            </div>
-
           </div>
           `
       )
@@ -176,10 +143,7 @@ export default defineEventHandler(async (event) => {
             `New Nomination: ${firstName} ${lastName}`,
             `
             <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
-              <h2 style="color: #2c3e50; margin-bottom: 15px;">
-                New Nomination Submitted
-              </h2>
-
+              <h2 style="color: #2c3e50; margin-bottom: 15px;">New Nomination Submitted</h2>
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 6px 0;"><strong>Nominee:</strong></td>
@@ -212,7 +176,7 @@ export default defineEventHandler(async (event) => {
                 ${description}
               </div>
             </div>
-  `
+            `
           )
         } catch (e) {
           console.error('[email] admin failed:', e)

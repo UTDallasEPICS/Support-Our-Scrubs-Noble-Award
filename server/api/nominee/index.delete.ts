@@ -1,16 +1,8 @@
 import { prisma } from "../../utils/prismaclient";
+import { nomineeDeleteQuerySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const { nomineeId } = getQuery(event);
-
-    if (!nomineeId || typeof nomineeId !== "string") {
-        throw createError({
-            statusCode: 400,
-            statusMessage: "Nominee ID must be a string",
-        });
-    }
-
-    let deletedNominee = null;
+  const { nomineeId } = await getValidatedQuery(event, q => nomineeDeleteQuerySchema.parse(q));
 
     try {
         const existingNominee = await prisma.nominee.findUnique({

@@ -1,5 +1,4 @@
-import Slug from "~/pages/profile/[slug].vue";
-import { prisma, Status } from "../../utils/prismaclient";
+import { prisma } from "../../utils/prismaclient";
 
 export default defineEventHandler(async (event) => {
   const nominee = await prisma.nominee.findMany({

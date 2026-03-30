@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
         console.error(error);
         throw createError({
             statusCode: 500,
-            statusMessage: "Error getting admin list"
+      statusMessage: "Error getting admin list",
         });
     }
 })

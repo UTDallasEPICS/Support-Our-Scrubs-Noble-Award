@@ -1,6 +1,6 @@
 // /server/api/profile/about-me.get.ts
 import { prisma } from '~/server/utils/prismaclient'
-import { auth } from '~/utils/auth'
+import { auth } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const session = await auth.api.getSession({headers: event.headers})

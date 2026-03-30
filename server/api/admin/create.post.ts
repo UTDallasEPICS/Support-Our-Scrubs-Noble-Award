@@ -1,7 +1,8 @@
 import { prisma } from "../../utils/prismaclient";
+import { adminCreateSimpleSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
+  const { email } = await readValidatedBody(event, b => adminCreateSimpleSchema.parse(b));
 
     const userEmail = body.email;
     const position = "admin";

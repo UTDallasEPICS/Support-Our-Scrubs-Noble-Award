@@ -1,15 +1,13 @@
-import { auth } from "@/utils/auth"
+import { auth } from "~/server/utils/auth"
+import { magicLinkSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event)
+  const { email } = await readValidatedBody(event, b => magicLinkSchema.parse(b))
 
-    const response = await auth.api.signInMagicLink({
-        body: {
-            email: body.email,
-            callbackURL: "/"
-        },
-        headers: event.headers
-    })
+  const response = await auth.api.signInMagicLink({
+    body: { email, callbackURL: "/"},
+    headers: event.headers
+  })
 
-    return response
+  return response
 })
