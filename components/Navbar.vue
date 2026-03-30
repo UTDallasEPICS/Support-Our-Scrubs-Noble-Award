@@ -91,7 +91,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useRoute, navigateTo } from '#imports'
-import { authClient } from '~/utils/auth-client'
+import { authClient } from '~/shared/auth-client'
 
 const emit = defineEmits(['open-login'])
 
