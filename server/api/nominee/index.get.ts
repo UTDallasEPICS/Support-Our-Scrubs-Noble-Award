@@ -1,10 +1,10 @@
 import { prisma } from "../../utils/prismaclient";
 
 export default defineEventHandler(async (event) => {
-  const nominee = await prisma.nominee.findMany({
-    where:{
+  const nominees = await prisma.nominee.findMany({
+    where: {
       status: "APPROVED",
-     },
+    },
     select: {
       id: true,
       slug: true,
@@ -12,18 +12,27 @@ export default defineEventHandler(async (event) => {
       occupation: true,
       placeOfWork: true,
       photoURL: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      },
     },
   })
 
-  if (!nominee) return null
+  if (!nominees) return null
 
-  return nominee.map((n) => ({
+  return nominees.map((n) => ({
     slug: n.slug,
     id: n.id,
+    firstName: n.user?.firstName,
+    lastName: n.user?.lastName,
+    email: n.user?.email,
     occupation: n.occupation,
     description: n.description,
-    placeOfWork : n.placeOfWork,
+    placeOfWork: n.placeOfWork,
     photoURL: n.photoURL,
   }))
-
 });

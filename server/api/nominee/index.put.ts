@@ -8,41 +8,40 @@ export default defineEventHandler(async (event) => {
     aboutme, photoURL, nominatorId, adminId, status,
   } = await readValidatedBody(event, b => nomineeUpdateSchema.parse(b));
 
-    try {
-        updatedNominee = await prisma.nominee.update({
-            where: {
-                id: id
-            },
-            data: {
-                nominator: {
-                    connect: {
-                        id: nominatorId
-                    }
+  try {
+    const [updatedNominee] = await prisma.$transaction([
+      prisma.nominee.update({
+        where: { id },
+        data: {
+          phoneNumber,
+          address,
+          placeOfWork,
+          occupation,
+          description,
+          aboutme,
+          photoURL,
+          status,
+          ...(nominatorId ? { nominator: { connect: { id: nominatorId } } } : {}),
+          ...(adminId ? { admin: { connect: { id: adminId } } } : {}),
+          ...(firstName || lastName || email
+            ? {
+                user: {
+                  update: {
+                    ...(firstName !== undefined ? { firstName } : {}),
+                    ...(lastName !== undefined ? { lastName } : {}),
+                    ...(email !== undefined ? { email } : {}),
+                  },
                 },
-                admin: {
-                    connect: {
-                        id: adminId
-                    }
-                },
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-                address: address,
-                placeOfWork: placeOfWork,
-                occupation: occupation,
-                email: email,
-                description: description,
-                aboutme: aboutme,
-                photoURL: photoURL,
-                status: status,
-            }
-        })
-    }
+              }
+            : {}),
+        },
+        include: { user: true },
+      }),
+    ])
 
-    catch(error) {
-        console.log(error);
-        throw createError({ statusCode: 500, statusMessage: "Error creating nominee", });
-    }
-
-    return updatedNominee;
+    return updatedNominee
+  } catch (error) {
+    console.error(error);
+    throw createError({ statusCode: 500, statusMessage: "Error updating nominee" });
+  }
 })
