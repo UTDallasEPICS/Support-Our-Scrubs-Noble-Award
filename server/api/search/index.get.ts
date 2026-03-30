@@ -13,24 +13,26 @@ export default defineEventHandler(async (event) => {
     const results = await prisma.nominee.findMany({
       where: {
         OR: [
-            { firstName: { contains: searchTerm,},},
-            { lastName: { contains: searchTerm } },
-            //{ email: { contains: searchTerm,},},
-            { occupation: { contains: searchTerm } },
-            { placeOfWork: { contains: searchTerm,},},
-            //{ description: { contains: searchTerm } },
-            //{ aboutme: { contains: searchTerm, },},
-            //{ phoneNumber: { contains: searchTerm,},},
-            //{ address: { contains: searchTerm } },
-          ],
+          { user: { firstName: { contains: searchTerm } } },
+          { user: { lastName: { contains: searchTerm } } },
+          { occupation: { contains: searchTerm } },
+          { placeOfWork: { contains: searchTerm } },
+        ],
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
 
-    return { results };
+    return results;
   } catch (error) {
-        console.error(error);
-        return { results: [] };  // Return empty results on error
-  } finally {
-        await prisma.$disconnect();  // Disconnect Prisma client
+    if ((error as any)?.statusCode) throw error;
+    throw createError({ statusCode: 500, statusMessage: "Error searching for nominees" });
   }
 });
