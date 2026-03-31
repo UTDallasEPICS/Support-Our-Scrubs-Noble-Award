@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/prismaclient";
+import { prisma } from "~/server/utils/prismaclient";
 
 export default defineEventHandler(async (event) => {
   const nominees = await prisma.nominee.findMany({

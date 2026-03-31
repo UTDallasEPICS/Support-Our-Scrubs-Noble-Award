@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/prismaclient";
+import { prisma } from "~/server/utils/prismaclient";
 import { nomineeDeleteQuerySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
