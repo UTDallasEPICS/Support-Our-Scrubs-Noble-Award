@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { reactive } from "vue";
 import Navbar from "@/components/Navbar.vue";
 import { onMounted, nextTick } from "vue";
 import gsap from "gsap";
@@ -8,14 +7,6 @@ import LoginModal from "@/components/MyLogin.vue";
 
 gsap.registerPlugin(ScrollTrigger);
 
-definePageMeta({});
-
-const form = reactive({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-});
 
 const showLogin = ref(false);
 
