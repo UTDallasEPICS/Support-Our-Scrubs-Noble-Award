@@ -13,7 +13,7 @@ if (!user.value) {
 }
 
 // Load current about-me text
-const { data, pending, error } = await useFetch<{ aboutMe: string | null }>(
+const { data, error } = await useFetch<{ aboutMe: string | null }>(
     "/api/editAboutMe",
 );
 
@@ -65,10 +65,8 @@ const saveAboutMe = async () => {
                 Update the story you want to share with others.
             </p>
 
-            <!-- Loading / error states -->
-            <div v-if="pending" class="loading">Loading your profile...</div>
 
-            <div v-else-if="error" class="error">
+            <div v-if="error" class="error">
                 There was an error loading your profile.
             </div>
 
