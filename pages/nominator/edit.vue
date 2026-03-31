@@ -1,101 +1,93 @@
-<script>
-export default {
-    data() {
-        return {
-            emailSearch: "",
-            formData: {
-                id: "", // will be filled from API
-                firstName: "",
-                lastName: "",
-                phoneNumber: "",
-                address: "",
-                placeOfWork: "",
-                occupation: "",
-                email: "",
-                description: "",
-                photoURL: "",
-                // status, slug, nominatorId, etc. will also come from API and be preserved
-            },
-            selectedFile: null,
-            selectedFileName: "",
-        };
-    },
-    methods: {
-        async fetchNominee() {
-            try {
-                // NOTE: currently this searches by nominee.email
-                // If you change your backend to search via Nominator.Nominee[], you can hit a different endpoint
-                const res = await fetch(
-                    `/api/nominee?email=${encodeURIComponent(this.emailSearch)}`,
-                );
+<script setup lang="ts">
+import type { NomineeUpdateInput } from "~/shared/types";
 
-                if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    console.error("Error details:", err);
-                    throw new Error(
-                        err.statusMessage || "Error fetching nominee",
-                    );
-                }
+const emailSearch = ref<string>("");
+const form = reactive<NomineeUpdateInput>({
+    id: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+    placeOfWork: "",
+    occupation: "",
+    email: "",
+    description: "",
+    photoURL: "",
+    nominatorId: "",
+    adminId: "",
+    status: "",
+});
 
-                const data = await res.json();
-                if (data && data.length > 0) {
-                    this.formData = { ...data[0] };
-                    this.selectedFile = null;
-                    this.selectedFileName = "";
-                } else {
-                    alert("No nominee found for that email.");
-                }
-            } catch (error) {
-                console.error("Error fetching nominee:", error);
-                alert("Error fetching nominee.");
+// TODO: update this to use the search endpoint
+// TODO: model the search query terms from the nominee schema in the types file
+async function fetchNominee() {
+    try {
+        const res = await fetch(
+            `/api/nominee?email=${encodeURIComponent(emailSearch.value)}`,
+        );
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.error("Error details:", err);
+            throw new Error(err.statusMessage || "Error fetching nominee");
+        }
+
+        const data = await res.json();
+        if (data && data.length > 0) {
+            form = { ...data[0] };
+            selectedFile = null;
+            selectedFileName = "";
+        } else {
+            alert("No nominee found for that email.");
+        }
+    } catch (error) {
+        console.error("Error fetching nominee:", error);
+        alert("Error fetching nominee.");
+    }
+}
+function handlePhotoUpload(event) {
+    const input = event.target;
+    const file = input.files && input.files[0] ? input.files[0] : null;
+    selectedFile.value = file;
+    selectedFileName.value = file ? file.name : "";
+}
+const selectedFile = ref<File | null>(null);
+const selectedFileName = ref<string>("");
+
+async function submitForm() {
+    try {
+        const payload = new FormData();
+
+        // Append all nominee fields from formData
+        Object.entries(this.formData).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                payload.append(key, value);
             }
-        },
+        });
 
-        handlePhotoUpload(event) {
-            const input = event.target;
-            const file = input.files && input.files[0] ? input.files[0] : null;
-            this.selectedFile = file;
-            this.selectedFileName = file ? file.name : "";
-        },
+        // If a new file was selected, append it as "photo"
+        if (this.selectedFile) {
+            payload.append("photo", this.selectedFile);
+        }
 
-        async submitForm() {
-            try {
-                const payload = new FormData();
+        const res = await fetch("/api/nominee", {
+            method: "PUT",
+            // do NOT set Content-Type here; browser will set multipart boundary
+            body: payload,
+        });
 
-                // Append all nominee fields from formData
-                Object.entries(this.formData).forEach(([key, value]) => {
-                    if (value !== null && value !== undefined) {
-                        payload.append(key, value);
-                    }
-                });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.error("Error details:", err);
+            throw new Error(err.statusMessage || "Error updating nominee");
+        }
 
-                // If a new file was selected, append it as "photo"
-                if (this.selectedFile) {
-                    payload.append("photo", this.selectedFile);
-                }
-
-                const res = await fetch("/api/nominee", {
-                    method: "PUT",
-                    // do NOT set Content-Type here; browser will set multipart boundary
-                    body: payload,
-                });
-
-                if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    console.error("Error details:", err);
-                    throw new Error(
-                        err.statusMessage || "Error updating nominee",
-                    );
-                }
-
-                alert("Nominee updated successfully!");
-            } catch (error) {
-                console.error("Error updating nominee:", error);
-                alert("Error updating profile.");
-            }
-        },
-    },
-};
+        alert("Nominee updated successfully!");
+    } catch (error) {
+        console.error("Error updating nominee:", error);
+        alert("Error updating profile.");
+    }
+}
 </script>
 
 <template>
@@ -149,7 +141,7 @@ export default {
                             >
                             <input
                                 id="firstName"
-                                v-model="formData.firstName"
+                                v-model="form.firstName"
                                 type="text"
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                             />
@@ -161,7 +153,7 @@ export default {
                             >
                             <input
                                 id="lastName"
-                                v-model="formData.lastName"
+                                v-model="form.lastName"
                                 type="text"
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                             />
@@ -175,7 +167,7 @@ export default {
                             >
                             <input
                                 id="phoneNumber"
-                                v-model="formData.phoneNumber"
+                                v-model="form.phoneNumber"
                                 type="tel"
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                             />
@@ -187,7 +179,7 @@ export default {
                             >
                             <input
                                 id="email"
-                                v-model="formData.email"
+                                v-model="form.email"
                                 type="email"
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                             />
@@ -200,7 +192,7 @@ export default {
                         >
                         <input
                             id="address"
-                            v-model="formData.address"
+                            v-model="form.address"
                             type="text"
                             class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                         />
@@ -213,7 +205,7 @@ export default {
                             >
                             <input
                                 id="placeOfWork"
-                                v-model="formData.placeOfWork"
+                                v-model="form.placeOfWork"
                                 type="text"
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                             />
@@ -225,7 +217,7 @@ export default {
                             >
                             <input
                                 id="occupation"
-                                v-model="formData.occupation"
+                                v-model="form.occupation"
                                 type="text"
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
                             />
@@ -238,7 +230,7 @@ export default {
                         >
                         <textarea
                             id="description"
-                            v-model="formData.description"
+                            v-model="form.description"
                             rows="5"
                             class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100 resize-y"
                         ></textarea>
@@ -250,16 +242,16 @@ export default {
 
                         <!-- Current photo preview -->
                         <div
-                            v-if="formData.photoURL"
+                            v-if="form.photoURL"
                             class="flex items-center gap-4"
                         >
                             <img
-                                :src="formData.photoURL"
+                                :src="form.photoURL"
                                 alt="Current nominee photo"
                                 class="h-16 w-16 rounded-full object-cover border border-amber-400"
                             />
                             <span class="text-xs text-amber-200/80 break-all">
-                                Current: {{ formData.photoURL }}
+                                Current: {{ form.photoURL }}
                             </span>
                         </div>
                         <div v-else class="text-xs text-amber-200/70">
@@ -300,7 +292,7 @@ export default {
                             </label>
                             <input
                                 id="photoURL"
-                                v-model="formData.photoURL"
+                                v-model="form.photoURL"
                                 type="url"
                                 placeholder="/uploads/..."
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-2 text-amber-100 text-xs"
