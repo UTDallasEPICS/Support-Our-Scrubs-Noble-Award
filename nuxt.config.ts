@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     css: ["~/assets/css/main.css"],
     imports: { autoImport: true },
-    modules: ["@nuxtjs/supabase", "nuxt-security"],
+    modules: ["nuxt-security"],
 
     postcss: {
         plugins: {
