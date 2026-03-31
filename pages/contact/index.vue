@@ -4,30 +4,28 @@ import Navbar from "@/components/Navbar.vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import LoginModal from "@/components/MyLogin.vue";
+import type { ContactInput } from "~/shared/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
-definePageMeta({});
+const showLogin = ref<boolean>(false);
 
-const showLogin = ref(false);
-
-const form = reactive({
+const form = reactive<ContactInput>({
     name: "",
     email: "",
-    subject: "",
     message: "",
+    subject: "",
 });
 
 const handleSubmit = async () => {
     try {
-        const res = await fetch("/api/contact", {
+        const res = await $fetch<{success: boolean, error: string}>("/api/contact", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
         });
 
-        const result = await res.json();
-        if (result.success) {
+        if (res.success) {
             alert("Email sent!");
             form.name = "";
             form.email = "";
@@ -35,7 +33,7 @@ const handleSubmit = async () => {
             form.message = "";
         } else {
             alert(
-                "Failed to save inquiry: " + (result.error || "Uknown error"),
+                "Failed to save inquiry: " + (res.error || "Uknown error"),
             );
         }
     } catch (error) {
