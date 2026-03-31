@@ -1,31 +1,29 @@
 <!-- pages/dashboard.vue -->
 <script setup lang="ts">
+import { Prisma } from "@prisma/client"
+import { EmailTemplateType } from "#build/types/nitro-imports"
+import type { EmailTemplateUpdateInput, EmailField } from "~/shared/types";
+
+type AdminWithUser = Prisma.AdminGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
+
 // Tab management
 const activeTab = ref<"admins" | "email-settings">("admins");
 
 // Admin management
-const newAdminEmail = ref("");
-const existingAdmins = ref<
-    Array<{
-        id: string;
-        userId: string;
-        Position: string;
-        user: { email: string };
-    }>
->([]);
+const newAdminEmail = ref<EmailField>("");
+const existingAdmins = ref<Array<AdminWithUser>>([]);
 
 // Email templates
-const emailTemplates = ref([
+const emailTemplates = ref<Array<{type: EmailTemplateType, label: string}>>([
     { type: "SIGNUP", label: "Signup Email" },
     { type: "NOMINATION", label: "Nomination Email" },
     { type: "ACCEPTED", label: "Acceptance Email" },
     { type: "REJECTED", label: "Rejection Email" },
 ]);
-const selectedTemplate = ref("");
-const templateForm = ref({
+const selectedTemplate = ref<EmailTemplateType | null>(null);
+const templateForm = ref<EmailTemplateUpdateInput>({
     subject: "",
     html: "",
-    text: "",
 });
 
 // Load initial data
@@ -38,7 +36,7 @@ async function loadAdmins() {
     existingAdmins.value = data;
 }
 
-async function loadTemplate(type: string) {
+async function loadTemplate(type: EmailTemplateType) {
     const data = await $fetch(
         `/api/admin/email-templates/${type.toLowerCase()}`,
     );
@@ -46,7 +44,6 @@ async function loadTemplate(type: string) {
     templateForm.value = {
         subject: data?.subject ?? "",
         html: data?.html ?? "",
-        text: data?.text ?? "",
     };
 }
 
@@ -61,8 +58,8 @@ async function createAdmin() {
 }
 
 async function saveTemplate() {
-    await $fetch(
-        `/api/admin/email-templates/${selectedTemplate.value.toLowerCase()}`,
+    await $fetch<EmailTemplateUpdateInput>(
+        `/api/admin/email-templates/${selectedTemplate.value?.toLowerCase()}`,
         {
             method: "PUT",
             body: templateForm.value,
@@ -177,11 +174,6 @@ async function saveTemplate() {
                                 placeholder="Email HTML content"
                                 class="w-full p-2 h-64 border rounded mb-4 font-mono text-sm"
                                 required
-                            ></textarea>
-                            <textarea
-                                v-model="templateForm.text"
-                                placeholder="Email plain text content (optional)"
-                                class="w-full p-2 h-32 border rounded mb-4 font-mono text-sm"
                             ></textarea>
                             <button
                                 type="submit"
