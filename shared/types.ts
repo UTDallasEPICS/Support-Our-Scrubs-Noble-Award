@@ -16,11 +16,13 @@ export const emailBodySchema = z.object({
 export const nomineeCreateSchema = z.object({
   firstName:   z.string().min(1, 'First name is required'),
   lastName:    z.string().min(1, 'Last name is required'),
+  nominatorFirstName: z.string().min(1, 'Nominator First Name is required'),
+  nominatorLastName: z.string().min(1, 'Nominator Last Name is required'),
   phoneNumber: z.string().min(1, 'Phone number is required'),
   address:     z.string().min(1, 'Address is required'),
   placeOfWork: z.string().min(1, 'Place of work is required'),
   occupation:  z.string().min(1, 'Occupation is required'),
-  email:       emailField.optional(),
+  email:       emailField,
   description: z.string().min(1, 'Description is required'),
   photoURL:    z.string().optional(),
 })
@@ -132,3 +134,4 @@ export type EmailTemplateUpdateInput = z.infer<typeof emailTemplateUpdateSchema>
 export type ContactInput             = z.infer<typeof contactSchema>
 export type SearchQueryInput         = z.infer<typeof searchQuerySchema>
 export type AboutMeInput             = z.infer<typeof aboutMeSchema>
+export type EmailField               = z.infer<typeof emailField>
