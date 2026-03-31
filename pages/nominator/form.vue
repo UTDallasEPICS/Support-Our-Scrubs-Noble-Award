@@ -1,34 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import LoginModal from "@/components/MyLogin.vue";
 import Navbar from "~/components/Navbar.vue";
-
-// Title refs
-const nobleTitle = ref<HTMLElement | null>(null);
-const nominationFormTitle = ref<HTMLElement | null>(null);
-
+import type { NomineeCreateInput } from "~/shared/types";
 const showLogin = ref(false);
 
 // Form fields
-const nominatorName = ref("");
-const nominatorEmail = ref("");
-const firstName = ref("");
-const lastName = ref("");
-const phoneNumber = ref("");
-const email = ref("");
-const address = ref("");
-const placeOfWork = ref("");
-const occupation = ref("");
-const description = ref("");
+const form = ref<NomineeCreateInput>({
+    firstName: "",
+    lastName: "",
+    nominatorFirstName: "",
+    nominatorLastName: "",
+    phoneNumber: "",
+    address: "",
+    placeOfWork: "",
+    occupation: "",
+    email: "",
+    description: "",
+    photoURL: "",
+});
 
 // File upload state
 const selectedFile = ref<File | null>(null);
 const selectedFileName = ref("");
-const photoURL = ref("");
 
-// Refs to elements
-const fileInput = ref<HTMLInputElement | null>(null);
-const uploadButton = ref<HTMLElement | null>(null);
 
 const handlePhotoUpload = async (event: Event) => {
     const target = event.target as HTMLInputElement | null;
@@ -43,85 +37,30 @@ const handlePhotoUpload = async (event: Event) => {
 
 // Reset form after submit
 function resetForm() {
-    nominatorName.value = "";
-    nominatorEmail.value = "";
-    firstName.value = "";
-    lastName.value = "";
-    phoneNumber.value = "";
-    email.value = "";
-    address.value = "";
-    placeOfWork.value = "";
-    occupation.value = "";
-    description.value = "";
-    selectedFile.value = null;
-    selectedFileName.value = "";
-    photoURL.value = "";
+    form.value = {
+        firstName: "",
+        lastName: "",
+        nominatorFirstName: "",
+        nominatorLastName: "",
+        phoneNumber: "",
+        address: "",
+        placeOfWork: "",
+        occupation: "",
+        email: "",
+        description: "",
+        photoURL: "",
+    };
 }
 
-// Submit form → multipart upload
+// Submit form
 async function submitForm() {
     try {
-        const formData = new FormData();
-
-        let photoURLValue = "";
-
-        // === Upload file to Cloudinary ONLY IF a file was selected ===
-        if (selectedFile.value) {
-            const uploadForm = new FormData();
-            uploadForm.append("file", selectedFile.value);
-            uploadForm.append("upload_preset", "unsigned_uploads");
-
-            const service = import.meta.env.VITE_IMAGE_SERVICE;
-
-            const res = await fetch(service, {
-                method: "POST",
-                body: uploadForm,
-            });
-            if (!res.ok) {
-                throw new Error(
-                    `Image upload failed with status ${res.status}`,
-                );
-            }
-
-            const data = await res.json();
-            photoURLValue = data.secure_url;
-            console.log("Uploaded photo URL:", photoURLValue);
-        }
-
-        // nominee info
-        formData.append("firstName", firstName.value);
-        formData.append("lastName", lastName.value);
-        formData.append("phoneNumber", phoneNumber.value);
-        formData.append("address", address.value);
-        formData.append("placeOfWork", placeOfWork.value);
-        formData.append("occupation", occupation.value);
-        formData.append("email", email.value);
-        formData.append("description", description.value);
-
-        // nominator info
-        formData.append("nominatorName", nominatorName.value);
-        formData.append("nominatorEmail", nominatorEmail.value);
-
-        // slug
-        const slug = `${firstName.value}-${lastName.value}-${Date.now()}`
-            .toLowerCase()
-            .replace(/\s+/g, "-");
-        formData.append("slug", slug);
-
-        // file
-        if (selectedFile.value) {
-            formData.append("photo", selectedFile.value);
-        }
-
-        if (photoURLValue) {
-            formData.append("photoURL", photoURLValue);
-        }
-
+        // TODO: Handle Photo Upload
+        
         await $fetch("/api/nominee", {
             method: "POST",
-            body: formData,
+            body: form.value,
         });
-
         alert("Nomination submitted!");
         resetForm();
     } catch (err) {
@@ -159,11 +98,11 @@ async function submitForm() {
                         <label
                             for="nominatorName"
                             class="block text-sm font-medium mb-1"
-                            >Your Name</label
+                            >Your First Name</label
                         >
                         <input
-                            id="nominatorName"
-                            v-model="nominatorName"
+                            id="nominatorFirstName"
+                            v-model="form.nominatorFirstName"
                             type="text"
                             autocomplete="name"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
@@ -175,13 +114,13 @@ async function submitForm() {
                         <label
                             for="nominatorEmail"
                             class="block text-sm font-medium mb-1"
-                            >Your Email</label
-                        >
+                            >Your Last Name</label
+                            >
                         <input
-                            id="nominatorEmail"
-                            v-model="nominatorEmail"
-                            type="email"
-                            autocomplete="email"
+                            id="nominatorLastName"
+                            v-model="form.nominatorLastName"
+                            type="text"
+                            autocomplete="name"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                             placeholder="you@example.com"
                         />
@@ -198,7 +137,7 @@ async function submitForm() {
                         >
                         <input
                             id="firstName"
-                            v-model="firstName"
+                            v-model="form.firstName"
                             type="text"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                             placeholder="Nominee first name"
@@ -212,7 +151,7 @@ async function submitForm() {
                         >
                         <input
                             id="lastName"
-                            v-model="lastName"
+                            v-model="form.lastName"
                             type="text"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                             placeholder="Nominee last name"
@@ -229,7 +168,7 @@ async function submitForm() {
                         >
                         <input
                             id="phoneNumber"
-                            v-model="phoneNumber"
+                            v-model="form.phoneNumber"
                             type="tel"
                             autocomplete="tel"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
@@ -244,7 +183,7 @@ async function submitForm() {
                         >
                         <input
                             id="email"
-                            v-model="email"
+                            v-model="form.email"
                             type="email"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                             placeholder="nominee@example.com"
@@ -258,7 +197,7 @@ async function submitForm() {
                     >
                     <input
                         id="address"
-                        v-model="address"
+                        v-model="form.address"
                         type="text"
                         class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                         placeholder="Street, City, State"
@@ -274,7 +213,7 @@ async function submitForm() {
                         >
                         <input
                             id="placeOfWork"
-                            v-model="placeOfWork"
+                            v-model="form.placeOfWork"
                             type="text"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                             placeholder="Company / Organization"
@@ -288,7 +227,7 @@ async function submitForm() {
                         >
                         <input
                             id="occupation"
-                            v-model="occupation"
+                            v-model="form.occupation"
                             type="text"
                             class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3"
                             placeholder="Role / Title"
@@ -304,7 +243,7 @@ async function submitForm() {
                     >
                     <textarea
                         id="description"
-                        v-model="description"
+                        v-model="form.description"
                         rows="5"
                         class="w-full rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 p-3 resize-y"
                         placeholder="Why are you nominating this person?"
