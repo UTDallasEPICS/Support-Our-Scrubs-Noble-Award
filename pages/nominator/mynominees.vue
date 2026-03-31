@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import LoginModal from "@/components/MyLogin.vue";
 import { authClient } from "~/shared/auth-client";
+import { Prisma } from "@prisma/client";
+
+type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
 
 const { data: session } = await authClient.useSession(useFetch);
 
@@ -12,14 +15,10 @@ if (session.value?.user) {
     showLogin.value = true;
 }
 
-// Protect with your existing auth middleware if you have one
-definePageMeta({
-    // e.g. middleware: ['auth']  // if you already use this
-});
 
-const { data, pending, error } = await useFetch("/api/userNominees");
+const { data: nominees, error } = await useFetch<NomineesWithUser[]>("/api/nominator/nominations");
 
-const nominees = computed(() => data.value ?? []);
+
 
 const goToProfile = (slug: string) => {
     if (!slug) return;
@@ -38,11 +37,10 @@ const goToProfile = (slug: string) => {
                 decline).
             </p>
 
-            <div v-if="pending" class="loading">Loading your nominees...</div>
-            <div v-else-if="error" class="error">
+            <div v-if="error" class="error">
                 There was an error loading your nominees.
             </div>
-            <div v-else-if="!nominees.length" class="empty-state">
+            <div v-else-if="!nominees" class="empty-state">
                 You haven't submitted any nominations yet.
             </div>
             <div v-else class="cards-container">
@@ -64,7 +62,7 @@ const goToProfile = (slug: string) => {
                         </div>
                         <div class="card-content">
                             <h1 class="name">
-                                {{ nominee.firstName + " " + nominee.lastName }}
+                                {{ nominee.user?.firstName + " " + nominee.user?.lastName }}
                             </h1>
                             <h2 class="name">{{ nominee.occupation }}</h2>
                             <h2 class="name">{{ nominee.placeOfWork }}</h2>
