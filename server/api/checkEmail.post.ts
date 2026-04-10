@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!user) {
-      return { ok: false, reason: 'not_found' as const }
+      throw createError({ statusCode: 404, statusMessage: 'User not found' })
     }
 
     let role: 'admin' | 'nominator' | 'nominee'
@@ -23,12 +23,10 @@ export default defineEventHandler(async (event) => {
     if (user.admin) role = 'admin'
     else if (user.nominator) role = 'nominator'
     else if (user.nominee) role = 'nominee'
-    else return { ok: false, reason: 'not_found' as const }
+    else throw createError({ statusCode: 404, statusMessage: 'User not found or does not have a role' })
 
-    return { ok: true, role }
+    return { role }
   } catch (err) {
-    // log server-side if you want details
-    console.error('check-email error:', err)
-    return { ok: false, reason: 'server_error' as const }
+    throw createError({ statusCode: 500, statusMessage: 'Error checking email' })
   }
 })

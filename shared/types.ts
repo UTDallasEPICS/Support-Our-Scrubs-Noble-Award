@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { Prisma } from '@prisma/client'
 
 // ── Reusable field-level schemas ────────────────────────────────────────────
 
@@ -39,9 +40,6 @@ export const nomineeUpdateSchema = z.object({
   description: z.string().min(1).optional(),
   aboutme:     z.string().max(300).optional(),
   photoURL:    z.string().optional(),
-  nominatorId: uuidField.optional(),
-  adminId:     uuidField.optional(),
-  status:      z.string().optional(),
 })
 
 export const nomineeDeleteQuerySchema = z.object({
@@ -135,3 +133,5 @@ export type ContactInput             = z.infer<typeof contactSchema>
 export type SearchQueryInput         = z.infer<typeof searchQuerySchema>
 export type AboutMeInput             = z.infer<typeof aboutMeSchema>
 export type EmailField               = z.infer<typeof emailField>
+
+export type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
