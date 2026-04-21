@@ -1,19 +1,14 @@
-<script setup>
-import { ref } from "vue";
-
-const token = useCookie("token") || "";
-
-// Login function
-async function login() {
-    window.location.href = "/";
-}
+<script setup lang="ts">
+import { authClient } from "~/shared/auth-client";
+import type { NomineesWithUser } from "~/shared/types";
 // Logout function
 async function logout() {
-    window.location.href = "/";
+    await authClient.signOut();
+    navigateTo("/");
 }
 
 // The state for nominees data and dropdown visibility
-const nominees = ref([]);
+const nominees = ref<NomineesWithUser[]>([]);
 const dropdownOpen = ref(false);
 const searchQuery = ref("");
 const isModalOpen = ref(false);
