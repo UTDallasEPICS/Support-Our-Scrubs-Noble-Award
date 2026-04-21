@@ -1,113 +1,64 @@
-<script lang="ts">
-import ThreeJsScene from '@/components/ThreeJsScene.vue';
-import UserData from "@/components/UserData.vue"
-import type {
-  SearchQueryInput,
-} from "~/shared/types";
+<script setup lang="ts">
+import { ref } from "vue";
+import UserData from "~/components/UserData.vue";
+import type { SearchQueryInput } from "~/shared/types";
 
-export default {
-  name: 'Roster',
-  components: {
-    ThreeJsScene,
-    UserData,
-  },
-  data() {
-    return {
-      currentModelPath: '/models/frame.glb',
-      loadingProgress: 0,
-      modelLoadError: null,
-      customObjects: [],
-      nomineeInfo: [],
-      nomineeNames: [],
-      nomineeOccupations: [],
-      nomineeEmails: [],
-      nominees: [],
-      nomineeSlug: [],
-      nomineeImage: [],
-      // Search state
-      searchQuery: '',
-      searchLoading: false,
-      searchError: '',
-      hasSearched: false,
-      // Rest of your data properties...
-    };
-  },
-  methods: {
-    async performSearch() {
-      if (!this.searchQuery.trim()) {
-        this.clearSearch();
+// Initial list of approved nominees (SSR-safe via useAsyncData).
+const { data: initialNominees } = await useAsyncData("roster-nominees", () =>
+    $fetch("/api/nominee"),
+);
+
+// `nominees` is the list currently rendered in UserData. Starts as the initial
+// set; replaced by search results on `performSearch`, restored on `clearSearch`.
+const nominees = ref(
+    (initialNominees.value ?? []).map((n) => ({
+        ...n,
+        name: getFullName(n.user),
+    })),
+);
+
+const searchQuery = ref("");
+const searchLoading = ref(false);
+const searchError = ref("");
+const hasSearched = ref(false);
+
+async function performSearch() {
+    const term = searchQuery.value.trim();
+    if (!term) {
+        clearSearch();
         return;
       }
-      
-      this.searchLoading = true;
-      this.searchError = '';
-      this.hasSearched = true;
-
-      try {
-        const response = await $fetch(`/api/search?searchTerm=${encodeURIComponent(this.searchQuery)}`);
-    
-        // Filter to only show approved nominees
-        const results = response.results.
-        filter(n => n.status === 'APPROVED').
-        map(n => ({
-          ...n,
-          name: `${n.firstName} ${n.lastName}` 
-        }));
-
-        // Update the nominee arrays with search results
-        this.nominees = results;
-        /*this.nomineeNames = results.map(n => `${n.firstName} ${n.lastName}`);
-        this.nomineeEmails = results.map(n => n.email);
-        this.nomineeOccupations = results.map(n => n.occupation);
-        this.nomineeInfo = results.map(n => n.description || '');
-        this.nomineeImage = results.map(n => n.photoURL);
-        this.nomineeAboutMe = results.map(n => n.aboutme || '');
-        this.nomineeSlug = results.map(n => n.slug);*/
+    searchLoading.value = true;
+    searchError.value = "";
+    hasSearched.value = true;
+    try {
+        const query: SearchQueryInput = { searchTerm: term };
+        const response = await $fetch(
+            `/api/nominee/search?searchTerm=${encodeURIComponent(query.searchTerm ?? "")}`,
+        );
+        // The search endpoint returns either a nominee array or `{ results: [] }`
+        // when the term is empty; normalize before filtering.
+        const items = Array.isArray(response) ? response : [];
+        nominees.value = items
+            .filter((n) => n.status === "APPROVED")
+            .map((n) => ({ ...n, name: getFullName(n.user) }));
       } catch (e) {
         this.searchError = 'Failed to search nominees. Please try again.';
         console.error(e);
       } finally {
         this.searchLoading = false;
       }
-    },
+}
 
-    clearSearch() {
-      this.searchQuery = '';
-      this.hasSearched = false;
-      this.searchError = '';
-      this.fetchNominees(); // Reload all nominees
-    },
-    async fetchNominees() {
-      try {
-        const response = await $fetch('/api/nominee?stat=APPROVED', { method: 'GET' });
-        
-        // Store the full nominee list
-        this.nominees = response;
-        
-        this.nomineeNames = response.map(n => `${n.firstName} ${n.lastName}`)
-        this.nomineeEmails = response.map(n => n.email)
-        this.nomineeOccupations = response.map(n => n.occupation)
-        this.nomineeInfo = response.map(n => n.description)
-        this.nomineeImage = response.map(n => n.photoURL)
-        this.nomineeAboutMe = response.map(n => n.aboutme)
-        this.nomineeSlug = response.map(n => n.slug)
-
-      } catch (error) {
-        console.error('Error fetching nominees:', error);
-      }
-    }
-  },
-  mounted() {
-    // Fetch data when the component is mounted
-    this.fetchNominees();
-   
-    
-      if (this.$route.query.form) {
-        const decodedData = JSON.parse(decodeURIComponent(this.$route.query.form));
-      }
-  },
-};
-
+function clearSearch() {
+    searchQuery.value = "";
+    hasSearched.value = false;
+    searchError.value = "";
+    nominees.value = (initialNominees.value ?? []).map((n) => ({
+        ...n,
+        name: getFullName(n.user),
+    }));
+}
 </script>
 
 <template>
@@ -125,7 +76,7 @@ export default {
                     @keyup.enter="performSearch"
                     class="search-input"
                   />
-                  <button @click.stop.prevents="performSearch" :disabled="searchLoading" class="search-button">
+                  <button @click.stop.prevent="performSearch" :disabled="searchLoading" class="search-button">
                     <span v-if="searchLoading">Searching...</span>
                     <span v-else>Search</span>
                   </button>
@@ -134,7 +85,7 @@ export default {
                 <div v-if="searchError" class="search-error">{{ searchError }}</div>
               </div>
 
-        <UserData/>
+        <UserData :nominees="nominees" />
       </div>
 </template>
 
