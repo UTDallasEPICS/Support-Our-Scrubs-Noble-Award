@@ -1,90 +1,58 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
-
+import { computed } from "vue";
 
 const route = useRoute();
-const slug = route.params.slug;
+const slug = String(route.params.slug);
+const url = useRequestURL();
 
-// Server-side data fetching for SEO
-const { data, pending, error } = await useFetch("/api/nominee", {
-    query: { slug },
-});
-const nomiee = computed(() => data.value ?? []);
+// SSR-safe fetch keyed by slug so the hydrated client matches the server render.
+// TODO server-opt: a dedicated `/api/nominee/[slug].get.ts` would avoid pulling
+// the full approved list just to filter client-side.
+const { data: nominees } = await useAsyncData(`profile-${slug}`, () =>
+    $fetch("/api/nominee", { query: { slug } }),
+);
 
-const nominee = computed(() => nomiee.value.find((n) => n.slug === slug));
-// Handle errors
-if (error.value || !nominee.value) {
-    console.error("Error fetching nominee:", error.value);
+const nominee = (nominees.value ?? []).find((n) => n.slug === slug);
+if (!nominee) {
     throw createError({
         statusCode: 404,
         statusMessage: "Nominee not found",
+        fatal: true,
     });
 }
 
-// Computed properties (these replace your old computed section)
-const title = computed(() => nominee.value?.name || "");
-const subtitle = computed(() => nominee.value?.occupation || "");
-const profileDescription = computed(() => nominee.value?.description || "");
-const profileImage = computed(() => nominee.value?.photoURL || "");
-const profileAboutme = computed(
-    () =>
-        nominee.value?.aboutme ||
-        'This nominee has not added an "About Me" yet.',
-);
-
-// SEO Meta Tags - UPDATE YOUR DOMAIN HERE!
-useHead({
-    title: () => `${title.value} - ${subtitle.value}`,
-    meta: [
-        {
-            name: "description",
-            content: () => profileDescription.value.substring(0, 160),
-        },
-        // Open Graph tags for social media
-        {
-            property: "og:title",
-            content: () => `${title.value} - ${subtitle.value}`,
-        },
-        {
-            property: "og:description",
-            content: () => profileDescription.value.substring(0, 160),
-        },
-        {
-            property: "og:image",
-            content: () => profileImage.value,
-        },
-        {
-            property: "og:type",
-            content: "profile",
-        },
-        // Twitter Card tags
-        {
-            name: "twitter:card",
-            content: "summary_large_image",
-        },
-        {
-            name: "twitter:title",
-            content: () => `${title.value} - ${subtitle.value}`,
-        },
-        {
-            name: "twitter:description",
-            content: () => profileDescription.value.substring(0, 160),
-        },
-        {
-            name: "twitter:image",
-            content: () => profileImage.value,
-        },
-    ],
-    link: [
-        {
-            rel: "canonical",
-            href: () => `https://localhost:3000/profile/${slug}`, // UPDATE THIS!
-        },
-    ],
+const title = computed(() => getFullName(nominee.user));
+const subtitle = computed(() => nominee.occupation || "");
+const profileDescription = computed(() => nominee.description || "");
+const profileImage = computed(() => nominee.photoURL || "");
+// NOTE: `/api/nominee`'s Prisma `select` doesn't include `aboutme`, so this
+// always renders the fallback today. Fix requires a server-side change.
+const profileAboutme = computed(() => {
+    const aboutme = (nominee as unknown as { aboutme?: string | null }).aboutme;
+    return aboutme || 'This nominee has not updated their profile yet.';
 });
 
-// Structured Data (JSON-LD) for rich snippets - manual implementation
+const canonicalUrl = computed(() => `${url.origin}/profile/${slug}`);
+const headline = computed(() => `${title.value} - ${subtitle.value}`);
+const metaDescription = computed(() =>
+    profileDescription.value.substring(0, 160),
+);
+// SEO metadata
 useHead({
+    title: headline,
+    meta: [
+        { name: "description", content: metaDescription },
+        { property: "og:title", content: headline },
+        { property: "og:description", content: metaDescription },
+        { property: "og:image", content: profileImage },
+        { property: "og:url", content: canonicalUrl },
+        { property: "og:type", content: "profile" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: headline },
+        { name: "twitter:description", content: metaDescription },
+        { name: "twitter:image", content: profileImage },
+    ],
+    link: [{ rel: "canonical", href: canonicalUrl }],
     script: [
         {
             type: "application/ld+json",
