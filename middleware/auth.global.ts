@@ -1,4 +1,5 @@
 import { authClient } from "~/shared/auth-client";
+import { useCheckEmail } from "~/composables/useCheckEmail";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
 	const { data: session } = await authClient.useSession(useFetch);
@@ -10,10 +11,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 		return;
 	}
 
-	const { role } : { role: 'admin' | 'nominator' | 'nominee' } = await $fetch(
-		"/api/checkEmail", 
-		{ method: "POST", body: { email: session.value.user.email } }
-	);
+	const { role } = await useCheckEmail(session.value.user.email);
 
 	// guard Admin Pages if user is not an admin
 	if (to.path === "/admin" && role !== 'admin') {

@@ -180,7 +180,7 @@ onMounted(async () => {
                     rows="6"
                     required
                 ></textarea>
-                <button type="submit">Submit Inquiry</button>
+                <button type="submit" class="nomination-submit-btn">Submit Inquiry</button>
             </form>
         </section>
     </div>

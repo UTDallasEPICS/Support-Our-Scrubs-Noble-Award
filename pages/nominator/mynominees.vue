@@ -8,13 +8,10 @@ type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firs
 const { data: session } = await authClient.useSession(useFetch);
 const { open: openLoginModal } = useLoginModal();
 if (!session.value?.user) openLoginModal();
+
 const router = useRouter();
 
-
-
 const { data: nominees, error } = await useFetch<NomineesWithUser[]>("/api/nominator/nominations");
-
-
 
 const goToProfile = (slug: string) => {
     if (!slug) return;
@@ -55,9 +52,7 @@ const goToProfile = (slug: string) => {
                             <div v-else class="no-photo">No Photo</div>
                         </div>
                         <div class="card-content">
-                            <h1 class="name">
-                                {{ nominee.user?.firstName + " " + nominee.user?.lastName }}
-                            </h1>
+                            <h1 class="name">{{ getFullName(nominee.user) }}</h1>
                             <h2 class="name">{{ nominee.occupation }}</h2>
                             <h2 class="name">{{ nominee.placeOfWork }}</h2>
                         </div>

@@ -88,7 +88,7 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useRoute, navigateTo } from '#imports'
 import { authClient } from '~/shared/auth-client'
@@ -112,17 +112,8 @@ const { data: session } = await authClient.useSession(useFetch)
 const user = computed(() => session.value?.user)
 
 /* ROLE / ADMIN */
-const role = useState('role', () => null)
+const role = ref<'admin' | null>(null)
 const isAdmin = computed(() => role.value === 'admin')
-
-async function fetchUserRole(email) {
-  const res = await $fetch('/api/checkAdmin', {
-    method: 'POST',
-    body: { email }
-  })
-
-  role.value = res.role === 'admin' ? 'admin' : null
-}
 
 /* --- MOBILE MENU LOGIC --- */
 function toggle() {
@@ -218,13 +209,18 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKey)
 })
 
-watch(user, (newUser) => {
-  if (newUser?.email) {
-    fetchUserRole(newUser.email)
-  } else {
+watch(
+  () => user.value?.email,
+  async (email) => {
+    if (!email) {
     role.value = null
-  }
-}, { immediate: true })
+      return
+    }
+    const { role: fetched } = await useCheckAdmin(email)
+    role.value = fetched
+  },
+  { immediate: true },
+)
 
 /* Close mobile nav on route change */
 watch(() => route.fullPath, close)

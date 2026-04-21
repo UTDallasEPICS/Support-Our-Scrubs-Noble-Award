@@ -14,8 +14,6 @@
 
 const emit = defineEmits<(e: 'close' | 'submitted') => void>()
 
-const route = useRoute()
-
 const email = ref('')
 const loading = ref(false)
 const msg = ref('')
