@@ -1,18 +1,15 @@
-<script>
+<script lang="ts">
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
-import LoginModal from "@/components/MyLogin.vue"
 import UserData from "@/components/UserData.vue"
 
 export default {
   name: 'Roster',
   components: {
     ThreeJsScene,
-    LoginModal,
     UserData,
   },
   data() {
     return {
-      showLogin: false,
       currentModelPath: '/models/frame.glb',
       loadingProgress: 0,
       modelLoadError: null,
@@ -111,7 +108,6 @@ export default {
 </script>
 
 <template>
-<Navbar @open-login="showLogin = true"/>
       <div class="page-background">
         <div>
             <h1 class="metallic-title">Noble Award Recipients</h1>
@@ -137,9 +133,6 @@ export default {
 
         <UserData/>
       </div>
-      <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-      </Teleport>
 </template>
 
 

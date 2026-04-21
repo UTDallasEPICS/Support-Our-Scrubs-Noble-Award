@@ -1,7 +1,8 @@
 <!-- /pages/profile/edit-about.vue -->
 <script setup lang="ts">
-import Navbar from "~/components/Navbar.vue";
-const router = useRouter();
+import type { AboutMeInput, AboutMeResponse, AuthSessionResponse } from "~/shared/types";
+
+const { data: session } = await useFetch<AuthSessionResponse>("/api/auth/session");
 const showLogin = ref(false);
 
 // If no user, send them to page with login modal

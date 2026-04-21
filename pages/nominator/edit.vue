@@ -92,8 +92,6 @@ async function submitForm() {
 
 <template>
     <div class="min-h-screen bg-black text-amber-300">
-        <Navbar @open-login="showLogin = true" />
-
         <main class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
             <!-- Title -->
             <p class="metallic-title metallic-title--main">NOBLE AWARD</p>

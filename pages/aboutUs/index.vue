@@ -1,18 +1,13 @@
 <script >
-import Navbar from '@/components/Navbar.vue';
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
-import LoginModal from '@/components/MyLogin.vue'
 
 export default {
   name: 'HomePage',
   components: {
-    Navbar,
     ThreeJsScene,
-    LoginModal
   },
   data() {
     return {
-      showLogin: false,
       currentModelPath: '/models/frame.glb',
       loadingProgress: 0,
       modelLoadError: null,
@@ -65,7 +60,6 @@ export default {
 </script>
 
 <template>
-  <Navbar @open-login="showLogin = true"/>
   <div class="page-background">
     <div class="container fade-in scroll-fade">
       <h1 class="metallic-title mb-40">The Noble Award:</h1>
@@ -89,9 +83,6 @@ export default {
         </p>
       </div>
     </div>
-    <Teleport to="body">
-      <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
   </div>
 </template>
 

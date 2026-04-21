@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import Navbar from "@/components/Navbar.vue";
 import { onMounted, nextTick } from "vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import LoginModal from "@/components/MyLogin.vue";
+import { useLoginModal } from "~/composables/useLoginModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
-
-const showLogin = ref(false);
+// Bound to the shared login-modal state so the main content blurs when the modal opens.
+const { showLogin } = useLoginModal();
 
 onMounted(async () => {
     await nextTick();
@@ -40,7 +39,6 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Navbar @open-login="showLogin = true" />
     <div
         class="contact-wrapper"
         :class="['page-background', { blurred: showLogin }]"
@@ -603,9 +601,6 @@ onMounted(async () => {
             </section>
         </div>
     </div>
-    <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
 </template>
 
 <style scoped>

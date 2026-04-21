@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { reactive, onMounted, nextTick } from "vue";
-import Navbar from "@/components/Navbar.vue";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import LoginModal from "@/components/MyLogin.vue";
 import type { ContactInput } from "~/shared/types";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const showLogin = ref<boolean>(false);
 
 const form = reactive<ContactInput>({
     name: "",
@@ -93,7 +89,6 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Navbar @open-login="showLogin = true" />
     <div class="contact-wrapper page-background">
         <section>
             <h1 class="metallic-title">CONTACT US</h1>
@@ -189,9 +184,6 @@ onMounted(async () => {
             </form>
         </section>
     </div>
-    <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
 </template>
 
 <style scoped>

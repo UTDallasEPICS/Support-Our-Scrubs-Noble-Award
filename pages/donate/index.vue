@@ -5,12 +5,6 @@ import LoginModal from "@/components/MyLogin.vue";
 
 export default {
     name: "DonatePage",
-    components: { Navbar, LoginModal },
-    data() {
-        return {
-            showLogin: false,
-        };
-    },
     mounted() {
         // Scroll fade effect (keep your existing IntersectionObserver)
         const els = document.querySelectorAll("[data-fade], .fade-in");
@@ -40,8 +34,7 @@ export default {
 </script>
 
 <template>
-    <Navbar @open-login="showLogin = true" />
-    <div class="page-background { blurred: showLogin}">
+    <div class="page-background">
         <div class="donate-container">
             <!-- Header -->
             <header class="donate-header">
@@ -111,9 +104,6 @@ export default {
             </section>
         </div>
     </div>
-    <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
 </template>
 
 <style scoped>

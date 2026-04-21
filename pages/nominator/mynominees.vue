@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import LoginModal from "@/components/MyLogin.vue";
 import { authClient } from "~/shared/auth-client";
 import { Prisma } from "@prisma/client";
 
 type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
 
 const { data: session } = await authClient.useSession(useFetch);
-const { role } = await $fetch("/api/checkEmail", { method: "POST", body: { email: session.value?.user?.email } });
-const showLogin = ref(false);
+const { open: openLoginModal } = useLoginModal();
+if (!session.value?.user) openLoginModal();
 const router = useRouter();
-// if session not null, set showLogin to true
-if (session.value?.user) {
-    showLogin.value = true;
-}
+
 
 
 const { data: nominees, error } = await useFetch<NomineesWithUser[]>("/api/nominator/nominations");
@@ -27,8 +23,6 @@ const goToProfile = (slug: string) => {
 
 <template>
     <div class="page-background">
-        <Navbar @open-login="showLogin = true" />
-
         <div class="content-wrapper">
             <h1 class="metallic-title">My Nominees</h1>
             <p class="metallic-heading subtitle">
@@ -98,9 +92,6 @@ const goToProfile = (slug: string) => {
             </div>
         </div>
     </div>
-    <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
 </template>
 
 <style scoped>

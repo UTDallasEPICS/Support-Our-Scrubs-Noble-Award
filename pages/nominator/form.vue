@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import LoginModal from "@/components/MyLogin.vue";
-import Navbar from "~/components/Navbar.vue";
 import type { NomineeCreateInput } from "~/shared/types";
-const showLogin = ref(false);
+import { authClient } from "~/shared/auth-client";
+import { useLoginModal } from "~/composables/useLoginModal";
+
+const { data: session } = await authClient.useSession(useFetch);
+const { open: openLoginModal } = useLoginModal();
+if (!session.value?.user) openLoginModal();
 
 // Form fields
 const form = ref<NomineeCreateInput>({
@@ -72,8 +75,6 @@ async function submitForm() {
 
 <template>
     <div class="min-h-screen bg-black text-amber-300">
-        <Navbar @open-login="showLogin = true" />
-
         <main class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
             <!-- Titles -->
             <p ref="nobleTitle" class="metallic-title metallic-title--main">
@@ -286,9 +287,6 @@ async function submitForm() {
             </form>
         </main>
     </div>
-    <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
 </template>
 
 <style scoped>

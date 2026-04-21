@@ -1,20 +1,20 @@
-<script>
+<script lang="ts">
 import CarouselMain from "../components/CarouselMain.vue";
-import Navbar from "@/components/Navbar.vue";
 import ThreeJsScene from "@/components/ThreeJsScene.vue";
-import { ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
+
 import { gsap } from "gsap";
 import UserData from "@/components/UserData.vue";
-import LoginModal from "@/components/MyLogin.vue";
+import type { ApprovedNomineeResponse } from "~/shared/types";
 
-export default {
+type HomeNominee = ApprovedNomineeResponse & { name: string };
+
+export default defineComponent({
     name: "HomePage",
     components: {
-        Navbar,
         CarouselMain,
         ThreeJsScene,
         UserData,
-        LoginModal,
     },
     data() {
         return {
@@ -27,14 +27,14 @@ export default {
             currentModelPath: "/models/frame.glb",
             loadingProgress: 0,
             modelLoadError: null,
-            customObjects: [],
-            nomineeInfo: [],
-            nomineeNames: [],
-            nomineeOccupations: [],
-            nomineeEmails: [],
-            nominees: [],
-            nomineeImage: [],
-            showLogin: false,
+            customObjects: [] as unknown[],
+            nomineeInfo: [] as string[],
+            nomineeNames: [] as string[],
+            nomineeOccupations: [] as string[],
+            nomineeEmails: [] as string[],
+            nominees: [] as HomeNominee[],
+            nomineeImage: [] as string[],
+            nomineeSlug: [] as string[],
             // Rest of your data properties...
         };
     },
@@ -146,7 +146,6 @@ export default {
 
     <!-- MAIN CONTENT -->
     <div v-show="!showIntro" ref="mainContent" class="main-content">
-        <Navbar @open-login="showLogin = true" />
         <div class="page-background">
             <!-- Welcome Section -->
             <div class="welcome">

@@ -1,10 +1,9 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, onUnmounted } from "vue";
-import Navbar from "@/components/Navbar.vue";
+
 
 const route = useRoute();
 const slug = route.params.slug;
-const showLogin = ref(false);
 
 // Server-side data fetching for SEO
 const { data, pending, error } = await useFetch("/api/nominee", {
@@ -117,9 +116,6 @@ onUnmounted(() => {
 
 <template>
     <div class="page-background">
-        <div>
-            <Navbar @open-login="showLogin = true" />
-        </div>
         <div class="profile-container">
             <img
                 :src="profileImage"
@@ -127,7 +123,7 @@ onUnmounted(() => {
                 class="profile-image"
             />
             <div class="profile-text">
-                <h1 class="metallic-title">{{ nominee.name }}</h1>
+                <h1 class="metallic-title">{{ title }}</h1>
                 <p class="metallic-heading">{{ subtitle }}</p>
                 <p class="profile-description">{{ profileDescription }}</p>
             </div>
