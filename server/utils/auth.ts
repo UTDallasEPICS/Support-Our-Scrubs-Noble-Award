@@ -10,32 +10,19 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "sqlite", // or "mysql", "postgresql", ...etc
     }),
-    user:{
-        fields: {
-            name: "firstName"
-        },
+    user: {
         additionalFields: {
+            firstName: {
+                type: "string",
+                input: true,
+                required: false,
+            },
             lastName: {
                 type: "string",
                 input: true,
                 required: false,
-            }
-        }
-    },
-    databaseHooks: {
-        user: {
-            create: {
-                before: async (user) =>{
-                    return {
-                        data: {
-                            ...user,
-                            firstName: user.name,       // map name → firstName
-                            name: undefined             // drop the name field
-                        }
-                    }
-                }
-            }
-        }
+            },
+        },
     },
     plugins: [
         magicLink({
