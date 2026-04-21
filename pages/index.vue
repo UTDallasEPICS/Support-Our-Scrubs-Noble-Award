@@ -1,140 +1,67 @@
-<script lang="ts">
-import CarouselMain from "../components/CarouselMain.vue";
-import ThreeJsScene from "@/components/ThreeJsScene.vue";
-import { defineComponent, ref, onMounted } from "vue";
-
+<script setup lang="ts">
 import { gsap } from "gsap";
-import UserData from "@/components/UserData.vue";
-import type { ApprovedNomineeResponse } from "~/shared/types";
+import CarouselMain from "~/components/CarouselMain.vue";
+import UserData from "~/components/UserData.vue";
 
-type HomeNominee = ApprovedNomineeResponse & { name: string };
+// Home-page carousel slides.
+const slides = [
+    "https://images.pexels.com/photos/32828955/pexels-photo-32828955.jpeg?_gl=1*36xmyr*_ga*MTY4NzYwNjg1NS4xNzYwNTc1MDg1*_ga_8JE65Q40S6*czE3NjA1NzUwODQkbzEkZzEkdDE3NjA1NzUzNDgkajU5JGwwJGgw",
+    "https://images.pexels.com/photos/5029859/pexels-photo-5029859.jpeg?_gl=1*1hqt2be*_ga*MTY4NzYwNjg1NS4xNzYwNTc1MDg1*_ga_8JE65Q40S6*czE3NjA1NzkwODkkbzIkZzEkdDE3NjA1NzkxODYkajQzJGwwJGgw",
+    "https://images.pexels.com/photos/6590920/pexels-photo-6590920.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+];
 
-export default defineComponent({
-    name: "HomePage",
-    components: {
-        CarouselMain,
-        ThreeJsScene,
-        UserData,
-    },
-    data() {
-        return {
-            slides: [
-                "https://images.pexels.com/photos/32828955/pexels-photo-32828955.jpeg?_gl=1*36xmyr*_ga*MTY4NzYwNjg1NS4xNzYwNTc1MDg1*_ga_8JE65Q40S6*czE3NjA1NzUwODQkbzEkZzEkdDE3NjA1NzUzNDgkajU5JGwwJGgw",
-                "https://images.pexels.com/photos/5029859/pexels-photo-5029859.jpeg?_gl=1*1hqt2be*_ga*MTY4NzYwNjg1NS4xNzYwNTc1MDg1*_ga_8JE65Q40S6*czE3NjA1NzkwODkkbzIkZzEkdDE3NjA1NzkxODYkajQzJGwwJGgw",
-                "https://images.pexels.com/photos/6590920/pexels-photo-6590920.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-                "https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-            ],
-            currentModelPath: "/models/frame.glb",
-            loadingProgress: 0,
-            modelLoadError: null,
-            customObjects: [] as unknown[],
-            nomineeInfo: [] as string[],
-            nomineeNames: [] as string[],
-            nomineeOccupations: [] as string[],
-            nomineeEmails: [] as string[],
-            nominees: [] as HomeNominee[],
-            nomineeImage: [] as string[],
-            nomineeSlug: [] as string[],
-            // Rest of your data properties...
-        };
-    },
-    methods: {
-        async fetchNominees() {
-            console.log("not calling ");
-            try {
-                const response = await $fetch("/api/nominee?stat=APPROVED", {
-                    method: "GET",
-                });
+// Intro-overlay animation state + template refs consumed by the GSAP timeline.
+const showIntro = ref(true);
+const introTitle = ref<HTMLElement | null>(null);
 
-                // Store the full nominee list
-                this.nominees = response;
-
-                this.nomineeNames = response.map(
-                    (n) => `${n.firstName} ${n.lastName}`,
-                );
-                this.nomineeEmails = response.map((n) => n.email);
-                this.nomineeOccupations = response.map((n) => n.occupation);
-                this.nomineeInfo = response.map((n) => n.description);
-                this.nomineeImage = response.map((n) => n.photoURL);
-                this.nomineeSlug = response.map((n) => n.slug);
-
-                console.log("sorry man " + this.nomineeImage);
-            } catch (error) {
-                console.error("Error fetching nominees:", error);
-            }
-        },
-    },
-    mounted() {
-        // Fetch data when the component is mounted
-        this.fetchNominees();
-        console.log("mounted" + this.nomineeNames);
-
-        // Set up intersection observer for fade-in elements
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                        // Keep observing step boxes for reappearing animation when scrolling back up
-                        if (!entry.target.classList.contains("scroll-fade")) {
-                            observer.unobserve(entry.target);
-                        }
-                    }
-                });
-            },
-            {
-                threshold: 0.1, // 10% of the element must be visible
-                rootMargin: "0px 0px -50px 0px", // Triggers slightly before element comes into view
-            },
-        );
-
-        // Observe all fade-in elements
-        document.querySelectorAll(".fade-in").forEach((element) => {
-            observer.observe(element);
-        });
-    },
-    setup() {
-        const showIntro = ref(true);
-        const introTitle = ref(null);
-        const mainContent = ref(null);
-
-        onMounted(() => {
-            // Title fade + scale in
+onMounted(() => {
+    // Intro sequence: title fade + glow pulse, then overlay fade-out and a
+    // gentle fade-in of the main page content.
+    gsap.fromTo(
+        introTitle.value,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out" },
+    );
+    gsap.to(introTitle.value, {
+        textShadow: "0 0 40px #d4af37",
+        duration: 1.5,
+        repeat: 1,
+        yoyo: true,
+        delay: 1.5,
+    });
+    gsap.to(".intro-overlay", {
+        opacity: 0,
+        duration: 0.7,
+        delay: 2.2,
+        onComplete: () => {
+            showIntro.value = false;
             gsap.fromTo(
-                introTitle.value,
-                { opacity: 0, scale: 0.8 },
-                { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out" },
+                ".main-content",
+                { opacity: 0.25 },
+                { opacity: 1, duration: 0.35, ease: "power2.out" },
             );
+        },
+    });
 
-            // Title glow pulse
-            gsap.to(introTitle.value, {
-                textShadow: "0 0 40px #d4af37",
-                duration: 1.5,
-                repeat: 1,
-                yoyo: true,
-                delay: 1.5,
+    // Observe `.fade-in` elements. Those also tagged `.scroll-fade` stay
+    // observed so they re-animate when scrolling back into view.
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    if (!entry.target.classList.contains("scroll-fade")) {
+                        observer.unobserve(entry.target);
+                    }
+                }
             });
-
-            // Fade out overlay
-            gsap.to(".intro-overlay", {
-                opacity: 0,
-                duration: 0.7,
-                delay: 2.2,
-                onComplete: () => {
-                    showIntro.value = false;
-
-                    // Smoothly fade in homepage
-                    gsap.fromTo(
-                        ".main-content",
-                        { opacity: 0.25 },
-                        { opacity: 1, duration: 0.35, ease: "power2.out" },
-                    );
-                },
-            });
-        });
-
-        return { showIntro, introTitle, mainContent };
-    },
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+    );
+    document
+        .querySelectorAll(".fade-in")
+        .forEach((el) => observer.observe(el));
 });
 </script>
 
