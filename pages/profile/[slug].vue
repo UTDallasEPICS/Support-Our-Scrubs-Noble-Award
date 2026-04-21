@@ -25,7 +25,7 @@ const title = computed(() => getFullName(nominee.user));
 const subtitle = computed(() => nominee.occupation || "");
 const profileDescription = computed(() => nominee.description || "");
 const profileImage = computed(() => nominee.photoURL || "");
-// NOTE: `/api/nominee`'s Prisma `select` doesn't include `aboutme`, so this
+// TODO: `/api/nominee`'s Prisma `select` doesn't include `aboutme`, so this
 // always renders the fallback today. Fix requires a server-side change.
 const profileAboutme = computed(() => {
     const aboutme = (nominee as unknown as { aboutme?: string | null }).aboutme;
