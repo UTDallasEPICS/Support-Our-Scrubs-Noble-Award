@@ -6,10 +6,9 @@ import { Prisma } from "@prisma/client";
 type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
 
 const { data: session } = await authClient.useSession(useFetch);
-
+const { role } = await $fetch("/api/checkEmail", { method: "POST", body: { email: session.value?.user?.email } });
 const showLogin = ref(false);
 const router = useRouter();
-
 // if session not null, set showLogin to true
 if (session.value?.user) {
     showLogin.value = true;
