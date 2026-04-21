@@ -135,7 +135,7 @@ export default defineComponent({
 
         return { showIntro, introTitle, mainContent };
     },
-};
+});
 </script>
 
 <template>
@@ -236,7 +236,7 @@ export default defineComponent({
                 </div>
 
                 <div class="info-container section-gap nominate-section">
-                    <h1 class="metallic-title2 text-center">
+                    <h1 class="metallic-title metallic-title--xl text-center">
                         Who Can You Nominate?
                     </h1>
 
@@ -334,15 +334,10 @@ export default defineComponent({
             </div>
         </div>
     </div>
-    <Teleport to="body">
-        <LoginModal v-if="showLogin" @close="showLogin = false" />
-    </Teleport>
+
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap");
-
 .three-js-container {
     width: 100%;
     height: 60vh;
@@ -352,64 +347,20 @@ export default defineComponent({
 .metallic-title {
     font-family: "Libre Caslon Display", serif;
     font-size: clamp(2rem, 8vw, 10rem);
-    color: transparent;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
-    text-align: center;
     margin: 0 auto;
     z-index: 10;
     white-space: normal;
     max-width: 90vw;
     line-height: 1.1;
 }
-.metallic-title2 {
-    font-family: "Libre Caslon Display", serif;
+
+/* Size modifier: applied alongside .metallic-title for larger section headings. */
+.metallic-title--xl {
     font-size: clamp(2rem, 15vw, 10rem);
-    color: transparent;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    text-align: center;
-    margin: 0 auto;
-    z-index: 10;
-    white-space: normal;
-    max-width: 90vw;
-    line-height: 1.1;
 }
 
 .title-shift {
     margin-top: -180px;
-}
-
-@keyframes metallicShine {
-    0% {
-        background-position: 200% center;
-    }
-    100% {
-        background-position: -200% center;
-    }
 }
 
 .fade-in {
@@ -939,7 +890,7 @@ export default defineComponent({
         margin-bottom: 0.8rem !important;
     }
 
-    .metallic-title2 {
+    .metallic-title--xl {
         font-size: 1.9rem !important;
         margin-bottom: 0.6rem !important;
     }
@@ -1081,7 +1032,7 @@ export default defineComponent({
 
 @media (max-width: 900px) {
     .metallic-title,
-    .metallic-title2 {
+    .metallic-title--xl {
         font-size: 4rem;
     }
 

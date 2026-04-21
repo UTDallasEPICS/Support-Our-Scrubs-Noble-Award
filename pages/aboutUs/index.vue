@@ -70,7 +70,7 @@ export default {
       </div>
 
       <div class="info-container">
-        <h1 class="metallic-title2">Recognizing Extraordinary Service & Sacrifice</h1>
+        <h1 class="metallic-title">Recognizing Extraordinary Service & Sacrifice</h1>
         <p>
           Founded by Support Our Scrubs, the Noble Award is more than just a recognition program — it is a movement to
           honor those who dedicate their lives to serving others. With the support of our community, businesses, and donors,
@@ -95,12 +95,7 @@ html, body {
   background-color: black;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
-
 .page-background {
-  min-height: 100vh;
-  background-color: black;
   color: white;
   font-family: 'Libre Caslon Display', serif;
 }
@@ -111,19 +106,14 @@ html, body {
   padding: 2rem 1rem;
 }
 
-.metallic-title,
-.metallic-title2 {
+.metallic-title {
   font-family: 'Libre Caslon Display', serif;
   font-size: clamp(1.5rem, 6vw, 4rem);
-  color: transparent;
-  background: linear-gradient(120deg, #fff4b0 0%, #f0c75e 20%, #d4af37 40%, #f8e27d 60%, #d4af37 80%, #fff4b0 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
+  /* tighter glow than theme default to match the aboutUs layout */
   text-shadow:
     0 0 3px rgba(212, 175, 55, 0.5),
     0 0 6px rgba(212, 175, 55, 0.4),
     0 0 12px rgba(255, 215, 0, 0.3);
-  text-align: center;
   margin: 0 auto 20px;
   line-height: 1.1;
 }
@@ -203,8 +193,7 @@ html, body {
     overflow-x: hidden;
   }
 
-  .metallic-title,
-  .metallic-title2 {
+  .metallic-title {
     font-size: clamp(1.5rem, 8vw, 2.2rem);
   }
 

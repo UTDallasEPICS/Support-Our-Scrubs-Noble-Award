@@ -219,7 +219,6 @@ header img {
         rgb(33, 33, 33) 300%
     );
     font-family: "Libre Caslon Display", serif;
-    min-height: 100vh;
 }
 /* (old generic header styles removed so they don't affect <Navbar />)
 header { ... }
@@ -263,33 +262,6 @@ textarea {
     border: none;
     border-radius: 5px;
     color: #d4af37;
-}
-
-/* 🔥 Donate-style glow + hover + active for the submit button */
-button {
-    background-color: #d4af37;
-    color: #0d0d0d;
-    font-weight: 700;
-    padding: 14px 18px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    cursor: pointer;
-    font-family: "Roboto", sans-serif;
-    font-size: 1rem;
-    transition:
-        transform 0.08s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-    box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
-}
-
-button:hover {
-    background-color: #ffe08a;
-    box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
-}
-
-button:active {
-    transform: translateY(1px);
 }
 
 .socials a {
@@ -337,63 +309,13 @@ button:active {
 
 .metallic-title {
     margin-top: 3rem;
-    font-family: "Cinzel", serif;
     font-size: 80px;
-    text-align: center;
-    /* Metallic gradient */
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-
-    /* Glow & animation */
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
-}
-
-@keyframes metallicShine {
-    0% {
-        background-position: 200% center;
-    }
-    100% {
-        background-position: -200% center;
-    }
 }
 
 .metallic-heading {
     font-family: "Libre Caslon Display", serif;
     font-size: 50px;
-    text-align: center;
-    color: #d4af37;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
     position: relative;
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
 }
 
 .faq-title {

@@ -1,7 +1,5 @@
 <script>
 import { gsap } from "gsap";
-import Navbar from "@/components/Navbar.vue";
-import LoginModal from "@/components/MyLogin.vue";
 
 export default {
     name: "DonatePage",
@@ -78,7 +76,7 @@ export default {
 
                     <a
                         href="https://paypal.me/SupportOurScrubs?locale.x=en_US"
-                        class="donate-button"
+                        class="nomination-submit-btn donate-button"
                         target="_blank"
                         rel="noopener"
                     >
@@ -109,9 +107,7 @@ export default {
 <style scoped>
 /* ====== Page base ====== */
 .page-background {
-    background: #000;
     color: #fef08a;
-    min-height: 100vh;
     font-family:
         system-ui,
         -apple-system,
@@ -130,28 +126,9 @@ export default {
     padding: 40px 20px;
 }
 
-/* ====== Metallic titles ====== */
+/* ====== Metallic title variants (base lives in assets/css/theme.css) ====== */
 .metallic-title {
     margin-top: 3rem;
-    font-family: "Cinzel", serif;
-    text-align: center;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
 }
 
 .metallic-title--main {
@@ -171,15 +148,6 @@ export default {
     animation: none !important;
     margin-top: 3rem;
     margin-bottom: 2rem;
-}
-
-@keyframes metallicShine {
-    0% {
-        background-position: 200% center;
-    }
-    100% {
-        background-position: -200% center;
-    }
 }
 
 /* ====== Header text ====== */
@@ -241,34 +209,13 @@ export default {
     color: #f5f5f5;
 }
 
-/* Donate button */
+/* Donate button: layout additions on top of .nomination-submit-btn (theme.css) */
 .donate-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #d4af37;
-    color: #0d0d0d;
-    font-weight: 700;
     text-decoration: none;
-    padding: 14px 18px;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition:
-        transform 0.08s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
     margin: 6px 0 18px;
-    box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.donate-button:hover {
-    background-color: #ffe08a;
-    box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
-}
-
-.donate-button:active {
-    transform: translateY(1px);
 }
 
 .donate-content {

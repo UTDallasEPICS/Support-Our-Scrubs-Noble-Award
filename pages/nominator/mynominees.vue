@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { authClient } from "~/shared/auth-client";
 import { Prisma } from "@prisma/client";
+import { useLoginModal } from "~/composables/useLoginModal";
 
 type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
 

@@ -144,69 +144,18 @@ onUnmounted(() => {
     font-size: clamp(2rem, 6.5vw, 7rem);
     margin-top: -20px;
     margin-bottom: -20px;
-    text-align: center;
-    color: #d4af37;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
     position: relative;
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
-}
-
-@keyframes metallicShine {
-    0% {
-        background-position: 200% center;
-    }
-
-    100% {
-        background-position: -200% center;
-    }
 }
 
 .metallic-heading {
     font-family: "Libre Caslon Display", serif;
     font-size: 40px;
     margin-top: 20px;
-    text-align: center;
-    color: #d4af37;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
     position: relative;
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
 }
 
 .page-background {
     font-family: "roboto", sans-serif;
-    background-color: rgb(0, 0, 0);
-    min-height: 100vh;
-    /* Makes background cover full viewport height */
 }
 
 .profile-container {

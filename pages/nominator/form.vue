@@ -290,29 +290,6 @@ async function submitForm() {
 </template>
 
 <style scoped>
-/* your original styles – unchanged */
-.metallic-title {
-    font-family: "Cinzel", serif;
-    text-align: center;
-    background: linear-gradient(
-        120deg,
-        #fff4b0 0%,
-        #f0c75e 20%,
-        #d4af37 40%,
-        #f8e27d 60%,
-        #d4af37 80%,
-        #fff4b0 100%
-    );
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow:
-        0 0 5px rgba(212, 175, 55, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.3);
-    animation: metallicShine 3s infinite linear;
-}
-
 .metallic-title--main {
     margin-top: 2rem;
     font-size: 60px;
@@ -321,31 +298,5 @@ async function submitForm() {
 .metallic-title--sub {
     margin-top: 0.5rem;
     font-size: 32px;
-}
-
-.nomination-submit-btn {
-    background-color: #d4af37;
-    color: #0d0d0d;
-    font-weight: 700;
-    padding: 14px 18px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    cursor: pointer;
-    font-family: "Roboto", sans-serif;
-    font-size: 1rem;
-    transition:
-        transform 0.08s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
-    box-shadow: 0 6px 22px rgba(245, 197, 66, 0.2);
-}
-
-.nomination-submit-btn:hover {
-    background-color: #ffe08a;
-    box-shadow: 0 10px 28px rgba(255, 224, 138, 0.25);
-}
-
-.nomination-submit-btn:active {
-    transform: translateY(1px);
 }
 </style>

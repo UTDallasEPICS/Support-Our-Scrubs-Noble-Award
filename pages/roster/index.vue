@@ -1,6 +1,9 @@
 <script lang="ts">
 import ThreeJsScene from '@/components/ThreeJsScene.vue';
 import UserData from "@/components/UserData.vue"
+import type {
+  SearchQueryInput,
+} from "~/shared/types";
 
 export default {
   name: 'Roster',
@@ -181,29 +184,8 @@ export default {
 
 
 .metallic-title {
-  font-family: 'Cinzel', serif;
   font-size: 70px;
-  text-align: center;
   position: relative;
-  color: #d4af37;
-  background: linear-gradient(
-    120deg,
-    #fff4b0 0%,
-    #f0c75e 20%,
-    #d4af37 40%,
-    #f8e27d 60%,
-    #d4af37 80%,
-    #fff4b0 100%
-  );
-
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  text-shadow:
-    0 0 5px rgba(212, 175, 55, 0.4),
-    0 0 10px rgba(212, 175, 55, 0.2),
-    0 0 15px rgba(255, 215, 0, 0.1);
-
   overflow: hidden;
 }
 
@@ -276,11 +258,6 @@ h2 {
     color: #a77c43;
     text-align: center;
     margin-bottom: 70px;
-}
-
- .page-background {
-    background:black;  
-    min-height: 100vh; /* Makes background cover full viewport height */
   }
 
   /* Search Section Styles */
@@ -362,8 +339,6 @@ h2 {
     color: #ff6b6b;
     text-align: center;
     margin-top: 10px;
-    background-color: #000;
-    min-height: 100vh;
 }
 
 /* Mobile friendly */
