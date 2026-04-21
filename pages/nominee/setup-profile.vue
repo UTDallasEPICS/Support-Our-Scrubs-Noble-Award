@@ -1,20 +1,20 @@
 <!-- /pages/profile/edit-about.vue -->
 <script setup lang="ts">
-import type { AboutMeInput, AboutMeResponse, AuthSessionResponse } from "~/shared/types";
+import type { AboutMeInput } from "~/shared/types";
 
-const { data: session } = await useFetch<AuthSessionResponse>("/api/auth/session");
-const showLogin = ref(false);
-
+const router = useRouter();
+const { data: session } = await useFetch("/api/auth/session");
+// TODO: revert this to use the login modal
 // If no user, send them to page with login modal
-if (!user.value) {
+if (!session.value?.user) {
     router.push({
         path: "/",
-        query: { showLogin: "1" },
+        query: { login: "true" },
     });
 }
 
 // Load current about-me text
-const { data, error } = await useFetch<{ aboutMe: string | null }>(
+const { data: aboutMe, error } = await useFetch(
     "/api/editAboutMe",
 );
 
@@ -22,9 +22,9 @@ const { data, error } = await useFetch<{ aboutMe: string | null }>(
 const aboutMeLocal = ref("");
 
 watch(
-    data,
+    aboutMe,
     (val) => {
-        if (val && typeof val.aboutMe === "string") {
+        if (val) {
             aboutMeLocal.value = val.aboutMe;
         }
     },
@@ -44,7 +44,7 @@ const saveAboutMe = async () => {
             method: "PUT",
             body: {
                 aboutMe: aboutMeLocal.value,
-            },
+            } satisfies AboutMeInput,
         });
         saveMessage.value = "Your About Me has been updated.";
     } catch (err) {
@@ -58,7 +58,6 @@ const saveAboutMe = async () => {
 
 <template>
     <div class="page-background">
-        <Navbar @open-login="showLogin = true" />
 
         <div class="content-wrapper">
             <h1 class="metallic-title">Edit About Me</h1>
@@ -102,7 +101,6 @@ const saveAboutMe = async () => {
 
 <style scoped>
 .page-background {
-    min-height: 100vh;
     padding-bottom: 4rem;
 }
 
