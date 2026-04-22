@@ -24,6 +24,36 @@ export const auth = betterAuth({
             },
         },
     },
+    databaseHooks: {
+        user: {
+            // Create a new user with a name derived from the first and last name
+            create: {
+                before: async (user) => {
+                    const u = user as typeof user & { firstName?: string | null; lastName?: string | null };
+                    const derived = [u.firstName, u.lastName].filter(Boolean).join(" ");
+                    return {
+                        data: {
+                            ...u,
+                            name: u.name ?? (derived || undefined),
+                        },
+                    };
+                },
+            },
+            // Update the user's name when the first or last name is updated
+            update: {
+                after: async (user) => {
+                    const u = user as typeof user & { firstName?: string | null; lastName?: string | null };
+                    const computed = [u.firstName, u.lastName].filter(Boolean).join(" ") || null;
+                    if (computed !== (u.name ?? null)) {
+                        await prisma.user.update({
+                            where: { id: u.id },
+                            data: { name: computed },
+                        });
+                    }
+                },
+            },
+        },
+    },
     plugins: [
         magicLink({
             sendMagicLink: async ({email, token, url}, ctx) => {
