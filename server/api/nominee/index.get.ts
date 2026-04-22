@@ -22,17 +22,7 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  if (!nominees) return null
+  if (!nominees) throw createError({ statusCode: 404, statusMessage: "No nominees found" });
 
-  return nominees.map((n) => ({
-    slug: n.slug,
-    id: n.id,
-    firstName: n.user?.firstName,
-    lastName: n.user?.lastName,
-    email: n.user?.email,
-    occupation: n.occupation,
-    description: n.description,
-    placeOfWork: n.placeOfWork,
-    photoURL: n.photoURL,
-  }))
+  return nominees
 });
