@@ -5,11 +5,13 @@
  * so callers should wrap this in try/catch if that's a possibility.
  */
 export async function useCheckEmail(email: string) {
-    return $fetch<{ role: "admin" | "nominator" | "nominee" }>(
+
+        const data = await $fetch<{ role: "admin" | "nominator" | "nominee" }>(
         "/api/checkEmail",
         {
             method: "POST",
             body: { email },
         },
     );
+    return data
 }

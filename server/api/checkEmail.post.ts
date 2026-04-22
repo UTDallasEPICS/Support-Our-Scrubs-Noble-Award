@@ -23,10 +23,11 @@ export default defineEventHandler(async (event) => {
     if (user.admin) role = 'admin'
     else if (user.nominator) role = 'nominator'
     else if (user.nominee) role = 'nominee'
-    else throw createError({ statusCode: 404, statusMessage: 'User not found or does not have a role' })
+    else throw createError({ statusCode: 404, statusMessage: 'User does not have a role' })
 
     return { role }
   } catch (err) {
+    console.error('Error checking email', err)
     throw createError({ statusCode: 500, statusMessage: 'Error checking email' })
   }
 })
