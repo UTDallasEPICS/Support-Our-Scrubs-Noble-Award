@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client'
 
 // ── Reusable field-level schemas ────────────────────────────────────────────
 
-export const emailField = z.string().trim().toLowerCase().email().max(254)
+export const emailField = z.email().toLowerCase()
 export const uuidField = z.uuid()
 
 // ── Body / query schemas (grouped by domain) ───────────────────────────────
