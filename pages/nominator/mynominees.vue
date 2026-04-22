@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { authClient } from "~/shared/auth-client";
-import { Prisma } from "@prisma/client";
+import type { NomineesWithUser } from "~/shared/types";
 import { useLoginModal } from "~/composables/useLoginModal";
-
-type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
 
 const { data: session } = await authClient.useSession(useFetch);
 const { open: openLoginModal } = useLoginModal();
@@ -11,7 +9,11 @@ if (!session.value?.user) openLoginModal();
 
 const router = useRouter();
 
-const { data: nominees, error } = await useFetch<NomineesWithUser[]>("/api/nominator/nominations");
+// Auth middleware enforces that only the logged-in nominator can fetch their own list;
+// the server endpoint scopes by session, so no extra filtering is needed here.
+const { data: nominees, error } = await useFetch<NomineesWithUser[]>(
+    "/api/nominator/nominations",
+);
 
 const goToProfile = (slug: string) => {
     if (!slug) return;
@@ -31,7 +33,7 @@ const goToProfile = (slug: string) => {
             <div v-if="error" class="error">
                 There was an error loading your nominees.
             </div>
-            <div v-else-if="!nominees" class="empty-state">
+            <div v-else-if="!nominees || nominees.length === 0" class="empty-state">
                 You haven't submitted any nominations yet.
             </div>
             <div v-else class="cards-container">

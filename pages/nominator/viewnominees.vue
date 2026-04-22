@@ -1,161 +1,157 @@
 <script setup lang="ts">
+// TODO route-move: this page is effectively an admin dashboard and should
+// live at `/admin/...` so the global auth middleware can own the gate.
+import { ref, computed } from "vue";
 import { authClient } from "~/shared/auth-client";
 import type { NomineesWithUser } from "~/shared/types";
-// Logout function
-async function logout() {
-    await authClient.signOut();
-    navigateTo("/");
+
+// --- Admin gate (page-level; middleware doesn't cover this path) ----------
+const { data: session } = await authClient.useSession(useFetch);
+if (!session.value?.user?.email) {
+    await navigateTo({ path: "/", query: { login: "true" } });
+} else {
+    const { ok } = await useCheckAdmin(session.value.user.email);
+    if (!ok) await navigateTo("/");
+}
+// --- Canonical status vocabulary ------------------------------------------
+// The schema default is PENDING; APPROVED/DENIED are the admin decisions.
+// LEGACY-STATUS: the server's `Status` constant in `server/utils/prismaclient.ts`
+// still exposes CREATED/CONFIRMED/VERIFIED/SENT. Consolidation is out of scope
+// for this refactor - those values are intentionally dropped from this page's UI.
+const STATUSES = ["PENDING", "APPROVED", "DENIED"] as const;
+type Status = (typeof STATUSES)[number];
+type StatusFilter = "ALL" | Status;
+
+// --- Data -----------------------------------------------------------------
+// LEGACY-STATUS: `/api/nominee` currently hard-filters to APPROVED, so this
+// page only sees approved nominees until an admin listing endpoint is added.
+// `allNominees` is the currently displayed set - it's either the initial load
+// or the result of a server-side search.
+const allNominees = ref<NomineesWithUser[]>([]);
+
+async function loadNominees() {
+    try {
+        const res = await $fetch("/api/nominee");
+        allNominees.value = Array.isArray(res)
+            ? (res as NomineesWithUser[])
+            : [];
+    } catch (err) {
+        console.error("Error loading nominees:", err);
+        allNominees.value = [];
+    }
+}
+await loadNominees();
+
+// --- Search (debounced, hits `/api/nominee/search`) -----------------------
+const searchQuery = ref("");
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function debouncedSearch() {
+    if (debounceTimeout) clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(runSearch, 500);
 }
 
-// The state for nominees data and dropdown visibility
-const nominees = ref<NomineesWithUser[]>([]);
-const dropdownOpen = ref(false);
-const searchQuery = ref("");
-const isModalOpen = ref(false);
-let debounceTimeout = null;
-const selectedNominee = ref(null);
-
-const debouncedSearch = () => {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(fetchResults, 500); // Wait 500ms after the user stops typing
-};
-
-// Update the nominee's status
-async function updateStatus(nominee, status) {
+async function runSearch() {
+    const term = searchQuery.value.trim();
+    if (!term) {
+        await loadNominees();
+        return;
+    }
     try {
-        // Create an object with the updated status
-        const updatedNominee = { ...nominee, status };
-        nominee.status = status;
+        const res = await $fetch(
+            `/api/nominee/search?searchTerm=${encodeURIComponent(term)}`,
+        );
+        allNominees.value = Array.isArray(res)
+            ? (res as NomineesWithUser[])
+            : [];
+    } catch (err) {
+        console.error("Error searching nominees:", err);
+    }
+}
 
-        if (nominee.status === "APPROVED" || nominee.status === "DENIED") {
-            const confirmed = confirm(
-                `Confirm status change to ${nominee.status}? This will notify the nominee via email.`,
-            );
-            if (confirmed) {
-                await $fetch("/api/admin/email", {
-                    method: "POST",
-                    body: {
-                        name: nominee.name,
-                    },
-                });
-            } else {
-                return;
-            }
+// --- Status filter (client-side over the fetched list) --------------------
+const statusFilter = ref<StatusFilter>("ALL");
+const filterDropdownOpen = ref(false);
+
+function toggleFilterDropdown() {
+    filterDropdownOpen.value = !filterDropdownOpen.value;
+}
+
+function selectFilter(status: StatusFilter) {
+    statusFilter.value = status;
+    filterDropdownOpen.value = false;
+}
+
+const filteredNominees = computed(() =>
+    statusFilter.value === "ALL"
+        ? allNominees.value
+        : allNominees.value.filter((n) => n.status === statusFilter.value),
+);
+
+// --- Per-row status dropdown (keyed by nominee id to avoid mutating data) -
+const rowStatusDropdown = ref<Record<string, boolean>>({});
+
+function toggleRowDropdown(id: string) {
+    rowStatusDropdown.value[id] = !rowStatusDropdown.value[id];
+}
+
+// --- Status update + email notification -----------------------------------
+async function updateStatus(nominee: NomineesWithUser, status: Status) {
+    if (status === "APPROVED" || status === "DENIED") {
+        const confirmed = confirm(
+            `Confirm status change to ${status}? This will notify the nominee via email.`,
+        );
+        if (!confirmed) return;
+
+        // LEGACY-STATUS: `adminSendEmailSchema` validates type as ACCEPTED/REJECTED.
+        // Translate from the UI's APPROVED/DENIED until the server aligns.
+        try {
+            await $fetch("/api/admin/email", {
+                method: "POST",
+                body: {
+                    name: getFullName(nominee.user),
+                    email: nominee.user?.email ?? "",
+                    type: status === "APPROVED" ? "ACCEPTED" : "REJECTED",
+                },
+            });
+        } catch (err) {
+            console.error("Error sending status email:", err);
         }
+    }
 
-        // Send a PUT request to update the nominee's status
+    try {
+        // `nomineeUpdateSchema` only accepts a specific subset of fields; send
+        // just `{ id, status }` rather than spreading the full nominee object.
         await $fetch("/api/nominee", {
             method: "PUT",
-            body: updatedNominee,
+            body: { id: nominee.id, status },
         });
-
-        // Optionally, close the dropdown after updating the status
-        nominee.isDropdownOpen = false;
-    } catch (error) {
-        console.error("Error updating status:", error);
+        nominee.status = status;
+        rowStatusDropdown.value[nominee.id] = false;
+    } catch (err) {
+        console.error("Error updating status:", err);
     }
 }
 
-async function fetchResults() {
-    try {
-        const query = searchQuery.value.trim();
-        if (query === "") {
-            // If search query is empty, fetch all nominees
-            getNominees();
-        } else {
-            // Otherwise, fetch search results
-            const data = await $fetch(
-                `/api/search?searchTerm=${encodeURIComponent(query)}`,
-                { method: "GET" },
-            );
-            if (data.results.length === 0) {
-                nominees.value = null;
-            } else {
-                nominees.value = data.results;
-            }
-        }
-    } catch (error) {
-        console.error("Error fetching posts:", error);
-    }
-}
+// --- Modal ----------------------------------------------------------------
+const isModalOpen = ref(false);
+const selectedNominee = ref<NomineesWithUser | null>(null);
 
-function openModal(nominee) {
+function openModal(nominee: NomineesWithUser) {
     selectedNominee.value = nominee;
     isModalOpen.value = true;
 }
 
-// Close the modal
 function closeModal() {
     isModalOpen.value = false;
-    selectedNominee.value = null; // Clear selected nominee
+    selectedNominee.value = null;
 }
 
-function toggleStatusDropdown(nominee) {
-    nominee.isDropdownOpen = !nominee.isDropdownOpen;
+// --- Logout ---------------------------------------------------------------
+async function logout() {
+    await authClient.signOut();
+    navigateTo("/");
 }
-
-// Toggle the visibility of the dropdown
-function toggleDropdown() {
-    dropdownOpen.value = !dropdownOpen.value;
-}
-
-// Fetch nominees based on different statuses
-async function nomineesCreated() {
-    const nomineeList = await $fetch("/api/nominee?stat=CREATED", {
-        method: "GET",
-    });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-}
-
-async function nomineesConfirmed() {
-    const nomineeList = await $fetch("/api/nominee?stat=CONFIRMED", {
-        method: "GET",
-    });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-}
-
-async function nomineesVerified() {
-    const nomineeList = await $fetch("/api/nominee?stat=VERIFIED", {
-        method: "GET",
-    });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-}
-
-async function nomineesApproved() {
-    const nomineeList = await $fetch("/api/nominee?stat=APPROVED", {
-        method: "GET",
-    });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-}
-
-async function nomineesDenied() {
-    const nomineeList = await $fetch("/api/nominee?stat=DENIED", {
-        method: "GET",
-    });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-}
-
-async function nomineesSent() {
-    const nomineeList = await $fetch("/api/nominee?stat=SENT", {
-        method: "GET",
-    });
-    nominees.value = nomineeList;
-    dropdownOpen.value = false;
-}
-
-// Initial data fetch on page load
-async function getNominees() {
-    const nomineeList = await $fetch("/api/nominee", { method: "GET" });
-    nominees.value = nomineeList;
-}
-
-// Fetch the nominees when the page loads
-getNominees();
 </script>
 
 <template>
@@ -202,76 +198,51 @@ getNominees();
             />
         </div>
 
-        <div v-if="nominees == null" class="text-center text-gray-500">
-            No results found
+        <div
+            v-if="filteredNominees.length === 0"
+            class="text-center text-gray-500 py-4"
+        >
+            No nominees match the current filter.
         </div>
 
-        <!-- Dropdown Button -->
+        <!-- Filter Dropdown: ALL + canonical statuses only -->
         <div class="relative inline-block text-left w-1/4 py-5">
             <div>
                 <button
                     type="button"
                     class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300"
                     id="menu-button"
-                    aria-expanded="true"
+                    :aria-expanded="filterDropdownOpen ? 'true' : 'false'"
                     aria-haspopup="true"
-                    @click="toggleDropdown"
+                    @click="toggleFilterDropdown"
                 >
-                    Filter By
+                    Filter: {{ statusFilter }}
                 </button>
             </div>
 
-            <!-- Dropdown Menu -->
             <div
                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="menu-button"
-                v-show="dropdownOpen"
+                v-show="filterDropdownOpen"
             >
                 <div class="py-1 space-y-2" role="none">
-                    <!-- Menu Items -->
                     <button
                         class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
                         role="menuitem"
-                        @click="nomineesCreated"
+                        @click="selectFilter('ALL')"
                     >
-                        CREATED
+                        ALL
                     </button>
                     <button
+                        v-for="s in STATUSES"
+                        :key="s"
                         class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
                         role="menuitem"
-                        @click="nomineesConfirmed"
+                        @click="selectFilter(s)"
                     >
-                        CONFIRMED
-                    </button>
-                    <button
-                        class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
-                        role="menuitem"
-                        @click="nomineesVerified"
-                    >
-                        VERIFIED
-                    </button>
-                    <button
-                        class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
-                        role="menuitem"
-                        @click="nomineesApproved"
-                    >
-                        APPROVED
-                    </button>
-                    <button
-                        class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
-                        role="menuitem"
-                        @click="nomineesDenied"
-                    >
-                        DENIED
-                    </button>
-                    <button
-                        class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
-                        role="menuitem"
-                        @click="nomineesSent"
-                    >
-                        SENT
+                        {{ s }}
                     </button>
                 </div>
             </div>
@@ -298,14 +269,12 @@ getNominees();
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Render each nominee -->
                         <tr
                             class="h-9"
-                            v-for="(u, index) in nominees"
-                            :key="index"
+                            v-for="u in filteredNominees"
+                            :key="u.id"
                         >
                             <td>
-                                <!-- Button to open the modal -->
                                 <button
                                     @click="openModal(u)"
                                     class="hover:text-gray-400 underline"
@@ -314,29 +283,27 @@ getNominees();
                                 </button>
                             </td>
 
-                            <!-- NEW: Photo thumbnail -->
                             <td>
                                 <div class="flex justify-center">
-                                    <template v-if="u.photoURL">
-                                        <img
-                                            :src="u.photoURL"
-                                            alt="Nominee photo"
-                                            class="h-12 w-12 rounded-full object-cover border border-gray-500"
-                                        />
-                                    </template>
-                                    <span v-else class="text-xs text-gray-500"
-                                        >No photo</span
-                                    >
+                                    <img
+                                        v-if="u.photoURL"
+                                        :src="u.photoURL"
+                                        alt="Nominee photo"
+                                        class="h-12 w-12 rounded-full object-cover border border-gray-500"
+                                    />
+                                    <span v-else class="text-xs text-gray-500">
+                                        No photo
+                                    </span>
                                 </div>
                             </td>
 
-                            <td>{{ u.firstName }}</td>
-                            <td>{{ u.lastName }}</td>
+                            <td>{{ u.user?.firstName ?? "" }}</td>
+                            <td>{{ u.user?.lastName ?? "" }}</td>
                             <td>{{ u.phoneNumber }}</td>
                             <td>{{ u.address }}</td>
                             <td>{{ u.placeOfWork }}</td>
                             <td>{{ u.occupation }}</td>
-                            <td>{{ u.email }}</td>
+                            <td>{{ u.user?.email ?? "" }}</td>
                             <td
                                 class="max-w-xs truncate"
                                 :title="u.description"
@@ -344,67 +311,28 @@ getNominees();
                                 {{ u.description }}
                             </td>
                             <td>
-                                <!-- Dropdown for status -->
+                                <!-- Per-row status dropdown: canonical statuses only -->
                                 <div class="relative inline-block">
                                     <button
                                         type="button"
                                         class="inline-flex justify-center w-32 bg-gray-700 px-3 py-2 text-sm font-semibold text-[#d4af37] shadow-sm ring-1 ring-inset ring-gray-300"
-                                        @click="toggleStatusDropdown(u)"
+                                        @click="toggleRowDropdown(u.id)"
                                     >
                                         {{ u.status }}
                                     </button>
 
-                                    <!-- Dropdown Menu for Status -->
                                     <div
                                         class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-black shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                        v-show="u.isDropdownOpen"
+                                        v-show="rowStatusDropdown[u.id]"
                                     >
                                         <div class="py-1 space-y-2">
                                             <button
+                                                v-for="s in STATUSES"
+                                                :key="s"
                                                 class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700"
-                                                @click="
-                                                    updateStatus(u, 'CREATED')
-                                                "
+                                                @click="updateStatus(u, s)"
                                             >
-                                                CREATED
-                                            </button>
-                                            <button
-                                                class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700"
-                                                @click="
-                                                    updateStatus(u, 'CONFIRMED')
-                                                "
-                                            >
-                                                CONFIRMED
-                                            </button>
-                                            <button
-                                                class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700"
-                                                @click="
-                                                    updateStatus(u, 'VERIFIED')
-                                                "
-                                            >
-                                                VERIFIED
-                                            </button>
-                                            <button
-                                                class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700"
-                                                @click="
-                                                    updateStatus(u, 'APPROVED')
-                                                "
-                                            >
-                                                APPROVED
-                                            </button>
-                                            <button
-                                                class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700"
-                                                @click="
-                                                    updateStatus(u, 'DENIED')
-                                                "
-                                            >
-                                                DENIED
-                                            </button>
-                                            <button
-                                                class="block w-full text-center px-4 py-2 text-sm hover:bg-gray-700"
-                                                @click="updateStatus(u, 'SENT')"
-                                            >
-                                                SENT
+                                                {{ s }}
                                             </button>
                                         </div>
                                     </div>
@@ -442,14 +370,13 @@ getNominees();
 
                 <div class="space-y-1 text-sm">
                     <p>
-                        <strong>First Name:</strong>
-                        {{ selectedNominee.firstName }}
+                        <strong>Name:</strong>
+                        {{ getFullName(selectedNominee.user) || "—" }}
                     </p>
                     <p>
-                        <strong>Last Name:</strong>
-                        {{ selectedNominee.lastName }}
+                        <strong>Email:</strong>
+                        {{ selectedNominee.user?.email ?? "—" }}
                     </p>
-                    <p><strong>Email:</strong> {{ selectedNominee.email }}</p>
                     <p>
                         <strong>Phone Number:</strong>
                         {{ selectedNominee.phoneNumber }}

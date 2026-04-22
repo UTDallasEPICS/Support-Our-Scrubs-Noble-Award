@@ -213,7 +213,7 @@ watch(
   () => user.value?.email,
   async (email) => {
     if (!email) {
-    role.value = null
+      role.value = null
       return
     }
     const { role: fetched } = await useCheckAdmin(email)

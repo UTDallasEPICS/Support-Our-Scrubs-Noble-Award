@@ -1,55 +1,52 @@
-<!-- /pages/profile/edit-about.vue -->
+<!-- /pages/nominee/setup-profile.vue -->
 <script setup lang="ts">
+import { authClient } from "~/shared/auth-client";
 import type { AboutMeInput } from "~/shared/types";
 
-const router = useRouter();
-const { data: session } = await useFetch("/api/auth/session");
-// TODO: revert this to use the login modal
-// If no user, send them to page with login modal
+// Auth: delegate the "open login modal" UX to the default layout by hopping
+// back to `/` with `?login=true` - the layout's mount hook opens the modal.
+const { data: session } = await authClient.useSession(useFetch);
 if (!session.value?.user) {
-    router.push({
-        path: "/",
-        query: { login: "true" },
-    });
+    await navigateTo({ path: "/", query: { login: "true" } });
 }
 
-// Load current about-me text
-const { data: aboutMe, error } = await useFetch(
-    "/api/editAboutMe",
-);
+// Load the current About Me text (SSR-safe; runs once on the server).
+const { data: aboutMe, error } = await useFetch("/api/editAboutMe");
 
-// Local editable copy
+// Local editable copy, kept in sync with the fetched value.
 const aboutMeLocal = ref("");
-
 watch(
     aboutMe,
     (val) => {
-        if (val) {
-            aboutMeLocal.value = val.aboutMe;
-        }
+        if (val) aboutMeLocal.value = val.aboutMe;
     },
     { immediate: true },
 );
 
+// Save state. `saveMessage` carries both text and kind so the template can
+// style success vs error distinctly.
 const saving = ref(false);
-const saveMessage = ref("");
+const saveMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
 
 const saveAboutMe = async () => {
     if (saving.value) return;
     saving.value = true;
-    saveMessage.value = "";
-
+    saveMessage.value = null;
     try {
         await $fetch("/api/editAboutMe", {
             method: "PUT",
-            body: {
-                aboutMe: aboutMeLocal.value,
-            } satisfies AboutMeInput,
+            body: { aboutMe: aboutMeLocal.value } satisfies AboutMeInput,
         });
-        saveMessage.value = "Your About Me has been updated.";
+        saveMessage.value = {
+            type: "success",
+            text: "Your About Me has been updated.",
+        };
     } catch (err) {
         console.error(err);
-        saveMessage.value = "There was a problem saving. Please try again.";
+        saveMessage.value = {
+            type: "error",
+            text: "There was a problem saving. Please try again.",
+        };
     } finally {
         saving.value = false;
     }
@@ -90,8 +87,12 @@ const saveAboutMe = async () => {
                         {{ saving ? "Saving..." : "Save Changes" }}
                     </button>
 
-                    <p v-if="saveMessage" class="save-message">
-                        {{ saveMessage }}
+                    <p
+                        v-if="saveMessage"
+                        class="save-message"
+                        :class="saveMessage.type"
+                    >
+                        {{ saveMessage.text }}
                     </p>
                 </div>
             </div>
@@ -179,6 +180,14 @@ const saveAboutMe = async () => {
 .save-message {
     font-size: 0.9rem;
     color: #f5f5f5;
+}
+
+.save-message.success {
+    color: #f5c542;
+}
+
+.save-message.error {
+    color: #ff6b6b;
 }
 
 /* Status messages */

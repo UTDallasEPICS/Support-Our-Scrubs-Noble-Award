@@ -27,7 +27,7 @@ async function performSearch() {
     if (!term) {
         clearSearch();
         return;
-      }
+    }
     searchLoading.value = true;
     searchError.value = "";
     hasSearched.value = true;
@@ -42,12 +42,12 @@ async function performSearch() {
         nominees.value = items
             .filter((n) => n.status === "APPROVED")
             .map((n) => ({ ...n, name: getFullName(n.user) }));
-      } catch (e) {
-        this.searchError = 'Failed to search nominees. Please try again.';
+    } catch (e) {
+        searchError.value = "Failed to search nominees. Please try again.";
         console.error(e);
-      } finally {
-        this.searchLoading = false;
-      }
+    } finally {
+        searchLoading.value = false;
+    }
 }
 
 function clearSearch() {
@@ -209,7 +209,7 @@ h2 {
     color: #a77c43;
     text-align: center;
     margin-bottom: 70px;
-  }
+}
 
   /* Search Section Styles */
   .search-section {

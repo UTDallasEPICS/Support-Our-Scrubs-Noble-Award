@@ -7,8 +7,7 @@ const { data: session } = await authClient.useSession(useFetch);
 const { open: openLoginModal } = useLoginModal();
 if (!session.value?.user) openLoginModal();
 
-// Form fields
-const form = ref<NomineeCreateInput>({
+const emptyForm = (): NomineeCreateInput => ({
     firstName: "",
     lastName: "",
     nominatorFirstName: "",
@@ -21,54 +20,52 @@ const form = ref<NomineeCreateInput>({
     description: "",
     photoURL: "",
 });
+const form = ref<NomineeCreateInput>(emptyForm());
 
-// File upload state
+// File upload state. Photo-upload wiring is user-owned; this just tracks the
+// selected file so the filename can be rendered next to the input.
 const selectedFile = ref<File | null>(null);
 const selectedFileName = ref("");
-
 
 const handlePhotoUpload = async (event: Event) => {
     const target = event.target as HTMLInputElement | null;
     if (!target?.files || target.files.length === 0) return;
-
     const file = target.files[0];
     selectedFile.value = file;
-    selectedFileName.value = file.name; // <-- filename shows up now
-
-    console.log("Selected file:", file.name);
+    selectedFileName.value = file.name;
 };
 
-// Reset form after submit
+// Submission state + inline feedback (replaces the previous `alert()` calls).
+const submitting = ref(false);
+const submitMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
+
 function resetForm() {
-    form.value = {
-        firstName: "",
-        lastName: "",
-        nominatorFirstName: "",
-        nominatorLastName: "",
-        phoneNumber: "",
-        address: "",
-        placeOfWork: "",
-        occupation: "",
-        email: "",
-        description: "",
-        photoURL: "",
-    };
+    form.value = emptyForm();
+    selectedFile.value = null;
+    selectedFileName.value = "";
 }
 
-// Submit form
 async function submitForm() {
+    if (submitting.value) return;
+    submitting.value = true;
+    submitMessage.value = null;
     try {
-        // TODO: Handle Photo Upload
-        
+        // TODO(photo-upload): user-owned - upload `selectedFile` and set
+        // `form.value.photoURL` before POSTing when the pipeline lands.
         await $fetch("/api/nominee", {
             method: "POST",
             body: form.value,
         });
-        alert("Nomination submitted!");
+        submitMessage.value = { type: "success", text: "Nomination submitted. Thank you!" };
         resetForm();
     } catch (err) {
         console.error("Error submitting nomination", err);
-        alert("Something went wrong submitting the nomination.");
+        submitMessage.value = {
+            type: "error",
+            text: "Something went wrong submitting the nomination. Please try again.",
+        };
+    } finally {
+        submitting.value = false;
     }
 }
 </script>
@@ -280,9 +277,26 @@ async function submitForm() {
                     </div>
                 </div>
 
+                <!-- Submit status message -->
+                <p
+                    v-if="submitMessage"
+                    :class="[
+                        'mt-6 text-sm text-center',
+                        submitMessage.type === 'success'
+                            ? 'text-amber-300'
+                            : 'text-red-400',
+                    ]"
+                >
+                    {{ submitMessage.text }}
+                </p>
+
                 <!-- Submit -->
-                <button type="submit" class="mt-8 w-full nomination-submit-btn">
-                    Submit
+                <button
+                    type="submit"
+                    :disabled="submitting"
+                    class="mt-6 w-full nomination-submit-btn"
+                >
+                    {{ submitting ? "Submitting..." : "Submit" }}
                 </button>
             </form>
         </main>
