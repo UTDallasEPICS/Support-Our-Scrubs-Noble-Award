@@ -30,10 +30,10 @@ export default defineEventHandler(async (event) => {
             statusMessage: "Not authenticated",
         });
     }
-	// Get the user ID from the session
+    // Get the user ID from the session
     const userId = session.session.userId;
 
-	// Get the validated nominee data from the request body
+    // Get the validated nominee data from the request body
     const {
         nominatorFirstName,
         nominatorLastName,
@@ -99,11 +99,12 @@ export default defineEventHandler(async (event) => {
                 select: { id: true },
             });
         }
-		// Check if a nominee already exists for this user
+        // Check if a nominee already exists for this user
         let nominee: Nominee | null = await prisma.nominee.findUnique({
             where: { userId: user.id },
         });
-        if (!nominee) {	// If no nominee exists for this user, create a new one	
+        if (!nominee) {
+            // If no nominee exists for this user, create a new one
             nominee = await prisma.nominee.create({
                 data: {
                     user: { connect: { id: user.id } },
@@ -157,11 +158,15 @@ export default defineEventHandler(async (event) => {
             } catch (e) {
                 console.error("[email] nominator failed:", e);
             }
-
-            if (process.env.ADMIN_TO) {
+            // send email to all admins
+            const admins = await prisma.admin.findMany({
+                select: { user: { select: { email: true } } },
+            });
+            const adminEmails = admins.map((admin) => admin.user.email);
+            for (const email of adminEmails) {
                 try {
                     await sendEmail(
-                        routeRecipient(process.env.ADMIN_TO),
+                        routeRecipient(email),
                         `New Nomination: ${firstName} ${lastName}`,
                         `
             <div style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
@@ -203,8 +208,6 @@ export default defineEventHandler(async (event) => {
                 } catch (e) {
                     console.error("[email] admin failed:", e);
                 }
-            } else {
-                console.warn("[email] ADMIN_TO not set; admin email skipped");
             }
         })();
 

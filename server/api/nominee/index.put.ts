@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const {
     id, firstName, lastName, phoneNumber, address,
     placeOfWork, occupation, email, description,
-    aboutme, photoURL, nominatorId, adminId, status,
+    aboutme, photoURL,
   } = await readValidatedBody(event, b => nomineeUpdateSchema.parse(b));
 
   try {
@@ -20,9 +20,6 @@ export default defineEventHandler(async (event) => {
           description,
           aboutme,
           photoURL,
-          status,
-          ...(nominatorId ? { nominator: { connect: { id: nominatorId } } } : {}),
-          ...(adminId ? { admin: { connect: { id: adminId } } } : {}),
           ...(firstName || lastName || email
             ? {
                 user: {

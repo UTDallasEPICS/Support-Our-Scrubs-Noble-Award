@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   
   // Adjust this to your schema: Nominee / Nominator table, etc.
-  const profile = await prisma.nominee.findUnique({ where: { userId: session.session.userId } })
+  const profile = await prisma.nominee.findUnique({ where: { userId: session.session.userId }, select: { aboutme: true } })
 
   return {
     aboutMe: profile?.aboutme ?? '',
