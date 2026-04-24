@@ -146,7 +146,7 @@ function handleOpenLogin() {
 
 /* --- ADMIN BUTTON --- */
 function goToAdmin() {
-  navigateTo('/nominator/viewnominees')
+  navigateTo('/admin/nominations')
 }
 
 /* --- VIEW MY NOMINEES --- */
@@ -158,7 +158,7 @@ function redirectToEditMyNominees() {
 }
 
 function redirectToEditMyProfile(){
-  navigateTo('/nominator/myProfile')
+  navigateTo('/profile')
 }
 
 /* --- LOGOUT --- */
