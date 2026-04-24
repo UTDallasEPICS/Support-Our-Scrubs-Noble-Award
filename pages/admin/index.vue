@@ -1,7 +1,7 @@
 <!-- pages/dashboard.vue -->
 <script setup lang="ts">
 import { Prisma } from "@prisma/client"
-import { EmailTemplateType } from "#build/types/nitro-imports"
+import type { EmailTemplateType } from "#shared/types"
 import type { EmailTemplateUpdateInput, EmailField } from "~/shared/types";
 
 type AdminWithUser = Prisma.AdminGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
