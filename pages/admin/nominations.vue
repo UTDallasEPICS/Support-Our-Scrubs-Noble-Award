@@ -1,7 +1,4 @@
 <script setup lang="ts">
-// TODO route-move: this page is effectively an admin dashboard and should
-// live at `/admin/...` so the global auth middleware can own the gate.
-import { ref, computed } from "vue";
 import { authClient } from "~/shared/auth-client";
 import type { NomineesWithUser } from "~/shared/types";
 
@@ -25,22 +22,15 @@ type StatusFilter = "ALL" | Status;
 // --- Data -----------------------------------------------------------------
 // LEGACY-STATUS: `/api/nominee` currently hard-filters to APPROVED, so this
 // page only sees approved nominees until an admin listing endpoint is added.
-// `allNominees` is the currently displayed set - it's either the initial load
-// or the result of a server-side search.
-const allNominees = ref<NomineesWithUser[]>([]);
-
-async function loadNominees() {
-    try {
-        const res = await $fetch("/api/nominee");
-        allNominees.value = Array.isArray(res)
-            ? (res as NomineesWithUser[])
-            : [];
-    } catch (err) {
-        console.error("Error loading nominees:", err);
-        allNominees.value = [];
-    }
-}
-await loadNominees();
+// `allNominees` is the full list from the admin API, or search results written
+// into the same ref. `useFetch` (not raw `$fetch`) forwards cookies on SSR for
+// same-origin `/api/*` calls, so the session is visible to the handler.
+const { data: allNominees, refresh: refreshNomineeList } = await useFetch<
+    NomineesWithUser[]
+>("/api/admin/nominee", {
+    default: () => [],
+    transform: (payload) => (Array.isArray(payload) ? payload : []),
+});
 
 // --- Search (debounced, hits `/api/nominee/search`) -----------------------
 const searchQuery = ref("");
@@ -54,7 +44,7 @@ function debouncedSearch() {
 async function runSearch() {
     const term = searchQuery.value.trim();
     if (!term) {
-        await loadNominees();
+        await refreshNomineeList();
         return;
     }
     try {
@@ -82,10 +72,12 @@ function selectFilter(status: StatusFilter) {
     filterDropdownOpen.value = false;
 }
 
+const list = computed(() => allNominees.value ?? []);
+
 const filteredNominees = computed(() =>
     statusFilter.value === "ALL"
-        ? allNominees.value
-        : allNominees.value.filter((n) => n.status === statusFilter.value),
+        ? list.value
+        : list.value.filter((n) => n.status === statusFilter.value),
 );
 
 // --- Per-row status dropdown (keyed by nominee id to avoid mutating data) -
@@ -97,16 +89,21 @@ function toggleRowDropdown(id: string) {
 
 // --- Status update + email notification -----------------------------------
 async function updateStatus(nominee: NomineesWithUser, status: Status) {
-    if (status === "APPROVED" || status === "DENIED") {
-        const confirmed = confirm(
-            `Confirm status change to ${status}? This will notify the nominee via email.`,
-        );
-        if (!confirmed) return;
+    try {
+        await useFetch("/api/admin/nominee", {
+            method: "PUT",
+            body: { nomineeId: nominee.id, status },
+        });
+        nominee.status = status;
+        rowStatusDropdown.value[nominee.id] = false;
 
-        // LEGACY-STATUS: `adminSendEmailSchema` validates type as ACCEPTED/REJECTED.
-        // Translate from the UI's APPROVED/DENIED until the server aligns.
-        try {
-            await $fetch("/api/admin/email", {
+        if (status === "APPROVED" || status === "DENIED") {
+            const confirmed = confirm(
+                `Confirm status change to ${status}? This will notify the nominee via email.`,
+            );
+            if (!confirmed) return;
+
+            await useFetch("/api/admin/email", {
                 method: "POST",
                 body: {
                     name: getFullName(nominee.user),
@@ -114,22 +111,13 @@ async function updateStatus(nominee: NomineesWithUser, status: Status) {
                     type: status === "APPROVED" ? "ACCEPTED" : "REJECTED",
                 },
             });
-        } catch (err) {
-            console.error("Error sending status email:", err);
         }
-    }
-
-    try {
-        // `nomineeUpdateSchema` only accepts a specific subset of fields; send
-        // just `{ id, status }` rather than spreading the full nominee object.
-        await $fetch("/api/nominee", {
-            method: "PUT",
-            body: { id: nominee.id, status },
-        });
-        nominee.status = status;
-        rowStatusDropdown.value[nominee.id] = false;
     } catch (err) {
         console.error("Error updating status:", err);
+        throw createError({
+            statusCode: 500,
+            statusMessage: "Error updating status",
+        });
     }
 }
 

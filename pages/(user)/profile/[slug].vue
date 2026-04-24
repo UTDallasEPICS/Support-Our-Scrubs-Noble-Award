@@ -1,19 +1,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
-
+import type { NomineesWithUser } from "~/shared/types";
 const route = useRoute();
 const slug = String(route.params.slug);
 const url = useRequestURL();
 
 // SSR-safe fetch keyed by slug so the hydrated client matches the server render.
-// TODO server-opt: a dedicated `/api/nominee/[slug].get.ts` would avoid pulling
-// the full approved list just to filter client-side.
-const { data: nominees } = await useAsyncData(`profile-${slug}`, () =>
-    $fetch("/api/nominee", { query: { slug } }),
+const { data: nominee } = await useAsyncData(`profile-${slug}`, () =>
+    $fetch<NomineesWithUser>(`/api/nominee/${slug}`),
 );
-
-const nominee = (nominees.value ?? []).find((n) => n.slug === slug);
-if (!nominee) {
+if (!nominee.value) {
     throw createError({
         statusCode: 404,
         statusMessage: "Nominee not found",
@@ -21,16 +17,11 @@ if (!nominee) {
     });
 }
 
-const title = computed(() => getFullName(nominee.user));
-const subtitle = computed(() => nominee.occupation || "");
-const profileDescription = computed(() => nominee.description || "");
-const profileImage = computed(() => nominee.photoURL || "");
-// TODO: `/api/nominee`'s Prisma `select` doesn't include `aboutme`, so this
-// always renders the fallback today. Fix requires a server-side change.
-const profileAboutme = computed(() => {
-    const aboutme = (nominee as unknown as { aboutme?: string | null }).aboutme;
-    return aboutme || 'This nominee has not updated their profile yet.';
-});
+const title = computed(() => getFullName(nominee.value?.user));
+const subtitle = computed(() => nominee.value?.occupation || "");
+const profileDescription = computed(() => nominee.value?.description || "");
+const profileImage = computed(() => nominee.value?.photoURL || "");
+const profileAboutme = computed(() => nominee.value?.aboutme || "This nominee has not updated their profile yet.");
 
 const canonicalUrl = computed(() => `${url.origin}/profile/${slug}`);
 const headline = computed(() => `${title.value} - ${subtitle.value}`);
