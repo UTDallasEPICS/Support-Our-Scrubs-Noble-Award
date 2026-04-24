@@ -1,4 +1,4 @@
-import type { Status, EmailTemplateType } from "../shared/types";
+import { Status, EmailTemplateType } from "../shared/types";
 
 export type MockUser = {
     firstName: string;
