@@ -13,13 +13,15 @@ RUN pnpm run build
 # Deployment container
 FROM node:22-alpine AS deployment
 
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
 # Copy stuff from build container to ensure we have prisma and everything it needs
 COPY --from=builder /.output /
 COPY --from=builder /package.json /
 COPY --from=builder /pnpm-lock.yaml /
 COPY --from=builder /prisma /prisma
 COPY --from=builder /node_modules /node_modules
-# COPY --from=builder /.env /.env
 # Help Prisma detect openssl (not needed for prisma 6+)
 RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
 RUN npm i -g pnpm
