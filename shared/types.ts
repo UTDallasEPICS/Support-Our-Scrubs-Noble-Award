@@ -64,7 +64,6 @@ export const adminCreateSimpleSchema = z.object({
 })
 
 export const adminUpdateNomineeSchema = z.object({
-  adminId:     uuidField,
   nomineeId:   uuidField,
   firstName:   z.string().min(1).optional(),
   lastName:    z.string().min(1).optional(),
@@ -74,7 +73,7 @@ export const adminUpdateNomineeSchema = z.object({
   occupation:  z.string().min(1).optional(),
   email:       emailField.optional(),
   description: z.string().min(1).optional(),
-  status:      z.string().optional(),
+  status:      z.enum(['PENDING', 'APPROVED', 'DENIED']).optional(),
 })
 
 export const adminSendEmailSchema = z.object({
