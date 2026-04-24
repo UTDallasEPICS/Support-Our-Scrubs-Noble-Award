@@ -4,7 +4,7 @@ import type {
     NomineesWithUser,
 } from "~/shared/types";
 import { authClient } from "~/shared/auth-client";
-
+import { getImageLink } from "~/utils";
 // Session check. The global auth middleware already gates this route, but read
 // the session defensively so we don't render the edit form with no user.
 const { data: session } = await authClient.useSession(useFetch);
@@ -24,14 +24,9 @@ const emptyForm = (): NomineeUpdateInput => ({
     occupation: "",
     email: "",
     description: "",
-    photoURL: "",
+
 });
 const form = ref<NomineeUpdateInput>(emptyForm());
-
-// Photo-upload file state. The upload pipeline itself is user-owned; this just
-// tracks the selected file for display next to the input.
-const selectedFile = ref<File | null>(null);
-const selectedFileName = ref("");
 
 // Search state. `/api/nominee/search` matches name / occupation / place-of-work
 // (not email, despite what the original input was labeled). Multiple results
@@ -41,6 +36,7 @@ const searchResults = ref<NomineesWithUser[]>([]);
 const searchLoading = ref(false);
 const searchError = ref("");
 const selectedNomineeId = ref<string | null>(null);
+const photoURL = ref("");
 
 async function runSearch() {
     const term = searchTerm.value.trim();
@@ -82,23 +78,52 @@ function selectNominee(nominee: NomineesWithUser) {
         occupation: nominee.occupation ?? "",
         email: nominee.user?.email ?? "",
         description: nominee.description ?? "",
-        photoURL: nominee.photoURL ?? "",
     };
+    photoURL.value = nominee.photoURL ?? "";
 }
 
 // Save state. Replaces the two `alert()` calls with inline feedback.
 const saving = ref(false);
 const saveMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
 
+// Photo-upload file state. The upload pipeline itself is user-owned; this just
+// tracks the selected file for display next to the input.
+const selectedFile = ref<File | null>(null);
+const selectedFileName = ref("");
+
+function handlePhotoUpload(event: Event) {
+    const target = event.target as HTMLInputElement | null;
+    if (!target?.files || target.files.length === 0) return;
+    const file = target.files[0];
+    if (!file?.type.startsWith('image/')) {
+        throw createError({ statusCode: 400, statusMessage: "File is not an image" });
+    }
+    selectedFile.value = file as File;
+    selectedFileName.value = file.name;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+};
+
+
 async function submitForm() {
     if (saving.value || !form.value.id) return;
     saving.value = true;
     saveMessage.value = null;
     try {
-        await $fetch("/api/nominee", {
+        const { data } = await useFetch("/api/nominee", {
             method: "PUT",
             body: form.value,
         });
+        const { id: nomineeId } = data.value as { id: string };
+        if (selectedFile.value) {
+            const imagePayload = new FormData();
+            imagePayload.append("file", selectedFile.value);
+            await useFetch(`/api/nominee/${nomineeId}/upload`, {
+                method: "POST",
+                body: imagePayload,
+            });
+        }
         saveMessage.value = {
             type: "success",
             text: "Nominee updated successfully.",
@@ -295,14 +320,14 @@ async function submitForm() {
                     <div class="space-y-3">
                         <span class="block text-sm font-medium">Photo</span>
 
-                        <div v-if="form.photoURL" class="flex items-center gap-4">
+                        <div v-if="photoURL" class="flex items-center gap-4">
                             <img
-                                :src="form.photoURL"
+                                :src="getImageLink(photoURL, form.id)"
                                 alt="Current nominee photo"
                                 class="h-16 w-16 rounded-full object-cover border border-amber-400"
                             />
                             <span class="text-xs text-amber-200/80 break-all">
-                                Current: {{ form.photoURL }}
+                                Current: {{ photoURL }}
                             </span>
                         </div>
                         <div v-else class="text-xs text-amber-200/70">
@@ -343,7 +368,7 @@ async function submitForm() {
                             </label>
                             <input
                                 id="photoURL"
-                                v-model="form.photoURL"
+                                v-model="photoURL"
                                 type="url"
                                 placeholder="/uploads/..."
                                 class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-2 text-amber-100 text-xs"

@@ -2,7 +2,7 @@
 import { authClient } from "~/shared/auth-client";
 import type { NomineesWithUser } from "~/shared/types";
 import { useLoginModal } from "~/composables/useLoginModal";
-
+import { getImageLink } from "~/utils";
 const { data: session } = await authClient.useSession(useFetch);
 const { open: openLoginModal } = useLoginModal();
 if (!session.value?.user) openLoginModal();
@@ -48,7 +48,7 @@ const goToProfile = (slug: string) => {
                         <div class="avatar">
                             <img
                                 v-if="nominee.photoURL"
-                                :src="nominee.photoURL"
+                                :src="getImageLink(nominee.photoURL, nominee.id)"
                                 alt="photo"
                             />
                             <div v-else class="no-photo">No Photo</div>

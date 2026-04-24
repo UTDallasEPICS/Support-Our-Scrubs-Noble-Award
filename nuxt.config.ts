@@ -27,31 +27,9 @@ export default defineNuxtConfig({
         refreshToken: process.env.NUXT_OAUTH2_REFRESH_TOKEN!,
         redirectURI: process.env.NUXT_OAUTH2_REDIRECT_URI!,
         jwtSecret: process.env.JWT_SECRET,
-        supabase: {
-            serviceKey: process.env.NUXT_SUPABASE_SERVICE_ROLE_KEY!,
-        },
+        uploadStoragePath: process.env.UPLOAD_STORAGE_PATH!,
         public: {
             emailHost: process.env.NUXT_PUBLIC_EMAIL_SENDER!,
-            
-            supabase: {
-                url: process.env.NUXT_PUBLIC_SUPABASE_URL!,
-                key: process.env.NUXT_PUBLIC_SUPABASE_ADON_KEY!,
-                redirectOptions: {
-                    // we are NOT using a /login route
-                    login: "/", // unused now, but required by your plugin’s shape
-                    callback: "/auth/callback",
-                    include: ["/admin/**"], // only guard these
-                    exclude: [
-                        "/",
-                        "/roster",
-                        "/donate",
-                        "/contact",
-                        "/auth/callback",
-                    ],
-                    cookieRedirect: false,
-                    saveRedirectToCookie: false,
-                },
-            },
         },
     },
 

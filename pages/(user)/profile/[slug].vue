@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { NomineesWithUser } from "~/shared/types";
+import { getImageLink } from "~/utils";
 const route = useRoute();
 const slug = String(route.params.slug);
 const url = useRequestURL();
@@ -20,7 +21,17 @@ if (!nominee.value) {
 const title = computed(() => getFullName(nominee.value?.user));
 const subtitle = computed(() => nominee.value?.occupation || "");
 const profileDescription = computed(() => nominee.value?.description || "");
-const profileImage = computed(() => nominee.value?.photoURL || "");
+const profileImage = computed(() => {
+    const n = nominee.value;
+    if (!n?.id || !n.photoURL) return "";
+    return getImageLink(n.photoURL, n.id) ?? "";
+});
+/** Absolute image URL for og/twitter/JSON-LD. */
+const profileImageAbsolute = computed(() => {
+    const rel = profileImage.value;
+    if (!rel) return "";
+    return `${url.origin}${rel}`;
+});
 const profileAboutme = computed(() => nominee.value?.aboutme || "This nominee has not updated their profile yet.");
 
 const canonicalUrl = computed(() => `${url.origin}/profile/${slug}`);
@@ -35,13 +46,13 @@ useHead({
         { name: "description", content: metaDescription },
         { property: "og:title", content: headline },
         { property: "og:description", content: metaDescription },
-        { property: "og:image", content: profileImage },
+        { property: "og:image", content: profileImageAbsolute },
         { property: "og:url", content: canonicalUrl },
         { property: "og:type", content: "profile" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: headline },
         { name: "twitter:description", content: metaDescription },
-        { name: "twitter:image", content: profileImage },
+        { name: "twitter:image", content: profileImageAbsolute },
     ],
     link: [{ rel: "canonical", href: canonicalUrl }],
     script: [
@@ -53,7 +64,7 @@ useHead({
                 name: title.value,
                 jobTitle: subtitle.value,
                 description: profileDescription.value,
-                image: profileImage.value,
+                image: profileImageAbsolute.value,
             }),
         },
     ],
