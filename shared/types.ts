@@ -25,7 +25,6 @@ export const nomineeCreateSchema = z.object({
   occupation:  z.string().min(1, 'Occupation is required'),
   email:       emailField,
   description: z.string().min(1, 'Description is required'),
-  photoURL:    z.string().optional(),
 })
 
 export const nomineeUpdateSchema = z.object({
@@ -39,7 +38,6 @@ export const nomineeUpdateSchema = z.object({
   email:       emailField.optional(),
   description: z.string().min(1).optional(),
   aboutme:     z.string().max(300).optional(),
-  photoURL:    z.string().optional(),
 })
 
 export const nomineeDeleteQuerySchema = z.object({
@@ -155,3 +153,4 @@ export type AboutMeInput             = z.infer<typeof aboutMeSchema>
 export type EmailField               = z.infer<typeof emailField>
 
 export type NomineesWithUser = Prisma.NomineeGetPayload<{include: {user: {select: {firstName: true, lastName: true, email: true}}}}>;
+export type EmailTemplateType = "SIGNUP" | "NOMINATION" | "ACCEPTED" | "REJECTED";
