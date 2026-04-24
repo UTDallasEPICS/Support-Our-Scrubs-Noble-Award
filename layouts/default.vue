@@ -2,7 +2,6 @@
 import Navbar from '~/components/Navbar.vue'
 import MyLogin from '~/components/MyLogin.vue'
 import { useLoginModal } from '~/composables/useLoginModal'
-
 const { showLogin, open, close } = useLoginModal()
 const route = useRoute()
 
@@ -15,6 +14,10 @@ onMounted(() => {
   <Navbar @open-login="open" />
   <slot />
   <Teleport to="body">
-    <MyLogin v-if="showLogin" @close="close" />
+    <MyLogin
+      v-if="showLogin"
+      :allow-backdrop-close="false"
+      @close="close"
+    />
   </Teleport>
 </template>
