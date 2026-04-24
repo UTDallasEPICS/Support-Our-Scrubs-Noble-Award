@@ -1,9 +1,10 @@
 <template>
-	<form class="overlay" @click.self="close" @submit.prevent="sendMagic">
+	<form class="overlay" @click.self="onBackdropClick" @submit.prevent="sendMagicLink">
 		<div class="login-box">
 			<h2>Login</h2>
 			<input v-model="email" type="email" placeholder="Email" required />
-			<button :disabled="loading">{{ loading ? 'Sending...' : 'Send login link' }}</button>
+			<button type="submit" :disabled="loading">{{ loading ? 'Sending...' : 'Send login link' }}</button>
+			<button type="button" class="login-cancel" @click="close">Cancel</button>
 			<p v-if="msg">{{ msg }}</p>
 		</div>
 	</form>
@@ -11,72 +12,43 @@
 
 <script setup lang="ts">
 
+const props = withDefaults(
+	defineProps<{
+		allowBackdropClose?: boolean;
+	}>(),
+	{ allowBackdropClose: true },
+);
 
-const emit = defineEmits<(e: 'close' | 'submitted') => void>()
+const emit = defineEmits<(e: "close" | "submitted") => void>();
 
-const supabase = useSupabaseClient()
-const route = useRoute()
+const email = ref("");
+const loading = ref(false);
+const msg = ref("");
 
-const email = ref('')
-const loading = ref(false)
-const msg = ref('')
+function onBackdropClick() {
+	if (props.allowBackdropClose) close();
+}
 
-const next = computed(() => (route.query.next as string) || '/')
-
-type CheckEmailResponse = | { ok: false; reason: 'not_found' | 'server_error' }
-	| { ok: true; role: 'admin' | 'nominator' | 'nominee' }
-
-const roleState = useState<'admin' | 'nominator' | 'nominee' | null>('role', () => null)
-async function sendMagic() {
-
+const sendMagicLink = async () => {
 	try {
 		loading.value = true
 		msg.value = ''
-		// 1️⃣ Check your own API before sending magic link
-		const res = await $fetch<CheckEmailResponse>('/api/checkEmail', {
+		await $fetch('/api/auth/magic-link', {
 			method: 'POST',
-			body: { email: email.value },
+			body: { email: email.value }
 		})
-		// Your API should respond like: { ok: true } if found, or { ok: false }
-		if (!res.ok) {
-			msg.value = 'Email not found. Please use the email you registered with.'
-			roleState.value = null
-			return
-		}
-
-		if (res.role === 'admin' || res.role === 'nominator' || res.role === 'nominee') {
-			roleState.value = res.role
-		} else {
-			console.warn('Unexpected role from API:', res)
-			roleState.value = null
-		}
-
-		// 2️⃣ Continue with Supabase magic link sign-in
-		const redirect = `${window.location.origin}/`
-		const { error } = await supabase.auth.signInWithOtp({
-			email: email.value,
-			options: { emailRedirectTo: redirect },
-		})
-
-		if (error) {
-			console.error('Supabase OTP error:', error)
-			throw error
-		}
-
-		// Normal success
 		msg.value = 'Check your email for the login link.'
-		emit('submitted')
-
-	} catch (e: any) {
-		console.warn('IGNORING ERROR:', e)
-		msg.value = 'If this email exists, a login link has been sent.'
+	} catch (error: any) {
+		console.error(error.message) 
+		msg.value = 'Failed to send login link.'
 	} finally {
 		loading.value = false
 	}
 }
 
 function close() {
-	emit('close')
+	navigateTo('/')
+	emit("close");
 }
 </script>
 
@@ -112,7 +84,7 @@ function close() {
 	color: white;
 }
 
-.login-box button {
+.login-box button[type="submit"] {
 	width: 100%;
 	margin-top: 0.5rem;
 	padding: 0.75rem;
@@ -122,5 +94,22 @@ function close() {
 	color: #111;
 	font-weight: 700;
 	cursor: pointer;
+}
+
+.login-cancel {
+	width: 100%;
+	margin-top: 0.75rem;
+	padding: 0.5rem;
+	border-radius: 8px;
+	border: 1px solid #444;
+	background: transparent;
+	color: #aaa;
+	font-size: 0.875rem;
+	cursor: pointer;
+}
+
+.login-cancel:hover {
+	color: #fff;
+	border-color: #666;
 }
 </style>

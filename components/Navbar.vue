@@ -64,7 +64,6 @@
                 {{ user.email }}
               </div>
             </li>
-              <li class="dropdown-header">Signed in as ...</li>
               <li v-if="isAdmin">
                 <button class="dropdown-item" @click="goToAdmin">Admin Panel</button>
               </li>
@@ -89,9 +88,10 @@
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useRoute, navigateTo } from '#imports'
+import { authClient } from '~/shared/auth-client'
 
 const emit = defineEmits(['open-login'])
 
@@ -108,22 +108,12 @@ const navRef = ref(null)
 
 const route = useRoute()
 
-/* Supabase */
-const user = useSupabaseUser()
-const supabase = useSupabaseClient()
+const { data: session } = await authClient.useSession(useFetch)
+const user = computed(() => session.value?.user)
 
 /* ROLE / ADMIN */
-const role = useState('role', () => null)
+const role = ref<'admin' | null>(null)
 const isAdmin = computed(() => role.value === 'admin')
-
-async function fetchUserRole(email) {
-  const res = await $fetch('/api/checkAdmin', {
-    method: 'POST',
-    body: { email }
-  })
-
-  role.value = res.role === 'admin' ? 'admin' : null
-}
 
 /* --- MOBILE MENU LOGIC --- */
 function toggle() {
@@ -156,7 +146,7 @@ function handleOpenLogin() {
 
 /* --- ADMIN BUTTON --- */
 function goToAdmin() {
-  navigateTo('/nominator/viewnominees')
+  navigateTo('/admin/nominations')
 }
 
 /* --- VIEW MY NOMINEES --- */
@@ -168,7 +158,7 @@ function redirectToEditMyNominees() {
 }
 
 function redirectToEditMyProfile(){
-  navigateTo('/nominator/myProfile')
+  navigateTo('/profile')
 }
 
 /* --- LOGOUT --- */
@@ -176,7 +166,7 @@ async function logoutAndReset() {
   dropdownOpen.value = false
 
   try {
-    await supabase.auth.signOut()
+    await authClient.signOut()
   } catch (e) {
     console.error('Error signing out:', e)
   }
@@ -219,13 +209,18 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKey)
 })
 
-watch(user, (newUser) => {
-  if (newUser?.email) {
-    fetchUserRole(newUser.email)
-  } else {
-    role.value = null
-  }
-}, { immediate: true })
+watch(
+  () => user.value?.email,
+  async (email) => {
+    if (!email) {
+      role.value = null
+      return
+    }
+    const { role: fetched } = await useCheckAdmin(email)
+    role.value = fetched
+  },
+  { immediate: true },
+)
 
 /* Close mobile nav on route change */
 watch(() => route.fullPath, close)

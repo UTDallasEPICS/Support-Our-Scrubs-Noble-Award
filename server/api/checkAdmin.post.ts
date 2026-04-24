@@ -1,18 +1,15 @@
 import { prisma } from '~/server/utils/prismaclient'
+import { emailBodySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const email = body.email
+  const { email } = await readValidatedBody(event, b => emailBodySchema.parse(b))
 
-  if (!email) {
-    return { ok: false, reason: 'no_email' }
-  }
-
-  const admin = await prisma.admin.findUnique({
-    where: { email } // make sure email is unique in your Admin model
+  const user = await prisma.user.findUnique({
+    where: { email },
+    include: { admin: true },
   })
 
-  if (!admin) {
+  if (!user?.admin) {
     return { ok: false, role: null }
   }
 

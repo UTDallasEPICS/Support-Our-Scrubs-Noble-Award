@@ -1,41 +1,33 @@
-import { readBody, createError } from 'h3'
 import { prisma } from '~/server/utils/prismaclient'
+import { emailBodySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-  // ---- 1) Read body ONCE and validate plainly ----
-  const body = await readBody<{ email?: string }>(event).catch(() => ({} as any))
-  const emailRaw = typeof body?.email === 'string' ? body.email : ''
-  const email = emailRaw.trim().toLowerCase()
+  const { email } = await readValidatedBody(event, b => emailBodySchema.parse(b))
 
-  // simple email guard (regex is lightweight and OK here)
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-  if (!validEmail || email.length > 254) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid email' })
-  }
-
-  // ---- 2) Query your allowed tables ----
   try {
-    const [admin, nominator, nominee] = await Promise.all([
-      prisma.admin.findUnique({ where: { email } }),
-      prisma.nominee.findUnique({ where: { email }}),
-      prisma.nominator.findUnique({ where: { email }})
-    ])  
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        admin: true,
+        nominator: true,
+        nominee: true,
+      },
+    })
 
-    if (!admin && !nominator && !nominee) {
-      // generic so you don't leak which emails exist
-      return { ok: false, reason: 'not_found' as const }
+    if (!user) {
+      throw createError({ statusCode: 404, statusMessage: 'User not found' })
     }
 
-    let role: 'admin' | 'nominator' | 'nominee'
+    let role: 'admin' | 'nominator' | 'nominee' | null = null
 
-    if (admin) role = 'admin'
-    else if (nominator) role = 'nominator'
-    else role = 'nominee'
+    if (user.admin) role = 'admin'
+    else if (user.nominator) role = 'nominator'
+    else if (user.nominee) role = 'nominee'
+    else return { role }
 
-    return { ok: true, role }
+    return { role }
   } catch (err) {
-    // log server-side if you want details
-    console.error('check-email error:', err)
-    return { ok: false, reason: 'server_error' as const }
+    console.error('Error checking email', err)
+    throw createError({ statusCode: 500, statusMessage: 'Error checking email' })
   }
 })

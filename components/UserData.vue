@@ -13,9 +13,9 @@
           <img :src="nominee.photoURL || defaultAvatar" alt="photo" />
         </div>
         <div class="card-content">
-          <h1 class="name">{{ nominee.name  || `${nominee.firstName} ${nominee.lastName}`}}</h1>
+          <h1 class="name">{{ getFullName(nominee.user) }}</h1>
           <h2 class="role">{{ nominee.occupation }}</h2>
-          <h2 class="role">{{ nominee.place }}</h2>
+          <h2 class="role">{{ nominee.placeOfWork }}</h2>
         </div>
       </div>
 
@@ -53,7 +53,7 @@ const props = defineProps({
 });
 
 // If no nominees prop provided, fetch all approved nominees
-const { data: fetchedNominees } = await useFetch('/api/nominee?stat=APPROVED');
+const { data: fetchedNominees } = await useFetch('/api/nominee');
 
 // Current rotation index
 const currentIndex = ref(0);
@@ -72,8 +72,8 @@ const allNominees = computed(() => {
   // Always ensure name and place properties exist
   return nominees.map(n => ({
     ...n,
-    name: n.name || `${n.firstName} ${n.lastName}`,
-    place: n.place || n.placeOfWork
+    name: getFullName(n.user),
+    place: n.placeOfWork
   }));
 });
 

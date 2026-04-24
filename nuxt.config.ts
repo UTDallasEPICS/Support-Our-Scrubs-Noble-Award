@@ -1,9 +1,9 @@
 export default defineNuxtConfig({
     compatibilityDate: "2024-04-03",
     devtools: { enabled: true },
-    css: ["~/assets/css/main.css"],
+    css: ["~/assets/css/main.css", "~/assets/css/theme.css"],
     imports: { autoImport: true },
-    modules: ["@nuxtjs/supabase", "nuxt-security"],
+    modules: ["nuxt-security"],
 
     postcss: {
         plugins: {
