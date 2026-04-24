@@ -36,5 +36,5 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           DATABASE_URL: "file:/efs/prod.db"
         run: |
-          docker build --output type=image,push=true --platform linux/arm64 -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker build --output type=image,push=true --platform linux/arm64 -t $ECR_REGISTRY/$REPOSITORY:prod .
+          docker build --build-arg DATABASE_URL=$DATABASE_URL --output type=image,push=true --platform linux/arm64 -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg DATABASE_URL=$DATABASE_URL --output type=image,push=true --platform linux/arm64 -t $ECR_REGISTRY/$REPOSITORY:prod .
