@@ -18,12 +18,12 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 404, statusMessage: 'User not found' })
     }
 
-    let role: 'admin' | 'nominator' | 'nominee'
+    let role: 'admin' | 'nominator' | 'nominee' | null = null
 
     if (user.admin) role = 'admin'
     else if (user.nominator) role = 'nominator'
     else if (user.nominee) role = 'nominee'
-    else throw createError({ statusCode: 404, statusMessage: 'User does not have a role' })
+    else return { role }
 
     return { role }
   } catch (err) {

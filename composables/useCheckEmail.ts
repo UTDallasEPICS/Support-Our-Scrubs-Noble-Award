@@ -6,7 +6,7 @@
  */
 export async function useCheckEmail(email: string) {
 
-        const data = await $fetch<{ role: "admin" | "nominator" | "nominee" }>(
+        const data = await $fetch<{ role: "admin" | "nominator" | "nominee" | null }>(
         "/api/checkEmail",
         {
             method: "POST",
