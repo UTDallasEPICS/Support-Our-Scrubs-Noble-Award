@@ -20,6 +20,8 @@ COPY --from=builder /pnpm-lock.yaml /
 COPY --from=builder /prisma /prisma
 COPY --from=builder /node_modules /node_modules
 COPY --from=builder /.env /.env
+# Help Prisma detect openssl (not needed for prisma 6+)
+RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
 RUN npm i -g pnpm
 RUN pnpm prisma generate
 COPY ./entrypoint.sh /entrypoint
