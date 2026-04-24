@@ -1,19 +1,14 @@
 import { prisma } from "../../../utils/prismaclient";
-
+import { emailTemplateUpdateSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
+  const { subject, html } = await readValidatedBody(event, b => emailTemplateUpdateSchema.parse(b));
 
-    const template = await prisma.emailTemplate.upsert({
-        where: { type: "REJECTED" },
-        create: {
-            type: "REJECTED",
-            subject: body.subject,
-            content: body.content
-        },
-        update: {
-            subject: body.subject,
-            content: body.content
-        }
-    });
+  const template = await prisma.emailTemplate.upsert({
+    where: { key: "REJECTED" },
+    create: { key: "REJECTED", subject, html },
+    update: { subject, html },
+  });
+
+  return template;
 });

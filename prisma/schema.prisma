@@ -11,56 +11,120 @@ datasource db {
 }
 
 model Nominator {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  firstName String
-  lastName  String
-  Nominee   Nominee[]
+  id       String    @id @default(uuid())
+  Nominees Nominee[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @unique
 }
 
 model Nominee {
-  id          String    @id @default(uuid())
-  firstName   String
-  lastName    String
+  id          String  @id @default(uuid())
   phoneNumber String
   address     String
   placeOfWork String
   occupation  String
-  email       String
   description String
   aboutme     String?
-  photoURL    String
-  slug        String    @unique
+  photoURL    String?
+  slug        String  @unique
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @unique
+
   nominator   Nominator @relation(fields: [nominatorId], references: [id])
   nominatorId String
-  admin       Admin?    @relation(fields: [adminId], references: [id])
-  adminId     String?
-  status      String    @default("DENIED")
-  deleted     Boolean   @default(false)
-}
 
-model MagicToken {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  email     String
-  expiresAt DateTime
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+  adminId String?
+
+  status  String  @default("PENDING")
+  deleted Boolean @default(false)
 }
 
 model EmailTemplate {
-  id        String            @id @default(uuid())
-  type      String            @unique
+  id        String   @id @default(uuid())
+  key       String   @unique // e.g. "NOMINATION_RECEIVED", "ADMIN_ALERT"
   subject   String
-  content   String
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  html      String // handlebars style: "Hi {{name}} ..."
+  text      String? // optional plaintext
+  enabled   Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Admin {
   id       String    @id @default(uuid())
-  email    String    @unique
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @unique
   Position String
   Nominee  Nominee[]
 }
 
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  firstName     String?
+  lastName      String?
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  admin     Admin?
+  nominator Nominator?
+  nominee   Nominee?
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}

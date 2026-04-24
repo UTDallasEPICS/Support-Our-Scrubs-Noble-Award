@@ -1,20 +1,17 @@
 <template>
   <div class="three-container" ref="threeContainer"></div>
 
-    <nuxt-link v-if="shouldRedirect" to="/nominator">
+    <nuxt-link v-if="shouldRedirect" to="/nominator/form">
   </nuxt-link>
 
 </template>
 
 <script>
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { PMREMGenerator } from 'three';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { Text } from 'troika-three-text'
-import { onBeforeUnmount } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router';
 
 export default {
@@ -96,7 +93,8 @@ export default {
         profilepage: () => this.loadProfile()      
       };
 
-      this.ballasts = 100
+      this.toggleballasts = false;
+      this.ballasts = 100;
       this.ud = "";
       this.wheelHandler = "";
       this.loadedScene = false;
@@ -180,7 +178,7 @@ export default {
         const envMap = pmremGenerator.fromEquirectangular(hdrTexture).texture;
 
         this.scene.environment = envMap; // Enable PBR lighting (for glass)
-        this.scene.background = null;    // You can also set = envMap if you want to show the HDRI
+        this.scene.background = new THREE.Color(0x000000);    // You can also set = envMap if you want to show the HDRI
 
         hdrTexture.dispose();
         pmremGenerator.dispose();
@@ -201,10 +199,14 @@ export default {
 
         this.$refs.threeContainer.addEventListener('mouseenter', () => {
           this.scrollEnabled = true;
+          this.toggleballasts = true;
+          animate();
         });
 
         this.$refs.threeContainer.addEventListener('mouseleave', () => {
           this.scrollEnabled = false;
+          this.toggleballasts = false;
+
         });
 
         
@@ -235,12 +237,10 @@ export default {
           this.hoveredMesh = null
         }
 **/
-
-        if (this.ballasts >= 0){
+        if (this.ballasts >= 0 || this.toggleballasts == true){
           requestAnimationFrame(animate);
           this.ballasts -= 1;
-        }
-      
+        }      
         if (this.models && this.models.length > 0) {
           this.models.forEach((m) => {
             if (m && this.scene_type == "home")
@@ -332,8 +332,7 @@ export default {
   console.log("Navigating to profile for slug:", this.ud.slug);
   this.$router.push(`/profile/${this.ud.slug}`);
   this.cleanup();
-}
-
+  }
 
 },
    loadProfile(){
@@ -414,44 +413,59 @@ export default {
 
     },
     createText(text, size, x, y, z, maxWidth = 3.5) {
-  const myText = new Text()
-  myText.text = text
-  myText.fontSize = size
-  myText.color = 0xffcc00
+      const myText = new Text()
 
-  // Outline
-  myText.strokeColor = 0xffaa00
-  myText.strokeWidth = 0.02
-  myText.outlineBlur = 0.01
+      myText.text = text
+      myText.fontSize = size
+      myText.color = 0xffcc00
 
-  // ✅ Wrap within card
-  myText.maxWidth = maxWidth   // how wide the text can go before wrapping
-  myText.overflowWrap = 'break-word'
-  myText.anchorX = 'left'
-  myText.anchorY = 'top'
+       
+       // Optional styles
+       myText.strokeColor = 0xd4af37       // Outline/glow
+       myText.strokeWidth = 0.02
+       myText.outlineBlur = 0.01
+       myText.outlineOffsetX = 0.005
+       myText.outlineOffsetY = 0.00
+       // Must update after setting text/props
+       myText.sync()
+       this.scene.add(myText)
+       myText.position.set(x, y, z)
 
-  myText.sync()
-  this.scene.add(myText)
-  myText.position.set(x, y, z)
-},
+      // ✅ Wrap within card
+      myText.maxWidth = maxWidth          // Max width before wrapping
+      myText.overflowWrap = 'break-word'  // Break long words if needed
+      myText.whiteSpace = 'normal'        // Allow normal line wrapping
+      myText.lineHeight = 1.2             // Spacing between lines
+      myText.textAlign = 'left'           // Text alignment
 
-wrapText(str, maxChars) {
-  const words = str.split(' ')
-  let lines = ''
-  let current = ''
+      // Anchoring - 'left' and 'top' means position is top-left corner
+      myText.anchorX = 'left'
+      myText.anchorY = 'top'
+      
+      myText.position.set(x, y, z)
+      this.scene.add(myText)
+      myText.sync()
+      return myText
+    },
+    truncateText(text, maxLength = 100){
+      if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength).trim() + '...';
+    },
+    wrapText(str, maxChars) {
+      const words = str.split(' ')
+      let lines = ''
+      let current = ''
 
-  for (const word of words) {
-    if ((current + word).length > maxChars) {
-      lines += current.trim() + '\n'
-      current = ''
-    }
-    current += word + ' '
-  }
-  lines += current.trim()
-  return lines
-},
-
-
+      for (const word of words) {
+        if ((current + word).length > maxChars) {
+          lines += current.trim() + '\n'
+          current = ''
+        }
+        current += word + ' '
+      }
+      lines += current.trim()
+      return lines
+    },
     loadhome(){
         if (!this.loadedScene){
         const light = new THREE.DirectionalLight(0xffffff, 9);
@@ -623,7 +637,7 @@ wrapText(str, maxChars) {
               child.userData.recepient = this.recepient[idx]
               child.userData.occupation = this.occupation[idx]
               child.userData.description = this.description[idx]
-              //child.userData.aboutme = this.aboutme[idx]
+              child.userData.aboutme = this.aboutme[idx]
               child.userData.slug = this.slug[idx]
               console.log("desired "+this.occupation[idx])
               console.log("obtained "+child.userData.occupation)
@@ -632,44 +646,20 @@ wrapText(str, maxChars) {
             }
           });
 
-           const longtext = this.description[idx]
-    
-
-          let result = '';
-          let currentLineLength = 0;
-          let charcount = 0; 
-          for (let i = 0; i < longtext.length; i++) {
-
-            if (charcount >= 440) {
-              result += ' ...';
-              break;
-            }
-
-            const char = longtext[i];
-            result += char;
-            currentLineLength++;
-            charcount++;
-            // If we've just added a space and we're past the line length limit
-            if (char === ' ' && currentLineLength >= 53) {
-              result += '\n'; // Add newline
-              currentLineLength = 0; // Reset line length counter
-            }
-          }
-
           // Recipient stays the same (title)
-          this.createText(this.recepient[idx], 0.45, position.x - 1.9, position.y + 1.0, position.z, 3.5)
+          //this.createText(this.recepient[idx], 0.45, position.x - 1.9, position.y + 1.0, position.z + 0.01, 3.0)
 
           // Occupation bigger
-          this.createText(this.occupation[idx], 0.35, position.x - 1.9, position.y + 0.55, position.z, 3.5)
+          //this.createText(this.occupation[idx], 0.35, position.x - 1.9, position.y - 0.2, position.z + 0.01, 3.0)
 
           // Description bigger
-            this.createText(this.description[idx], 0.20, position.x - 1.9, position.y + 0.15, position.z, 3.0) // wrap at 29 chars
+          //this.createText(this.truncateText(this.description[idx]), 0.20, position.x - 1.9, position.y + 0.15, position.z + 0.01, 3.0) // wrap at 29 chars
 
 
-          /*
+          
           this.createText(this.recepient[idx], 0.4, position.x - 1.9, position.y  + .9, position.z)
-          this.createText(this.occupation[idx], this.dsize, position.x - 1.9, position.y + .35, position.z)
-          this.createText(result, this.dsize, position.x - 1.9, position.y + .1, position.z) */
+          this.createText(this.occupation[idx], 0.2, position.x - 1.9, position.y + .35, position.z)
+          //this.createText(result, this.dsize, position.x - 1.9, position.y + .1, position.z) 
           console.log("going in "+model+" "+this.image.length)
           }
 

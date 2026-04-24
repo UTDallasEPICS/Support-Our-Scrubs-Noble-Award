@@ -1,385 +1,400 @@
-<template>
-      <Navbar />
+<script setup lang="ts">
+import type {
+    NomineeUpdateInput,
+    NomineesWithUser,
+} from "~/shared/types";
+import { authClient } from "~/shared/auth-client";
 
-  <body>
-  <div>
-    <p class="metallic-title"> Noble Award </p>
-    <p class="metallic-text"> Update Nominee Profile </p>
-    
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="emailSearch">Enter Nominee Email:</label>
-        <input type="text" v-model="emailSearch" id="emailSearch" />
-        <button type="button" @click="fetchNominee">Search</button>
-      </div>
+// Session check. The global auth middleware already gates this route, but read
+// the session defensively so we don't render the edit form with no user.
+const { data: session } = await authClient.useSession(useFetch);
+if (!session.value?.user) {
+    await navigateTo({ path: "/", query: { login: "true" } });
+}
 
+// Form state. IMPORTANT: `ref` (not `reactive`) so `form.value = {...}` works
+// when a nominee is selected and `body: form.value` serializes correctly on PUT.
+const emptyForm = (): NomineeUpdateInput => ({
+    id: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
+    placeOfWork: "",
+    occupation: "",
+    email: "",
+    description: "",
+    photoURL: "",
+});
+const form = ref<NomineeUpdateInput>(emptyForm());
 
-      <div>
-        <label for="firstName">First Name:</label>
-        <input type="text" v-model="formData.firstName" id="firstName" />
-      </div>
-       <div>
-        <label for="lastName">Last Name:</label>
-        <input type="text" v-model="formData.lastName" id="lastName" />
-      </div>
-       <div>
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" v-model="formData.phoneNumber" id="phoneNumber" />
-      </div>
-       <div>
-        <label for="address">Address:</label>
-        <input type="text" v-model="formData.address" id="address" />
-      </div>
-       <div>
-        <label for="placeOfWork">Place of Work:</label>
-        <input type="text" v-model="formData.placeOfWork" id="placeOfWork" />
-      </div>
-       <div>
-        <label for="occupation">Occupation:</label>
-        <input type="text" v-model="formData.occupation" id="occupation" />
-      </div>
-       <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="formData.email" id="email" />
-      </div>
-       <div>
-        <label for="description">Description:</label>
-        <textarea v-model="formData.description" id="description"></textarea>
-      </div>
-       <div>
-        <label for="photoURL">Photo URL:</label>
-        <input type="url" v-model="formData.photoURL" id="photoURL" />
-      </div>
-       <button type="submit">Submit</button>
-    </form>
+// Photo-upload file state. The upload pipeline itself is user-owned; this just
+// tracks the selected file for display next to the input.
+const selectedFile = ref<File | null>(null);
+const selectedFileName = ref("");
 
-    <nuxt-link to="/nominator">
-      <button>Go To Nomination Page</button>
-    </nuxt-link>
-  </div>
-  </body>
-</template>
+// Search state. `/api/nominee/search` matches name / occupation / place-of-work
+// (not email, despite what the original input was labeled). Multiple results
+// are possible; the user picks one to populate the form.
+const searchTerm = ref("");
+const searchResults = ref<NomineesWithUser[]>([]);
+const searchLoading = ref(false);
+const searchError = ref("");
+const selectedNomineeId = ref<string | null>(null);
 
-<script>
-export default {
-  name: 'YourComponentName',
-  data() {
-    return {
-      emailSearch: '',
-      formData: {
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        address: '',
-        placeOfWork: '',
-        occupation: '',
-        email: '',
-        description: '',
-        photoURL: '',
-      },
-    };
-  },
-  methods: {
-    async fetchNominee() {
-      try {
-        const response = await fetch(`http://localhost:3000/api/nominee?email=${encodeURIComponent(this.emailSearch)}`);
-
-
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          console.log('Error details:', errorDetails);
-          throw new Error(`Error fetching nominee: ${errorDetails.statusMessage || 'Unknown error'}`);
-        }
-
-
-        const data = await response.json();
-        if (data && data.length > 0) {
-          this.formData = { ...data[0] };
-        }
-      } catch (error) {
-        console.log(error);
-        throw createError({
-          statusCode: 500,
-          statusMessage: "Error getting nominee",
-        });
-      }
-    },
-    async submitForm() {
-      try {
-        const response = await fetch('http://localhost:3000/api/nominee', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(this.formData),
-        });
-
-
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          console.log('Error details:', errorDetails);
-          throw new Error(`Error updating nominee: ${errorDetails.statusMessage || 'Unknown error'}`);
-        }
-      } catch (error) {
-        console.log(error);
-        throw createError({
-          statusCode: 500,
-          statusMessage: "Error updating nominee",
-        });
-      }
+async function runSearch() {
+    const term = searchTerm.value.trim();
+    if (!term) {
+        searchResults.value = [];
+        searchError.value = "";
+        return;
     }
-  }
-};
+    searchLoading.value = true;
+    searchError.value = "";
+    try {
+        const res = await $fetch(
+            `/api/nominee/search?searchTerm=${encodeURIComponent(term)}`,
+        );
+        const items = Array.isArray(res) ? (res as NomineesWithUser[]) : [];
+        searchResults.value = items;
+        if (items.length === 0) {
+            searchError.value = "No nominees matched that search.";
+        } else if (items.length === 1) {
+            selectNominee(items[0]);
+        }
+    } catch (e) {
+        console.error("Error searching nominees:", e);
+        searchError.value = "Search failed. Please try again.";
+    } finally {
+        searchLoading.value = false;
+    }
+}
+
+function selectNominee(nominee: NomineesWithUser) {
+    selectedNomineeId.value = nominee.id;
+    form.value = {
+        id: nominee.id,
+        firstName: nominee.user?.firstName ?? "",
+        lastName: nominee.user?.lastName ?? "",
+        phoneNumber: nominee.phoneNumber ?? "",
+        address: nominee.address ?? "",
+        placeOfWork: nominee.placeOfWork ?? "",
+        occupation: nominee.occupation ?? "",
+        email: nominee.user?.email ?? "",
+        description: nominee.description ?? "",
+        photoURL: nominee.photoURL ?? "",
+    };
+}
+
+// Save state. Replaces the two `alert()` calls with inline feedback.
+const saving = ref(false);
+const saveMessage = ref<{ type: "success" | "error"; text: string } | null>(null);
+
+async function submitForm() {
+    if (saving.value || !form.value.id) return;
+    saving.value = true;
+    saveMessage.value = null;
+    try {
+        await $fetch("/api/nominee", {
+            method: "PUT",
+            body: form.value,
+        });
+        saveMessage.value = {
+            type: "success",
+            text: "Nominee updated successfully.",
+        };
+    } catch (err) {
+        console.error("Error updating nominee:", err);
+        saveMessage.value = {
+            type: "error",
+            text: "Failed to update nominee. Please try again.",
+        };
+    } finally {
+        saving.value = false;
+    }
+}
 </script>
 
+<template>
+    <div class="min-h-screen bg-black text-amber-300">
+        <main class="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
+            <!-- Title -->
+            <p class="metallic-title metallic-title--main">NOBLE AWARD</p>
+            <p class="metallic-title metallic-title--sub">
+                UPDATE NOMINEE PROFILE
+            </p>
+
+            <!-- Card Container -->
+            <div
+                class="mt-8 rounded-2xl border border-zinc-800/70 bg-[#1a1a1a] backdrop-blur p-6 sm:p-8 md:p-10 shadow-xl"
+            >
+                <!-- Search Section -->
+                <div class="mb-8">
+                    <label
+                        for="searchTerm"
+                        class="block text-sm font-medium mb-2"
+                        >Search nominees</label
+                    >
+
+                    <div class="flex gap-3">
+                        <input
+                            id="searchTerm"
+                            v-model="searchTerm"
+                            type="text"
+                            @keyup.enter="runSearch"
+                            class="flex-1 rounded-lg border border-zinc-700 bg-zinc-800/70 text-amber-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-400 p-3"
+                            placeholder="Name, occupation, or workplace"
+                        />
+
+                        <button
+                            type="button"
+                            :disabled="searchLoading"
+                            class="px-5 py-2 bg-amber-400 text-black font-semibold rounded-lg hover:bg-amber-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                            @click="runSearch"
+                        >
+                            {{ searchLoading ? "Searching..." : "Search" }}
+                        </button>
+                    </div>
+
+                    <p v-if="searchError" class="mt-3 text-sm text-red-400">
+                        {{ searchError }}
+                    </p>
+
+                    <!-- Results list: only shown when multiple matches. Single match auto-selects. -->
+                    <ul
+                        v-if="searchResults.length > 1"
+                        class="mt-4 space-y-2 rounded-lg border border-zinc-800 bg-zinc-900/60 p-2 max-h-64 overflow-y-auto"
+                    >
+                        <li
+                            v-for="n in searchResults"
+                            :key="n.id"
+                            class="cursor-pointer rounded-md px-3 py-2 text-sm hover:bg-zinc-800"
+                            :class="{ 'bg-zinc-800': selectedNomineeId === n.id }"
+                            @click="selectNominee(n)"
+                        >
+                            <span class="text-amber-300 font-semibold">
+                                {{ getFullName(n.user) || "(unnamed)" }}
+                            </span>
+                            <span class="text-amber-200/70">
+                                &middot; {{ n.occupation || "—" }} &middot;
+                                {{ n.placeOfWork || "—" }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Editable Form (hidden until a nominee is selected) -->
+                <form
+                    v-if="form.id"
+                    @submit.prevent="submitForm"
+                    class="space-y-5"
+                >
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="firstName" class="block text-sm mb-1"
+                                >First Name</label
+                            >
+                            <input
+                                id="firstName"
+                                v-model="form.firstName"
+                                type="text"
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="lastName" class="block text-sm mb-1"
+                                >Last Name</label
+                            >
+                            <input
+                                id="lastName"
+                                v-model="form.lastName"
+                                type="text"
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="phoneNumber" class="block text-sm mb-1"
+                                >Phone Number</label
+                            >
+                            <input
+                                id="phoneNumber"
+                                v-model="form.phoneNumber"
+                                type="tel"
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm mb-1"
+                                >Email</label
+                            >
+                            <input
+                                id="email"
+                                v-model="form.email"
+                                type="email"
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="address" class="block text-sm mb-1"
+                            >Address</label
+                        >
+                        <input
+                            id="address"
+                            v-model="form.address"
+                            type="text"
+                            class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                        />
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="placeOfWork" class="block text-sm mb-1"
+                                >Place of Work</label
+                            >
+                            <input
+                                id="placeOfWork"
+                                v-model="form.placeOfWork"
+                                type="text"
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="occupation" class="block text-sm mb-1"
+                                >Occupation</label
+                            >
+                            <input
+                                id="occupation"
+                                v-model="form.occupation"
+                                type="text"
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm mb-1"
+                            >Description</label
+                        >
+                        <textarea
+                            id="description"
+                            v-model="form.description"
+                            rows="5"
+                            class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-3 text-amber-100 resize-y"
+                        ></textarea>
+                    </div>
+
+                    <!-- Current Photo + Upload New -->
+                    <div class="space-y-3">
+                        <span class="block text-sm font-medium">Photo</span>
+
+                        <div v-if="form.photoURL" class="flex items-center gap-4">
+                            <img
+                                :src="form.photoURL"
+                                alt="Current nominee photo"
+                                class="h-16 w-16 rounded-full object-cover border border-amber-400"
+                            />
+                            <span class="text-xs text-amber-200/80 break-all">
+                                Current: {{ form.photoURL }}
+                            </span>
+                        </div>
+                        <div v-else class="text-xs text-amber-200/70">
+                            No photo on file yet.
+                        </div>
+
+                        <!-- File upload to replace photo -->
+                        <div
+                            class="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3"
+                        >
+                            <input
+                                id="photo"
+                                ref="fileInput"
+                                type="file"
+                                accept="image/*"
+                                class="sr-only"
+                                @change="handlePhotoUpload"
+                            />
+                            <label
+                                for="photo"
+                                class="inline-flex items-center justify-center rounded-xl border border-amber-400 px-4 py-2 bg-zinc-800/70 text-amber-300 font-serif cursor-pointer transition hover:bg-amber-300 hover:text-zinc-900 hover:border-zinc-900"
+                            >
+                                Choose New Photo
+                            </label>
+
+                            <span class="text-sm text-amber-200/80 break-all">
+                                {{ selectedFileName || "No new file chosen" }}
+                            </span>
+                        </div>
+
+                        <!-- Optional: manual URL edit if you still want it -->
+                        <div>
+                            <label
+                                for="photoURL"
+                                class="block text-xs mb-1 text-amber-200/70"
+                            >
+                                Photo URL (optional override)
+                            </label>
+                            <input
+                                id="photoURL"
+                                v-model="form.photoURL"
+                                type="url"
+                                placeholder="/uploads/..."
+                                class="w-full rounded-lg bg-zinc-800/70 border border-zinc-700 p-2 text-amber-100 text-xs"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Inline save feedback -->
+                    <p
+                        v-if="saveMessage"
+                        class="mt-4 text-sm text-center"
+                        :class="
+                            saveMessage.type === 'success'
+                                ? 'text-amber-300'
+                                : 'text-red-400'
+                        "
+                    >
+                        {{ saveMessage.text }}
+                    </p>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        :disabled="saving"
+                        class="w-full nomination-submit-btn mt-6"
+                    >
+                        {{ saving ? "Saving..." : "Save Changes" }}
+                    </button>
+                </form>
+
+                <!-- Back button -->
+                <nuxt-link to="/nominator/form">
+                    <button
+                        class="mt-6 w-full px-4 py-2 bg-zinc-800 text-amber-300 rounded-lg border border-zinc-700 hover:bg-zinc-700"
+                    >
+                        Back to Nomination Page
+                    </button>
+                </nuxt-link>
+            </div>
+        </main>
+    </div>
+</template>
 
 <style scoped>
-/* General Styles */
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.metallic-title--main {
+    margin-top: 2rem;
+    font-size: 60px;
 }
 
-.metallic-title {
-font-family: 'Libre Caslon Display', serif;
-font-size: 70px;
-text-align: center;
-position: relative;
-color: #a77c43;
-background: linear-gradient(
-  120deg,
-  #a77c43 0%,
-  #a77c43 20%,
-  #a77c43 40%,
-  #a77c43 60%,
-  #a77c43 80%,
-  #a77c43 100%
-);
-background-clip: text;
--webkit-background-clip: text;
-color: transparent;
-text-shadow:
-  0 0 5px rgba(212, 175, 55, 0.4),
-  0 0 10px rgba(212, 175, 55, 0.2),
-  0 0 15px rgba(255, 215, 0, 0.1);
-
-overflow: hidden;
+.metallic-title--sub {
+    margin-top: 0.5rem;
+    font-size: 28px;
 }
-
-/* Glint Swipe Animation */
-.metallic-title::after {
-content: '';
-position: absolute;
-top: 0;
-left: -75%;
-width: 50%;
-height: 100%;
-background: linear-gradient(
-  120deg,
-  transparent 0%,
-  rgba(255, 255, 255, 0.8) 50%,
-  transparent 100%
-);
-transform: skewX(-20deg);
-animation: glintSwipe 3s ease-in-out infinite;
-}
-
-@keyframes glintSwipe {
-0% {
-  left: -75%;
-}
-50% {
-  left: 100%;
-}
-100% {
-  left: 100%;
-}
-}
-
-/* Reflection Glow */
-.metallic-title::before {
-content: 'Noble Award';
-position: absolute;
-top: 100%;
-left: 0;
-width: 100%;
-text-align: center;
-font-size: 70px;
-transform: scaleY(-1);
-opacity: 0.1;
-filter: blur(2px);
-background: linear-gradient(to bottom, rgba(255, 215, 0, 0.3), transparent);
--webkit-background-clip: text;
-background-clip: text;
-color: transparent;
-}
-
-/* Metallic Text Animation */
-
-@keyframes metallicShine {
-  0% {
-    text-shadow:
-      0 0 5px rgba(212, 175, 55, 0.5),
-      0 0 10px rgba(212, 175, 55, 0.4),
-      0 0 20px rgba(255, 215, 0, 0.3);
-    transform: translateY(0);
-    opacity: 1;
-  }
-  
-  50% {
-    text-shadow:
-      0 0 10px rgba(212, 175, 55, 0.5),
-      0 0 20px rgba(212, 175, 55, 0.4),
-      0 0 30px rgba(255, 215, 0, 0.3);
-    transform: translateY(0);
-    opacity: .9;
-    
-}
-  100% {
-    text-shadow:
-      0 0 5px rgba(212, 175, 55, 0.5),
-      0 0 10px rgba(212, 175, 55, 0.4),
-      0 0 20px rgba(255, 215, 0, 0.3);
-    transform: translateY(0);
-    opacity: 1;
-    
-}
-
-}
-  
-/* Glint Swipe Animation */
-  
-.metallic-text {
-font-family: 'Libre Caslon Display', serif;
-font-size: 30px;
-margin-top:0px;
-text-align: center;
-color: #a77c43;
-background: linear-gradient(
-  120deg,
-  #a77c43 0%,
-  #a77c43 20%,
-  #a77c43 40%,
-  #a77c43 60%,
-  #a77c43 80%,
-  #a77c43 100%
-);
-background-clip: text;
--webkit-background-clip: text;
-color: transparent;
-position: relative;
-text-shadow:
-  0 0 5px rgba(212, 175, 55, 0.5),
-  0 0 10px rgba(212, 175, 55, 0.4),
-  0 0 20px rgba(255, 215, 0, 0.3);
-animation: metallicShine 3s infinite linear;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  background-color:#222121; /* Full black background */
-  color:rgb(57, 45, 45); /* Gold text color */
-  font-family: Times New Roman, serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
-.container {
-  width: 100%;
-  max-width: 00px;
-  background-color:rgb(45, 40, 40); /* Slightly lighter black for form background */
-  padding: 20px;
-  border-radius: 8px;
-  color:rgb(0, 0, 0); /* Black text color */
-  font-family: Times New Roman, serif;
-}
-
-
-/* Form and Text Styling */
-p {
-font-size: 50px;
-    color:#a77c43;
-    text-align: center;
-    margin-bottom: 1px;
-    font-family: Snell Roundhand, cursive;
-}
-
-cite {
-    font-size: 25px;
-    color:rgb(167, 124, 67);
-    text-align: center;
-    margin-bottom: 50px;
-    font-family: Snell Roundhand, cursive;
-}
-
-form > div:first-of-type {
-  margin-top: 30px;       /* Adds space before enter nominee email */
-  margin-bottom: 30px;    /* Adds space after search button */
-}
-
-label {
-font-size: 18px;
-margin-top: 10px;
-margin-bottom: 5px;
-color:#d4af37; /* Gold label color */
-}
-
-
-input[type="text"],
-input[type="tel"],
-input[type="email"],
-input[type="url"],
-textarea {
-width: 100%;
-max-width: 500px;
-padding: 10px;
-margin-bottom: 15px;
-border: 2px solid #a77c43; /* Gold border */
-border-radius: 8px;
-background-color:#4e4e4d; /* Gray background for text boxes */
-color: #ffffff; /* White text inside the text box */
-font-size: 16px;
-}
-
-
-/* Buttons */
-button {
-width: 100%;
-padding: 12px;
-background-color:#4e4e4d; /* Gray background for button */
-color:#d4af37; /* Dark text color */
-font-size: 18px;
-font-weight: bold;
-border: none;
-border-radius: 20px;
-cursor: pointer;
-transition: background-color 0.3s ease;
-margin-top: 12px;
-/*margin-bottom: 12px;*/
-}
-
-
-button:hover {
-background-color: #a77c43; /* Darker gold on hover */
-}
-
-
-button:focus {
-outline: none;
-}
-
-body > div {
-  width: 90%;
-  max-width: 500px; /* Wider container */
-  margin: 0 auto;
-}
-
-
-
 </style>

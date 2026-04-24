@@ -84,9 +84,10 @@ N/A
 ### 3. Set your environment variables
 - `cp .env.example .env`
 
-### 4. Setup MySQL and Prisma (For Local Development)
+### 4. Setup SQLite and Prisma (For Local Development)
 - `npx prisma migrate dev --name init`
 - `npx prisma generate dev`
+- `npx prisma db seed -- <admin email> <admin first name> <admin last name>`
 
 ### 5. Run the Application
 - `npm run dev`
