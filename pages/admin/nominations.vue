@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { authClient } from "~/shared/auth-client";
 import type { NomineesWithUser } from "~/shared/types";
+import { getImageLink } from "~/utils";
 
 // --- Admin gate (page-level; middleware doesn't cover this path) ----------
 const { data: session } = await authClient.useSession(useFetch);
@@ -275,7 +276,7 @@ async function logout() {
                                 <div class="flex justify-center">
                                     <img
                                         v-if="u.photoURL"
-                                        :src="u.photoURL"
+                                        :src="getImageLink(u.photoURL, u.id)"
                                         alt="Nominee photo"
                                         class="h-12 w-12 rounded-full object-cover border border-gray-500"
                                     />
@@ -350,7 +351,7 @@ async function logout() {
                     class="flex justify-center mb-4"
                 >
                     <img
-                        :src="selectedNominee.photoURL"
+                        :src="getImageLink(selectedNominee.photoURL, selectedNominee.id)"
                         alt="Nominee photo"
                         class="h-32 w-32 rounded-full object-cover border-2 border-[#d4af37]"
                     />

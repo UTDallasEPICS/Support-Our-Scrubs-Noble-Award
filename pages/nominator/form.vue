@@ -18,22 +18,27 @@ const emptyForm = (): NomineeCreateInput => ({
     occupation: "",
     email: "",
     description: "",
-    photoURL: "",
 });
 const form = ref<NomineeCreateInput>(emptyForm());
-
 // File upload state. Photo-upload wiring is user-owned; this just tracks the
 // selected file so the filename can be rendered next to the input.
 const selectedFile = ref<File | null>(null);
 const selectedFileName = ref("");
 
-const handlePhotoUpload = async (event: Event) => {
+function handlePhotoUpload(event: Event) {
     const target = event.target as HTMLInputElement | null;
     if (!target?.files || target.files.length === 0) return;
     const file = target.files[0];
-    selectedFile.value = file;
+    if (!file?.type.startsWith('image/')) {
+        throw createError({ statusCode: 400, statusMessage: "File is not an image" });
+    }
+    selectedFile.value = file as File;
     selectedFileName.value = file.name;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 };
+
 
 // Submission state + inline feedback (replaces the previous `alert()` calls).
 const submitting = ref(false);
@@ -50,12 +55,20 @@ async function submitForm() {
     submitting.value = true;
     submitMessage.value = null;
     try {
-        // TODO(photo-upload): user-owned - upload `selectedFile` and set
-        // `form.value.photoURL` before POSTing when the pipeline lands.
-        await $fetch("/api/nominee", {
+        const { data } = await useFetch("/api/nominee", {
             method: "POST",
             body: form.value,
         });
+        const { id: nomineeId } = data.value as { id: string };
+        if (selectedFile.value) {
+            const imagePayload = new FormData();
+            imagePayload.append("file", selectedFile.value);
+            await useFetch(`/api/nominee/${nomineeId}/upload`, {
+                method: "POST",
+                body: imagePayload,
+            });
+        }
+
         submitMessage.value = { type: "success", text: "Nomination submitted. Thank you!" };
         resetForm();
     } catch (err) {

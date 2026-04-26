@@ -10,7 +10,7 @@
       <!-- TOP ROW: Circle + Name -->
       <div class="card-top">
         <div class="avatar">
-          <img :src="nominee.photoURL || defaultAvatar" alt="photo" />
+          <img :src="getImageLink(nominee.photoURL, nominee.id) || defaultAvatar" alt="photo" />
         </div>
         <div class="card-content">
           <h1 class="name">{{ getFullName(nominee.user) }}</h1>
@@ -27,6 +27,7 @@
 
 <script setup>
 import defaultAvatar from '@/assets/avatar.png';
+import { getImageLink } from '~/utils';
 
 // Accept nominees as a prop from parent
 const props = defineProps({

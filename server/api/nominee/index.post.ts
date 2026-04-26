@@ -45,7 +45,6 @@ export default defineEventHandler(async (event) => {
         occupation,
         email,
         description,
-        photoURL,
     } = await readValidatedBody(event, (b) => nomineeCreateSchema.parse(b));
 
     try {
@@ -113,7 +112,6 @@ export default defineEventHandler(async (event) => {
                     placeOfWork,
                     occupation,
                     description,
-                    photoURL,
                     slug,
                     nominator: { connect: { id: nominator.id } },
                 },

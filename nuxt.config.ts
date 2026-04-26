@@ -3,7 +3,6 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     css: ["~/assets/css/main.css", "~/assets/css/theme.css"],
     imports: { autoImport: true },
-    modules: ["nuxt-security"],
 
     postcss: {
         plugins: {
@@ -12,46 +11,14 @@ export default defineNuxtConfig({
         },
     },
 
-    security: {
-      corsHandler: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE']
-      }
-    },
-
     runtimeConfig: {
         DATABASE_URL: "file:./dev.db",
-
-        clientID: process.env.NUXT_OAUTH2_CLIENT_ID!,
-        clientSecret: process.env.NUXT_OAUTH2_CLIENT_SECRET!,
-        refreshToken: process.env.NUXT_OAUTH2_REFRESH_TOKEN!,
-        redirectURI: process.env.NUXT_OAUTH2_REDIRECT_URI!,
+        nodemailerAuthUser: process.env.NUXT_NODEMAILER_AUTH_USER!,
+        nodemailerAuthPass: process.env.NUXT_NODEMAILER_AUTH_PASS!,
         jwtSecret: process.env.JWT_SECRET,
-        supabase: {
-            serviceKey: process.env.NUXT_SUPABASE_SERVICE_ROLE_KEY!,
-        },
+        uploadStoragePath: process.env.UPLOAD_STORAGE_PATH!,
         public: {
-            emailHost: process.env.NUXT_PUBLIC_EMAIL_SENDER!,
-            
-            supabase: {
-                url: process.env.NUXT_PUBLIC_SUPABASE_URL!,
-                key: process.env.NUXT_PUBLIC_SUPABASE_ADON_KEY!,
-                redirectOptions: {
-                    // we are NOT using a /login route
-                    login: "/", // unused now, but required by your plugin’s shape
-                    callback: "/auth/callback",
-                    include: ["/admin/**"], // only guard these
-                    exclude: [
-                        "/",
-                        "/roster",
-                        "/donate",
-                        "/contact",
-                        "/auth/callback",
-                    ],
-                    cookieRedirect: false,
-                    saveRedirectToCookie: false,
-                },
-            },
+            emailHost: process.env.NUXT_PUBLIC_NODEMAILER_FROM!,
         },
     },
 
