@@ -1,26 +1,13 @@
 import nodemailer from "nodemailer"
 
-import { oAuth2Client } from "./googleAPI"
-
-
 const config = useRuntimeConfig()
-
-// Generating Access Token 
-// const accessToken = await oAuth2Client.getAccessToken()
-// if (!accessToken || !accessToken.token) {
-//   throw new Error("Failed to retrieve access token.");
-// }
-console.log("Access token retrieved successfully.");
 
 // use your Gmail 0Auth2.0 credentials
 export const mailer = nodemailer.createTransport({
-  service: "gmail",       // Shortcut for Gmail's SMTP settings - see Well-Known Services
+  service: "SES-US-EAST-2",
   auth: {
-    type: "OAuth2",
-    user: config.public.emailHost,
-    clientId: config.clientID,
-    clientSecret: config.clientSecret,
-    refreshToken: config.refreshToken
+    user: config.nodemailerAuthUser,
+    pass: config.nodemailerAuthPass
   }
 })
 

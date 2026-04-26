@@ -3,7 +3,6 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     css: ["~/assets/css/main.css", "~/assets/css/theme.css"],
     imports: { autoImport: true },
-    modules: ["nuxt-security"],
 
     postcss: {
         plugins: {
@@ -14,15 +13,12 @@ export default defineNuxtConfig({
 
     runtimeConfig: {
         DATABASE_URL: "file:./dev.db",
-
-        clientID: process.env.NUXT_OAUTH2_CLIENT_ID!,
-        clientSecret: process.env.NUXT_OAUTH2_CLIENT_SECRET!,
-        refreshToken: process.env.NUXT_OAUTH2_REFRESH_TOKEN!,
-        redirectURI: process.env.NUXT_OAUTH2_REDIRECT_URI!,
+        nodemailerAuthUser: process.env.NUXT_NODEMAILER_AUTH_USER!,
+        nodemailerAuthPass: process.env.NUXT_NODEMAILER_AUTH_PASS!,
         jwtSecret: process.env.JWT_SECRET,
         uploadStoragePath: process.env.UPLOAD_STORAGE_PATH!,
         public: {
-            emailHost: process.env.NUXT_PUBLIC_EMAIL_SENDER!,
+            emailHost: process.env.NUXT_PUBLIC_NODEMAILER_FROM!,
         },
     },
 
