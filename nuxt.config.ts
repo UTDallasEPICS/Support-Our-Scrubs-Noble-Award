@@ -12,13 +12,6 @@ export default defineNuxtConfig({
         },
     },
 
-    security: {
-      corsHandler: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE']
-      }
-    },
-
     runtimeConfig: {
         DATABASE_URL: "file:./dev.db",
 
