@@ -4,6 +4,7 @@ COPY . ./
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV CI=true
 RUN corepack enable
 
 RUN pnpm i --frozen-lockfile
