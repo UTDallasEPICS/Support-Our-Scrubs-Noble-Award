@@ -1,0 +1,35 @@
+# Build container
+FROM node:22-alpine AS builder
+COPY . ./
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+RUN pnpm i --frozen-lockfile
+RUN pnpm prisma generate
+RUN pnpm run build
+
+# Deployment container
+FROM node:22-alpine AS deployment
+
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
+# Copy stuff from build container to ensure we have prisma and everything it needs
+COPY --from=builder /.output /
+COPY --from=builder /package.json /
+COPY --from=builder /pnpm-lock.yaml /
+COPY --from=builder /prisma /prisma
+COPY --from=builder /node_modules /node_modules
+# Help Prisma detect openssl (not needed for prisma 6+)
+RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
+RUN npm i -g pnpm
+RUN pnpm prisma generate
+COPY ./entrypoint.sh /entrypoint
+
+# Esnure we can actually run the entrypoint script
+RUN chmod +x /entrypoint
+EXPOSE 3000
+ENTRYPOINT ["/entrypoint"]
+CMD ["node", "./server/index.mjs"]

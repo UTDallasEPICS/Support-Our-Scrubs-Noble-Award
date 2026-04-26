@@ -116,6 +116,27 @@ export const magicLinkVerifyQuerySchema = z.object({
   callbackURL: z.string().optional(),
 })
 
+export const Status = {
+  CREATED: "CREATED",
+  CONFIRMED: "CONFIRMED",
+  VERIFIED: "VERIFIED",
+  APPROVED: "APPROVED",
+  DENIED: "DENIED",
+  SENT: "SENT"
+} as const
+
+export type Status = typeof Status[keyof typeof Status]
+
+export const EmailTemplateType = {
+  SIGNUP: "SIGNUP",
+  NOMINATION: "NOMINATION",
+  ACCEPTED: "ACCEPTED",
+  REJECTED: "REJECTED"
+} as const
+
+export type EmailTemplateType =
+  typeof EmailTemplateType[keyof typeof EmailTemplateType]
+
 // ── Inferred types (for use in handlers / client code) ──────────────────────
 
 export type NomineeCreateInput       = z.infer<typeof nomineeCreateSchema>

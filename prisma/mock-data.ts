@@ -1,4 +1,4 @@
-import { Status, EmailTemplateType } from "../server/utils/prismaclient";
+import { Status, EmailTemplateType } from "../shared/types";
 
 export type MockUser = {
     firstName: string;
