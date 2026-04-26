@@ -13,5 +13,8 @@ export async function useCheckEmail(email: string) {
             body: { email },
         },
     );
+    if (!data) {
+        throw createError({ statusCode: 404, statusMessage: 'User not found' })
+    }
     return data
 }
