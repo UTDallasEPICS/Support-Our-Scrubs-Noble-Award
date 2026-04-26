@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         jwtSecret: process.env.JWT_SECRET,
         uploadStoragePath: process.env.UPLOAD_STORAGE_PATH!,
         public: {
-            emailHost: process.env.NUXT_PUBLIC_NODEMAILER_FROM!,
+            emailHost: process.env.NUXT_PUBLIC_EMAIL_HOST!,
         },
     },
 
