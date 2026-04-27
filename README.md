@@ -87,7 +87,7 @@ N/A
 ### 4. Setup SQLite and Prisma (For Local Development)
 - `npx prisma migrate dev --name init`
 - `npx prisma generate dev`
-- `npx prisma db seed -- <admin email> <admin first name> <admin last name>`
+- `npx prisma db seed -- --admin-email (value) --admin-name (value) --load-mock-data
 
 ### 5. Run the Application
 - `npm run dev`

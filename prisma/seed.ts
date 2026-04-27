@@ -132,18 +132,36 @@ async function seedMockData() {
     console.log(`  • Email templates: ${emailTemplates.length}`);
 }
 
-async function main() {
-    const arg = process.argv[2];
-// arg: email, firstName, lastName
-    if (arg && arg.includes("@")) {
-        const args = arg.split(" ");
-        const email = args[0];
-        const firstName = args[1];
-        const lastName = args[2];
-        await seedAdmin(email, firstName, lastName);
+function getArgValue(argName: string): string | undefined {
+    const argIndex = process.argv.indexOf(argName);
+  
+    if (argIndex === -1) {
+      return undefined;
     }
+  
+    return process.argv[argIndex + 1];
+  }
+  
+function getBooleanArg(argName: string): boolean {
+    const value = getArgValue(argName);
+  
+    if (!value) {
+      return false;
+    }
+  
+    return value.toLowerCase() === "true";
+  }
 
-    await seedMockData();
+async function main() {
+    // pnpm prisma db seed --admin-email <email> --admin-name <name> --load-mock-data <true/false>
+    const adminEmail = getArgValue("--admin-email");
+    const [adminFirstName, adminLastName] = getArgValue("--admin-name")?.split(" ") || [];
+    const loadMockData = getBooleanArg("--load-mock-data");
+
+    await seedAdmin(adminEmail!, adminFirstName!, adminLastName!);
+    if (loadMockData) {
+        await seedMockData();
+    }
 }
 
 main()
