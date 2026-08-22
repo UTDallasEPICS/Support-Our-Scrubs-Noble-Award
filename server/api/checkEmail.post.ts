@@ -1,4 +1,4 @@
-import { prisma } from '~/server/utils/prismaclient'
+import prisma from '~/server/utils/prisma'
 import { emailBodySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {

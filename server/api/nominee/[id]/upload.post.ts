@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { existsSync } from "fs";
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 import { normalizeImageToWebP } from "~/server/utils/nomineeImage";
 import { useRuntimeConfig } from "#imports";
 

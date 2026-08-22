@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-        DATABASE_URL: "file:./dev.db",
+        DATABASE_URL: "file:./prisma/dev.db",
         nodemailerAuthUser: process.env.NUXT_NODEMAILER_AUTH_USER!,
         nodemailerAuthPass: process.env.NUXT_NODEMAILER_AUTH_PASS!,
         jwtSecret: process.env.JWT_SECRET,

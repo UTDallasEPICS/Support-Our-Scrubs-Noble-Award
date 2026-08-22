@@ -1,6 +1,6 @@
 import { auth } from "~/server/utils/auth"
 import { magicLinkSchema } from '~/shared/types'
-import { prisma } from "~/server/utils/prismaclient"
+import prisma from "~/server/utils/prisma"
 
 async function magicLinkCallbackUrlForEmail(email: string) {
   const user = await prisma.user.findUnique({

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '~/server/utils/generated/prisma/client'
 
 // ── Reusable field-level schemas ────────────────────────────────────────────
 

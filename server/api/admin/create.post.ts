@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/prismaclient";
+import prisma from "../../utils/prisma";
 import { adminCreateSimpleSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {

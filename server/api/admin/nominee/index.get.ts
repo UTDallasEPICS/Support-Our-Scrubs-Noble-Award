@@ -1,4 +1,4 @@
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 import { auth } from "~/server/utils/auth";
 import { useCheckAdmin } from "~/composables/useCheckAdmin";
 

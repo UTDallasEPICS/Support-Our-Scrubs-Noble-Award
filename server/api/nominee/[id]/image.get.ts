@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { useRuntimeConfig } from "#imports";
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 
 /**
  * Serves the stored WebP for a nominee. GET matches `<img :src="getImageLink(...)">`.
