@@ -1,4 +1,4 @@
-import { prisma } from '~/server/utils/prismaclient'
+import prisma from '~/server/utils/prisma'
 import { sendEmail, routeRecipient } from '~/server/utils/mailer'
 import { adminSendEmailSchema } from '~/shared/types'
 

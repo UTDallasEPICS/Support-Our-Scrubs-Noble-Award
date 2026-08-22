@@ -1,4 +1,4 @@
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 import { nominatorCreateSchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {

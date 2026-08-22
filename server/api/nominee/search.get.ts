@@ -1,4 +1,4 @@
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 import { searchQuerySchema } from '~/shared/types'
 
 export default defineEventHandler(async (event) => {

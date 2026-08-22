@@ -1,8 +1,7 @@
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 import { sendEmail, routeRecipient } from "~/server/utils/mailer";
 import { auth } from "~/server/utils/auth";
 import { nomineeCreateSchema } from "~/shared/types";
-import { Nominee } from "@prisma/client";
 
 function toSlug(a: string, b: string) {
     return (a + "-" + b)

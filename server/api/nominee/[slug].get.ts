@@ -1,5 +1,5 @@
 // to get a nominee by slug
-import { prisma } from "~/server/utils/prismaclient";
+import prisma from "~/server/utils/prisma";
 
 export default defineEventHandler(async (event) => {
     const slug = getRouterParam(event, "slug");

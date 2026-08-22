@@ -2,13 +2,21 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+  provider               = "prisma-client"
+  output                 = "../server/utils/generated/prisma"
+  engineType             = "client"
+  runtime                = "nodejs"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+  previewFeatures        = []
 }
 
+// No `url` here — the connection is supplied at runtime by the
+// better-sqlite3 driver adapter in `server/utils/prisma.ts`, which reads
+// DATABASE_URL itself.
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
 }
 
 model Nominator {
